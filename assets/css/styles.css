@@ -449,6 +449,154 @@ h1 {
   background: rgba(255, 255, 255, 0.72);
 }
 
+.series-hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  border: 3px solid var(--ink);
+  background: var(--cloud);
+  overflow: hidden;
+  box-shadow: 8px 8px 0 var(--line);
+}
+
+.series-hero-copy {
+  order: 2;
+  padding: 28px;
+  background:
+    linear-gradient(135deg, rgba(184, 239, 125, 0.24), rgba(139, 232, 242, 0.22)),
+    linear-gradient(90deg, rgba(20, 50, 82, 0.10) 1px, transparent 1px),
+    linear-gradient(rgba(20, 50, 82, 0.10) 1px, transparent 1px),
+    var(--cloud);
+  background-size: auto, 22px 22px, 22px 22px, auto;
+}
+
+.series-hero-copy h1 {
+  width: min(780px, 100%);
+  font-size: clamp(2.1rem, 4.8vw, 4.4rem);
+}
+
+.series-hero-visual {
+  order: 1;
+  aspect-ratio: 16 / 9;
+  border-bottom: 3px solid var(--ink);
+  background: var(--paper);
+}
+
+.series-hero-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: var(--paper);
+}
+
+.series-principles {
+  margin-bottom: 48px;
+}
+
+.book-map,
+.series-flow {
+  margin-bottom: 72px;
+}
+
+.book-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.book-card {
+  min-height: 360px;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 22px;
+  border: 3px solid var(--ink);
+  background: var(--cloud);
+  box-shadow: 7px 7px 0 var(--line);
+}
+
+.book-number {
+  width: 52px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--ink);
+  background: var(--yellow);
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.book-card h3 {
+  margin: 0;
+  font-size: 1.45rem;
+}
+
+.book-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.book-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.book-tags li {
+  border: 2px solid var(--ink);
+  background: rgba(255, 255, 255, 0.75);
+  padding: 6px 8px;
+  color: var(--deep-blue);
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.flow-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: flow;
+}
+
+.flow-list li {
+  min-height: 92px;
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  padding: 14px;
+  border: 3px solid var(--ink);
+  background:
+    linear-gradient(135deg, rgba(255, 225, 107, 0.22), rgba(255, 158, 204, 0.16)),
+    var(--cloud);
+  box-shadow: 5px 5px 0 var(--line);
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.flow-list li::before {
+  counter-increment: flow;
+  content: counter(flow, decimal-leading-zero);
+  color: var(--deep-blue);
+  font-size: 0.82rem;
+}
+
+.series-note {
+  padding: 12px 0 64px;
+  font-size: clamp(1.35rem, 3vw, 2.25rem);
+  font-weight: 800;
+}
+
+.series-note p {
+  margin: 0 0 8px;
+}
+
 .intro-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -603,8 +751,15 @@ h1 {
   .intro-grid,
   .rt30-notes,
   .rt30-coloring,
-  .ring-gallery {
+  .ring-gallery,
+  .series-hero,
+  .book-list,
+  .flow-list {
     grid-template-columns: 1fr;
+  }
+
+  .series-hero-visual {
+    border-bottom: 3px solid var(--ink);
   }
 
   .rt30-facts {
