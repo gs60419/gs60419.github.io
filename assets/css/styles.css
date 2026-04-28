@@ -12,7 +12,7 @@
   --yellow: #ffe16b;
   --line: #b8e7f5;
   --shadow: rgba(31, 103, 193, 0.12);
-  font-family: "Trebuchet MS", "Noto Sans TC", system-ui, sans-serif;
+  font-family: "Noto Sans TC", "Microsoft JhengHei", "Trebuchet MS", system-ui, sans-serif;
 }
 
 * {
@@ -160,6 +160,7 @@ h1 {
   margin: 10px 0 0;
   color: var(--muted);
   font-size: 1.05rem;
+  font-family: "Trebuchet MS", system-ui, sans-serif;
 }
 
 .playground,
@@ -344,6 +345,14 @@ h1 {
   line-height: 1;
 }
 
+.about-subtitle {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-family: "Trebuchet MS", system-ui, sans-serif;
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  font-weight: 800;
+}
+
 .about-text {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -356,6 +365,10 @@ h1 {
   border: 3px solid var(--ink);
   background: var(--cloud);
   box-shadow: 7px 7px 0 var(--line);
+}
+
+.secondary-language {
+  background: rgba(255, 255, 255, 0.72);
 }
 
 .language-block p {
