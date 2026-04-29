@@ -23,6 +23,12 @@ const indexByGrid = {
 };
 
 const gear = {
+  map: [
+    ["G01", "自我層", "Self Layer", "你的地圖會先亮出自己的位置、狀態和意願。", "出發前先問：我現在在哪？我真的想往前嗎？"],
+    ["G02", "生命體層", "Life Layer", "你的地圖會先亮出周圍的人、關係距離和氣氛。", "先看見大家的流動，再決定要靠近、避開或協調。"],
+    ["G03", "地形層", "Terrain Layer", "你的地圖會先亮出規則、流程、邊界和路線。", "先看路、牆和出口，再決定怎麼走比較不迷路。"],
+    ["G04", "霧層", "Fog Layer", "你的地圖暫時霧化，需要等資訊和身體慢慢對焦。", "不要逼自己立刻讀懂世界，先降速、補電、等霧散一點。"],
+  ],
   hat: [
     ["H01", "白布帽", "Blank Hood", "小時候比較像自己摸索，沒有太多明確方向。", "先不用急著找答案，慢慢把自己的地圖畫出來。"],
     ["H02", "薄影帽", "Ghost Cap", "你可能很早就學會安靜、乖一點、不要造成麻煩。", "練習讓自己被看見，不只是不要打擾別人。"],
@@ -70,6 +76,18 @@ const gear = {
 };
 
 const questions = {
+  map: [
+    ["接到一個新任務時，你第一個念頭通常是：", ["這件事對我來說重要嗎？", "要不要先找人一起處理？", "流程、風險、資源要先看一下。", "先放一下，等腦袋清楚一點再看。"]],
+    ["有人對你說一句怪怪的話，你通常先想到：", ["是不是我哪裡沒做好？", "他是不是心情怪怪的？", "這句話背後的狀況是什麼？", "我現在還抓不到，先讓它放著。"]],
+    ["到陌生場合時，你最先注意的是：", ["自己的心情和狀態。", "現場每個人的氣氛。", "整體動線、規則和場合感。", "先停一下，讓場景慢慢進來。"]],
+    ["面對新挑戰，你的第一步通常是：", ["問自己願不願意。", "看看其他人怎麼做。", "先看全局，找出模式。", "等心落地後，再看挑戰在哪。"]],
+    ["衝突發生時，你最容易先：", ["反省是不是自己不對。", "想先穩住對方或現場。", "拆解問題到底卡在哪裡。", "先停住，等衝突輪廓清楚一點。"]],
+    ["必須做決定時，你通常比較依賴：", ["自己心裡真實的感覺。", "別人的反應和需求。", "邏輯、脈絡和後果。", "等資訊自己排好，再決定。"]],
+    ["事情突然變複雜時，你會先：", ["整理哪些事對自己最重要。", "感覺大家現在的氣氛。", "重畫一張局勢地圖。", "讓散亂資訊先沉澱一下。"]],
+    ["有人對你提出要求時，你通常先想：", ["這件事對我怎樣？", "他為什麼找我？", "流程和後果是什麼？", "等抓到框架後再回應。"]],
+    ["進入新環境時，你通常會：", ["調整自己的步調。", "感受人與人之間的距離。", "觀察規則和動線。", "讓大腦默默對焦。"]],
+    ["一天結束時，你最常回想：", ["今天自己的真實感受。", "我有沒有讓大家好過一點？", "今天發生的模式和脈絡。", "我的心是不是已經離席，需要回來。"]],
+  ],
   hat: [
     ["小時候或很早以前，你比較常有哪種感覺？", ["很多事沒人講清楚，只能自己猜。", "家裡或身邊氣氛常常變來變去。", "常覺得壓力很大，好像不能出錯。"]],
     ["如果你不知道接下來會不會安全，你通常會：", ["先安靜下來，看看大家怎麼反應。", "腦中跑出很多可能狀況。", "身體先緊起來，準備防備。"]],
@@ -123,9 +141,24 @@ const tiebreakers = {
   },
 };
 
-const state = { hat: null, weapon: null, mount: null, energy: null };
-const scoreValues = ["A", "B", "C"];
-const displayLabels = ["A", "B", "C"];
+const state = { map: null, hat: null, weapon: null, mount: null, energy: null };
+const displayLabels = ["A", "B", "C", "D"];
+const scoreValuesByType = {
+  map: ["A", "B", "C", "D"],
+  default: ["A", "B", "C"],
+};
+const mapOptionOrders = [
+  ["A", "B", "C", "D"],
+  ["B", "C", "D", "A"],
+  ["C", "D", "A", "B"],
+  ["D", "A", "B", "C"],
+  ["A", "C", "D", "B"],
+  ["B", "D", "A", "C"],
+  ["C", "A", "B", "D"],
+  ["D", "B", "C", "A"],
+  ["A", "D", "B", "C"],
+  ["C", "B", "D", "A"],
+];
 const gridOptionOrders = [
   ["A", "B", "C"],
   ["A", "B", "C"],
@@ -146,6 +179,7 @@ const energyOptionOrders = [
 ];
 
 const emptySlots = {
+  map: ["尚未開圖", "完成地圖測驗後，公會會標出你通常先看到哪一層。"],
   hat: ["尚未領取", "完成第一段後，公會會把你以前留下的感覺習慣交給你。"],
   weapon: ["尚未領取", "完成第二段後，你會看到自己面對他人時常拿起什麼工具。"],
   mount: ["尚未領取", "完成第三段後，你會知道今天比較像騎著什麼往前走。"],
@@ -169,6 +203,12 @@ function resultFromGrid(type, values) {
   const second = topKey(count(values.slice(3, 6)));
   const key = `${axes[first][0]}-${adjustAxes[second][0]}`;
   return gear[type][indexByGrid[key]];
+}
+
+function resultFromMap(values) {
+  if (values.length < questions.map.length) return null;
+  const top = ["A", "B", "C", "D"].sort((a, b) => (count(values)[b] || 0) - (count(values)[a] || 0))[0];
+  return gear.map[["A", "B", "C", "D"].indexOf(top)];
 }
 
 function resultFromEnergy(values) {
@@ -213,8 +253,9 @@ function selectedValues(type) {
 }
 
 function optionEntries(type, index, options) {
-  const orders = type === "mount" ? mountOptionOrders : type === "energy" ? energyOptionOrders : gridOptionOrders;
+  const orders = type === "map" ? mapOptionOrders : type === "mount" ? mountOptionOrders : type === "energy" ? energyOptionOrders : gridOptionOrders;
   const order = orders[index % orders.length];
+  const scoreValues = scoreValuesByType[type] || scoreValuesByType.default;
   return order.map((score) => ({
     score,
     text: options[scoreValues.indexOf(score)],
@@ -225,7 +266,7 @@ function renderQuestions() {
   Object.entries(questions).forEach(([type, list]) => {
     const host = document.querySelector(`[data-question-list="${type}"]`);
     host.innerHTML = list.map(([prompt, options], index) => `
-      <fieldset class="question-card">
+      <fieldset class="question-card question-card-${type}">
         <legend><span>${String(index + 1).padStart(2, "0")}</span>${prompt}</legend>
         <div class="choice-row">
           ${optionEntries(type, index, options).map(({ score, text }, optionIndex) => `
@@ -296,27 +337,29 @@ function updateProgress() {
 
 function updateReading() {
   const completed = Object.values(state).filter(Boolean).length;
-  document.querySelector("[data-card-status]").textContent = completed === 4 ? "已成卡" : `${completed}/4`;
+  document.querySelector("[data-card-status]").textContent = completed === 5 ? "已成卡" : `${completed}/5`;
   const code = ["hat", "weapon", "mount", "energy"].map((type) => state[type]?.[0] || `${type[0].toUpperCase()}__`).join("-");
   document.querySelector("[data-short-code]").textContent = code;
-  if (completed < 4) {
+  if (completed < 5) {
     document.querySelector("[data-card-reading]").innerHTML = "<p>先不用急著定義自己。從第一題開始，慢慢把裝備領齊。</p>";
     return;
   }
   document.querySelector("[data-card-reading]").innerHTML = `
     <p>你的今日角色卡代碼是 <strong>${code}</strong>。</p>
-    <p>${state.hat[1]} 是以前留下的感覺習慣，${state.weapon[1]} 是你遇到人時常用的工具，${state.mount[1]} 是現在的前進方式，${state.energy[1]} 則提醒你今天適合的速度。</p>
+    <p>${state.map[1]} 是你的地圖先亮起的地方；${state.hat[1]} 是以前留下的感覺習慣，${state.weapon[1]} 是你遇到人時常用的工具，${state.mount[1]} 是現在的前進方式，${state.energy[1]} 則提醒你今天適合的速度。</p>
     <p>下一步不用變成別人，只要照著能量條調整任務大小。</p>
   `;
 }
 
 function updateAvatar() {
+  document.querySelector("[data-avatar-map]").textContent = state.map ? state.map[0] : "";
   document.querySelector("[data-avatar-hat]").textContent = state.hat ? state.hat[0] : "";
   document.querySelector("[data-avatar-weapon]").textContent = state.weapon ? state.weapon[0] : "";
   document.querySelector("[data-avatar-mount]").textContent = state.mount ? state.mount[0] : "";
 }
 
 function update() {
+  state.map = resultFromMap(selectedValues("map"));
   state.hat = resultFromGrid("hat", selectedValues("hat"));
   state.weapon = resultFromGrid("weapon", selectedValues("weapon"));
   const mountRaw = resultFromMount(selectedValues("mount"));

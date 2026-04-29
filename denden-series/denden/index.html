@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="《等等》RPG 網頁體驗：完成帽子、武器、座騎與能量檢查，產生自己的冒險者卡。">
+    <meta name="description" content="《等等》RPG 網頁體驗：啟動公會地圖，完成帽子、武器、座騎與能量檢查，產生自己的冒險者卡。">
     <title>等等 RPG | 等等系列</title>
     <link rel="stylesheet" href="../../assets/css/styles.css">
     <script src="../../assets/js/denden-rpg.js" defer></script>
@@ -21,11 +21,11 @@
     </header>
 
     <main class="project-intro book-page book-page-denden rpg-page">
-      <section class="book-hero book-hero-with-image rpg-hero" aria-labelledby="book-title">
-        <div>
+      <section class="book-hero book-hero-with-image rpg-hero rpg-hero-wide" aria-labelledby="book-title">
+        <div class="rpg-hero-copy">
           <p class="kicker">Book 01 / Web RPG</p>
           <h1 id="book-title">等等 RPG 公會創角</h1>
-          <p class="intro-lead">在反應之前先停一下，領帽子、拿武器、挑座騎、檢查能量條，最後合成一張可以重讀、可以更新的冒險者卡。</p>
+          <p class="intro-lead">在反應之前先停一下，啟動地圖、領帽子、拿武器、挑座騎、檢查能量條，最後合成一張可以重讀、可以更新的冒險者卡。</p>
           <div class="intro-actions">
             <a class="button" href="#rpg-app">開始創角</a>
             <a class="button secondary-button" href="../">回系列地圖</a>
@@ -51,6 +51,7 @@
           </div>
 
           <div class="rpg-progress" aria-label="創角進度">
+            <span data-progress-step="map">地圖</span>
             <span data-progress-step="hat">帽子</span>
             <span data-progress-step="weapon">武器</span>
             <span data-progress-step="mount">座騎</span>
@@ -58,6 +59,17 @@
           </div>
 
           <form class="rpg-form" data-rpg-form>
+            <section class="rpg-module" data-module="map" aria-labelledby="map-title">
+              <div class="module-head">
+                <span class="module-number">00</span>
+                <div>
+                  <h3 id="map-title">啟動地圖：你先看到哪一層</h3>
+                  <p>公會地圖不是人格分類，只是在問：事情發生時，你通常第一眼先看自己、看人、看局勢，還是先等霧散？</p>
+                </div>
+              </div>
+              <div class="question-grid" data-question-list="map"></div>
+            </section>
+
             <section class="rpg-module" data-module="hat" aria-labelledby="hat-title">
               <div class="module-head">
                 <span class="module-number">01</span>
@@ -113,11 +125,17 @@
           <h2 id="card-title">等等冒險者卡</h2>
           <div class="short-code" data-short-code>H__-W__-M__-E__</div>
           <div class="card-avatar" aria-hidden="true">
+            <span data-avatar-map></span>
             <span data-avatar-hat></span>
             <span data-avatar-weapon></span>
             <span data-avatar-mount></span>
           </div>
           <div class="card-slots">
+            <article data-card-slot="map">
+              <span>地圖</span>
+              <strong>尚未開圖</strong>
+              <p>完成地圖測驗後，公會會標出你通常先看到哪一層。</p>
+            </article>
             <article data-card-slot="hat">
               <span>帽子</span>
               <strong>尚未領取</strong>

@@ -888,6 +888,37 @@ h1 {
   background-size: auto, 22px 22px, 22px 22px, auto;
 }
 
+.rpg-hero-wide {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.rpg-hero-wide .rpg-hero-copy {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 26px 0 30px;
+  order: 2;
+}
+
+.rpg-hero-wide .book-hero-image {
+  order: 1;
+}
+
+.rpg-hero-wide .book-hero-image img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  border: 0;
+  border-bottom: 3px solid var(--ink);
+  background: var(--paper);
+}
+
 .rpg-shell {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(310px, 0.44fr);
@@ -913,7 +944,7 @@ h1 {
 
 .rpg-progress {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
   margin-bottom: 18px;
 }
@@ -1012,6 +1043,10 @@ h1 {
   margin-top: 10px;
 }
 
+.question-card-map .choice-row {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .choice-row label {
   min-height: 96px;
   display: grid;
@@ -1106,7 +1141,7 @@ h1 {
 .card-avatar {
   height: 140px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
   align-items: end;
   margin: 14px 0;
@@ -1130,11 +1165,16 @@ h1 {
 }
 
 .card-avatar span:first-child {
+  min-height: 64px;
+  background: var(--aqua);
+}
+
+.card-avatar span:nth-child(2) {
   min-height: 80px;
   background: var(--pink);
 }
 
-.card-avatar span:nth-child(2) {
+.card-avatar span:nth-child(3) {
   min-height: 108px;
   background: var(--yellow);
 }
