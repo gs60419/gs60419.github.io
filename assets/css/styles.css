@@ -604,6 +604,69 @@ h1 {
   margin: 0 0 8px;
 }
 
+.puffology-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.55fr);
+  gap: 24px;
+  align-items: center;
+  background:
+    linear-gradient(135deg, rgba(255, 158, 204, 0.24), rgba(255, 225, 107, 0.20)),
+    linear-gradient(90deg, rgba(20, 50, 82, 0.10) 1px, transparent 1px),
+    linear-gradient(rgba(20, 50, 82, 0.10) 1px, transparent 1px),
+    var(--cloud);
+  background-size: auto, 22px 22px, 22px 22px, auto;
+}
+
+.puffology-visual {
+  margin: 0;
+}
+
+.puffology-visual img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  border: 3px solid var(--ink);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 7px 7px 0 var(--line);
+}
+
+.puffology-principles {
+  margin-bottom: 72px;
+}
+
+.version-map {
+  margin-bottom: 72px;
+}
+
+.version-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.version-card {
+  min-height: 280px;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 22px;
+  border: 3px solid var(--ink);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 7px 7px 0 var(--line);
+}
+
+.version-card h3 {
+  margin: 0;
+  font-size: 1.42rem;
+}
+
+.version-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
 .book-page {
   padding-bottom: 64px;
 }
@@ -918,9 +981,11 @@ h1 {
   .rt30-notes,
   .rt30-coloring,
   .ring-gallery,
+  .puffology-hero,
   .series-hero,
   .book-hero-with-image,
   .book-list,
+  .version-list,
   .flow-list,
   .route-list,
   .compact-route,

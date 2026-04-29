@@ -5,6 +5,7 @@ A lightweight GitHub Pages site for a Toymaker Playground.
 ## Sections
 
 - 小屁論
+  - 小屁論入口
 - 等等系列
   - 等等
   - 等等靈感
