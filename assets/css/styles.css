@@ -873,6 +873,321 @@ h1 {
   gap: 8px;
 }
 
+.rpg-page {
+  --guild-green: #46c783;
+  --guild-red: #f06a71;
+  --guild-amber: #f5c744;
+}
+
+.rpg-hero {
+  background:
+    linear-gradient(135deg, rgba(70, 199, 131, 0.20), rgba(76, 166, 255, 0.18)),
+    linear-gradient(90deg, rgba(20, 50, 82, 0.10) 1px, transparent 1px),
+    linear-gradient(rgba(20, 50, 82, 0.10) 1px, transparent 1px),
+    var(--cloud);
+  background-size: auto, 22px 22px, 22px 22px, auto;
+}
+
+.rpg-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(310px, 0.44fr);
+  gap: 22px;
+  align-items: start;
+  margin-bottom: 72px;
+}
+
+.rpg-main,
+.adventurer-card {
+  border: 3px solid var(--ink);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 8px 8px 0 var(--line);
+}
+
+.rpg-main {
+  padding: 22px;
+}
+
+.rpg-heading {
+  align-items: center;
+}
+
+.rpg-progress {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.rpg-progress span {
+  min-height: 38px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--ink);
+  background: var(--cloud);
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.rpg-progress span.is-complete {
+  background: var(--guild-green);
+  color: var(--ink);
+}
+
+.rpg-form {
+  display: grid;
+  gap: 18px;
+}
+
+.rpg-module {
+  padding: 18px;
+  border: 3px solid var(--ink);
+  background:
+    linear-gradient(135deg, rgba(255, 225, 107, 0.18), rgba(139, 232, 242, 0.14)),
+    var(--cloud);
+}
+
+.module-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 14px;
+}
+
+.module-number {
+  width: 44px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--ink);
+  background: var(--guild-amber);
+  font-weight: 900;
+}
+
+.module-head h3 {
+  margin: 0;
+  font-size: 1.45rem;
+}
+
+.module-head p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.question-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.question-card {
+  margin: 0;
+  padding: 14px;
+  border: 2px solid var(--ink);
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.question-card legend {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 0 6px;
+  font-weight: 900;
+}
+
+.question-card legend span {
+  min-width: 34px;
+  min-height: 28px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--ink);
+  background: var(--aqua);
+  font-size: 0.82rem;
+}
+
+.choice-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.choice-row label {
+  min-height: 96px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  align-content: start;
+  padding: 10px;
+  border: 2px solid rgba(20, 50, 82, 0.42);
+  background: var(--cloud);
+  cursor: pointer;
+}
+
+.choice-row input {
+  position: absolute;
+  opacity: 0;
+}
+
+.choice-row strong {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+}
+
+.choice-row span {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.choice-row label:has(input:checked) {
+  border-color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(70, 199, 131, 0.24), rgba(255, 225, 107, 0.18)),
+    var(--cloud);
+  box-shadow: 4px 4px 0 var(--line);
+}
+
+.choice-row label:has(input:checked) strong {
+  background: var(--guild-green);
+}
+
+.tiebreaker-panel {
+  margin-top: 12px;
+}
+
+.tiebreaker-card {
+  border-color: var(--deep-blue);
+  background:
+    linear-gradient(135deg, rgba(255, 158, 204, 0.18), rgba(139, 232, 242, 0.18)),
+    var(--cloud);
+}
+
+.adventurer-card {
+  position: sticky;
+  top: 18px;
+  padding: 20px;
+}
+
+.card-topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.card-topline span {
+  border: 2px solid var(--ink);
+  background: var(--yellow);
+  padding: 6px 9px;
+  font-weight: 900;
+}
+
+.adventurer-card h2 {
+  margin: 0 0 12px;
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+}
+
+.short-code {
+  border: 3px solid var(--ink);
+  background: #101d2c;
+  color: #eafff4;
+  padding: 12px;
+  font-family: "Trebuchet MS", ui-monospace, monospace;
+  font-size: clamp(1.15rem, 2.2vw, 1.55rem);
+  font-weight: 900;
+  letter-spacing: 0;
+  text-align: center;
+}
+
+.card-avatar {
+  height: 140px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  align-items: end;
+  margin: 14px 0;
+  padding: 12px;
+  border: 3px solid var(--ink);
+  background:
+    linear-gradient(90deg, rgba(20, 50, 82, 0.10) 1px, transparent 1px),
+    linear-gradient(rgba(20, 50, 82, 0.10) 1px, transparent 1px),
+    #eefbf8;
+  background-size: 18px 18px;
+}
+
+.card-avatar span {
+  min-height: 48px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--ink);
+  background: var(--cloud);
+  color: var(--deep-blue);
+  font-weight: 900;
+}
+
+.card-avatar span:first-child {
+  min-height: 80px;
+  background: var(--pink);
+}
+
+.card-avatar span:nth-child(2) {
+  min-height: 108px;
+  background: var(--yellow);
+}
+
+.card-avatar span:last-child {
+  min-height: 62px;
+  background: var(--lime);
+}
+
+.card-slots {
+  display: grid;
+  gap: 10px;
+}
+
+.card-slots article {
+  padding: 12px;
+  border: 2px solid var(--ink);
+  background: rgba(247, 252, 255, 0.82);
+}
+
+.card-slots article.filled {
+  background:
+    linear-gradient(135deg, rgba(70, 199, 131, 0.16), rgba(255, 225, 107, 0.12)),
+    var(--cloud);
+}
+
+.card-slots span {
+  display: block;
+  color: var(--deep-blue);
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+
+.card-slots strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 1.08rem;
+}
+
+.card-slots p,
+.card-reading p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.card-reading {
+  margin-top: 12px;
+  padding: 12px;
+  border: 2px solid var(--ink);
+  background: rgba(255, 225, 107, 0.18);
+}
+
 .queen-card {
   grid-column: span 2;
 }
@@ -1033,6 +1348,7 @@ h1 {
   .rt30-coloring,
   .ring-gallery,
   .puffology-hero,
+  .rpg-shell,
   .series-hero,
   .book-hero-with-image,
   .book-list,
@@ -1042,9 +1358,23 @@ h1 {
   .flow-list,
   .route-list,
   .compact-route,
+  .choice-row,
   .detail-grid,
   .fairy-grid {
     grid-template-columns: 1fr;
+  }
+
+  .rpg-main,
+  .adventurer-card {
+    padding: 14px;
+  }
+
+  .rpg-progress {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .adventurer-card {
+    position: static;
   }
 
   .queen-card {
