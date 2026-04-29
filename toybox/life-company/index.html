@@ -508,7 +508,30 @@
         return isValid;
       }
 
-      form.addEventListener("change", validateRanks);
+      function syncSecondOptions(index) {
+        const first = form.elements[`q${index}-first`];
+        const second = form.elements[`q${index}-second`];
+        [...second.options].forEach((option) => {
+          option.hidden = Boolean(first.value) && option.value === first.value;
+          option.disabled = Boolean(first.value) && option.value === first.value;
+        });
+        if (second.value && second.value === first.value) {
+          second.value = "";
+        }
+      }
+
+      function syncAllSecondOptions() {
+        questions.forEach((_, index) => syncSecondOptions(index));
+      }
+
+      form.addEventListener("change", (event) => {
+        if (event.target.matches('select[name$="-first"]')) {
+          const index = Number(event.target.name.match(/^q(\d+)-first$/)[1]);
+          syncSecondOptions(index);
+        }
+        validateRanks();
+      });
+      syncAllSecondOptions();
 
       function renderScores(sorted, maxScore) {
         return sorted.map(([key, score]) => {
