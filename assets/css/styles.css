@@ -763,6 +763,55 @@ h1 {
   width: min(100%, 620px);
 }
 
+.maid-hero-wide {
+  display: grid;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.maid-hero-copy {
+  padding: 30px;
+  background:
+    linear-gradient(135deg, rgba(255, 158, 204, 0.20), rgba(139, 232, 242, 0.20)),
+    linear-gradient(90deg, rgba(20, 50, 82, 0.10) 1px, transparent 1px),
+    linear-gradient(rgba(20, 50, 82, 0.10) 1px, transparent 1px),
+    var(--cloud);
+  background-size: auto, 22px 22px, 22px 22px, auto;
+}
+
+.maid-feature-figure {
+  margin: 0;
+}
+
+.maid-feature-figure img {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-bottom: 3px solid var(--ink);
+  background: var(--paper);
+  object-fit: contain;
+}
+
+.maid-hero-wide .maid-feature-figure img {
+  aspect-ratio: 16 / 9;
+}
+
+.maid-portrait-figure {
+  width: min(100%, 820px);
+  margin: 0 auto 24px;
+}
+
+.maid-portrait-figure img {
+  aspect-ratio: 2 / 3;
+  border: 3px solid var(--ink);
+  box-shadow: 8px 8px 0 var(--line);
+}
+
+.maid-toc-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .book-statement {
   margin: 34px 0 72px;
   font-size: clamp(1.35rem, 3vw, 2.35rem);
