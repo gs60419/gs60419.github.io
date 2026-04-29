@@ -644,6 +644,11 @@ h1 {
   object-fit: contain;
 }
 
+.book-page-inspiration .book-hero-image {
+  justify-self: center;
+  width: min(100%, 620px);
+}
+
 .book-statement {
   margin: 34px 0 72px;
   font-size: clamp(1.35rem, 3vw, 2.35rem);
@@ -736,6 +741,11 @@ h1 {
 .wide-figure img {
   aspect-ratio: 16 / 9;
   object-fit: contain;
+}
+
+.book-page-inspiration .wide-figure {
+  width: min(100%, 820px);
+  margin-inline: auto;
 }
 
 .wide-figure figcaption {
