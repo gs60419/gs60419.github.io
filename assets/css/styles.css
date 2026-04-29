@@ -758,11 +758,6 @@ h1 {
   object-fit: contain;
 }
 
-.book-page-inspiration .book-hero-image {
-  justify-self: center;
-  width: min(100%, 620px);
-}
-
 .maid-hero-wide {
   display: grid;
   gap: 0;
@@ -907,7 +902,7 @@ h1 {
 }
 
 .book-page-inspiration .wide-figure {
-  width: min(100%, 820px);
+  width: 100%;
   margin-inline: auto;
 }
 
