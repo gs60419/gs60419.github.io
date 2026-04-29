@@ -124,6 +124,26 @@ const tiebreakers = {
 };
 
 const state = { hat: null, weapon: null, mount: null, energy: null };
+const scoreValues = ["A", "B", "C"];
+const displayLabels = ["A", "B", "C"];
+const gridOptionOrders = [
+  ["A", "B", "C"],
+  ["A", "B", "C"],
+  ["A", "C", "B"],
+  ["B", "C", "A"],
+  ["B", "C", "A"],
+  ["B", "A", "C"],
+];
+const mountOptionOrders = [
+  ["A", "B", "C"],
+  ["B", "C", "A"],
+  ["C", "A", "B"],
+];
+const energyOptionOrders = [
+  ["A", "B", "C"],
+  ["A", "B", "C"],
+  ["C", "A", "B"],
+];
 
 const emptySlots = {
   hat: ["尚未領取", "完成第一段後，公會會把你以前留下的感覺習慣交給你。"],
@@ -192,6 +212,15 @@ function selectedValues(type) {
   }).filter(Boolean);
 }
 
+function optionEntries(type, index, options) {
+  const orders = type === "mount" ? mountOptionOrders : type === "energy" ? energyOptionOrders : gridOptionOrders;
+  const order = orders[index % orders.length];
+  return order.map((score) => ({
+    score,
+    text: options[scoreValues.indexOf(score)],
+  }));
+}
+
 function renderQuestions() {
   Object.entries(questions).forEach(([type, list]) => {
     const host = document.querySelector(`[data-question-list="${type}"]`);
@@ -199,16 +228,13 @@ function renderQuestions() {
       <fieldset class="question-card">
         <legend><span>${String(index + 1).padStart(2, "0")}</span>${prompt}</legend>
         <div class="choice-row">
-          ${options.map((text, optionIndex) => {
-            const value = ["A", "B", "C"][optionIndex];
-            return `
+          ${optionEntries(type, index, options).map(({ score, text }, optionIndex) => `
               <label>
-                <input type="radio" name="${type}-${index}" value="${value}">
-                <strong>${value}</strong>
+                <input type="radio" name="${type}-${index}" value="${score}">
+                <strong>${displayLabels[optionIndex]}</strong>
                 <span>${text}</span>
               </label>
-            `;
-          }).join("")}
+            `).join("")}
         </div>
       </fieldset>
     `).join("");
@@ -228,10 +254,10 @@ function renderTiebreaker(kind, selectedCode) {
     <fieldset class="question-card tiebreaker-card">
       <legend><span>+</span>${data.label}：${data.prompt}</legend>
       <div class="choice-row">
-        ${data.options.map(([code, text]) => `
+        ${data.options.map(([code, text], optionIndex) => `
           <label>
             <input type="radio" name="mount-tiebreaker" value="${code}" ${selectedCode === code ? "checked" : ""}>
-            <strong>${code}</strong>
+            <strong>${displayLabels[optionIndex]}</strong>
             <span>${text}</span>
           </label>
         `).join("")}
