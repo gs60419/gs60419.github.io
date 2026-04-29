@@ -758,6 +758,28 @@ h1 {
   object-fit: contain;
 }
 
+.book-page-magic .book-hero-with-image {
+  grid-template-columns: 1fr;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.book-page-magic .book-hero-with-image > div:first-child {
+  padding: 30px;
+}
+
+.book-page-magic .book-hero-image {
+  order: -1;
+}
+
+.book-page-magic .book-hero-image img {
+  aspect-ratio: auto;
+  border: 0;
+  border-bottom: 3px solid var(--ink);
+  object-fit: contain;
+}
+
 .maid-hero-wide {
   display: grid;
   gap: 0;
