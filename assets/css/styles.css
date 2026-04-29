@@ -995,6 +995,7 @@ h1 {
 
 .rpg-main,
 .adventurer-card {
+  min-width: 0;
   border: 3px solid var(--ink);
   background: rgba(255, 255, 255, 0.92);
   box-shadow: 8px 8px 0 var(--line);
@@ -1078,6 +1079,7 @@ h1 {
 }
 
 .question-card {
+  min-width: 0;
   margin: 0;
   padding: 14px;
   border: 2px solid var(--ink);
@@ -1114,6 +1116,7 @@ h1 {
 }
 
 .choice-row label {
+  min-width: 0;
   min-height: 96px;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
@@ -1142,6 +1145,7 @@ h1 {
 .choice-row span {
   color: var(--muted);
   line-height: 1.45;
+  overflow-wrap: anywhere;
 }
 
 .choice-row label:has(input:checked) {
@@ -1477,6 +1481,25 @@ h1 {
 
   .rpg-progress {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .question-card-map .choice-row,
+  .choice-row {
+    grid-template-columns: 1fr;
+  }
+
+  .question-card {
+    padding: 12px;
+  }
+
+  .question-card legend {
+    align-items: flex-start;
+    line-height: 1.35;
+  }
+
+  .choice-row label {
+    min-height: 0;
+    padding: 12px;
   }
 
   .adventurer-card {
