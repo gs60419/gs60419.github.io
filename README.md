@@ -6,6 +6,10 @@ A lightweight GitHub Pages site for a Toymaker Playground.
 
 - 小屁論
 - 等等系列
+  - 等等
+  - 等等靈感
+  - 等等女僕
+  - 等等魔法
 - RT30
 - Toybox
 
