@@ -133,50 +133,62 @@
         text-transform: uppercase;
       }
 
-      .option-grid {
+      .rank-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
+        gap: 10px;
         margin-top: 12px;
       }
 
-      .option-grid label {
-        min-height: 116px;
+      .rank-control {
+        display: grid;
+        gap: 8px;
+      }
+
+      .rank-control span {
+        color: var(--deep-blue);
+        font-weight: 900;
+      }
+
+      .rank-control select {
+        width: 100%;
+        min-height: 52px;
+        border: 2px solid var(--ink);
+        background:
+          linear-gradient(135deg, rgba(184, 239, 125, 0.18), rgba(139, 232, 242, 0.12)),
+          var(--cloud);
+        color: var(--ink);
+        padding: 10px;
+        font: inherit;
+        font-weight: 800;
+        box-shadow: 4px 4px 0 var(--line);
+      }
+
+      .answer-list {
+        display: grid;
+        gap: 7px;
+        margin-top: 12px;
+        padding: 0;
+        list-style: none;
+      }
+
+      .answer-list li {
         display: grid;
         grid-template-columns: auto minmax(0, 1fr);
-        gap: 10px;
-        align-content: start;
-        padding: 12px;
-        border: 2px solid rgba(20, 50, 82, 0.42);
-        background: var(--cloud);
-        cursor: pointer;
-      }
-
-      .option-grid input {
-        position: absolute;
-        opacity: 0;
-      }
-
-      .option-grid strong {
-        width: 30px;
-        height: 30px;
-        display: grid;
-        place-items: center;
-        border: 2px solid var(--ink);
-        background: var(--paper);
-      }
-
-      .option-grid span {
+        gap: 8px;
+        align-items: start;
         color: var(--muted);
         line-height: 1.5;
       }
 
-      .option-grid label:has(input:checked) {
-        border-color: var(--ink);
-        background:
-          linear-gradient(135deg, rgba(184, 239, 125, 0.28), rgba(255, 225, 107, 0.18)),
-          var(--cloud);
-        box-shadow: 4px 4px 0 var(--line);
+      .answer-list strong {
+        width: 28px;
+        min-height: 28px;
+        display: grid;
+        place-items: center;
+        border: 2px solid var(--ink);
+        background: var(--paper);
+        color: var(--ink);
       }
 
       .result-shell {
@@ -254,7 +266,7 @@
         .life-grid,
         .quiz-shell,
         .result-shell,
-        .option-grid {
+        .rank-grid {
           grid-template-columns: 1fr;
         }
 
@@ -329,7 +341,7 @@
             <p class="kicker">Quiz</p>
             <h2 id="quiz-title">10 題快速測驗</h2>
           </div>
-          <p class="life-note"><strong>玩法</strong>不用想太多，選最直覺的那個答案。送出後會產生「主產品、六利結構、自我感來源、崩潰風險、AI 影響」摘要。</p>
+          <p class="life-note"><strong>玩法</strong>每題選兩個：第一個是最符合，記 2 分；第二個是次符合，記 1 分。送出後會產生「主產品、六利結構、自我感來源、崩潰風險、AI 影響」摘要。</p>
           <div id="question-list"></div>
           <div class="life-actions">
             <button class="button" type="submit">產生分析</button>
@@ -451,17 +463,41 @@
       questionList.innerHTML = questions.map(([title, options], index) => `
         <fieldset class="quiz-card">
           <legend><span>Q${index + 1}</span>${title}</legend>
-          <div class="option-grid">
-            ${options.map(([text, key], optionIndex) => `
-              <label>
-                <input type="radio" name="q${index}" value="${key}" required>
-                <strong>${String.fromCharCode(65 + optionIndex)}</strong>
-                <span>${text}</span>
-              </label>
-            `).join("")}
+          <div class="rank-grid">
+            <label class="rank-control">
+              <span>最符合（2分）</span>
+              <select name="q${index}-first" required>
+                <option value="">請選擇</option>
+                ${options.map(([text, key], optionIndex) => `<option value="${key}">${String.fromCharCode(65 + optionIndex)}. ${text}</option>`).join("")}
+              </select>
+            </label>
+            <label class="rank-control">
+              <span>次符合（1分）</span>
+              <select name="q${index}-second" required>
+                <option value="">請選擇</option>
+                ${options.map(([text, key], optionIndex) => `<option value="${key}">${String.fromCharCode(65 + optionIndex)}. ${text}</option>`).join("")}
+              </select>
+            </label>
           </div>
+          <ul class="answer-list">
+            ${options.map(([text], optionIndex) => `<li><strong>${String.fromCharCode(65 + optionIndex)}</strong><span>${text}</span></li>`).join("")}
+          </ul>
         </fieldset>
       `).join("");
+
+      function validateRanks() {
+        let isValid = true;
+        questions.forEach((_, index) => {
+          const first = form.elements[`q${index}-first`];
+          const second = form.elements[`q${index}-second`];
+          const message = first.value && first.value === second.value ? "最符合與次符合不能選同一個答案" : "";
+          second.setCustomValidity(message);
+          if (message) isValid = false;
+        });
+        return isValid;
+      }
+
+      form.addEventListener("change", validateRanks);
 
       function renderScores(sorted, maxScore) {
         return sorted.map(([key, score]) => {
@@ -479,9 +515,16 @@
 
       form.addEventListener("submit", (event) => {
         event.preventDefault();
-        const data = new FormData(form);
         const scores = Object.fromEntries(Object.keys(dimensions).map((key) => [key, 0]));
-        for (const value of data.values()) scores[value] += 1;
+        if (!validateRanks()) {
+          form.reportValidity();
+          return;
+        }
+
+        questions.forEach((_, index) => {
+          scores[form.elements[`q${index}-first`].value] += 2;
+          scores[form.elements[`q${index}-second`].value] += 1;
+        });
 
         const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
         const top = sorted.filter(([, score]) => score > 0).slice(0, 3);
