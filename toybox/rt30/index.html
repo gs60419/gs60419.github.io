@@ -1284,6 +1284,7 @@ body {
   border-left:1px solid #304a6a;
   display:flex; flex-direction:column;
   flex-shrink:0;
+  overflow:hidden;
 }
 
 /* title bar */
@@ -1650,7 +1651,7 @@ tr[data-orig] { cursor:pointer; }
 
   /* 問題清單 banner */
   #list-banner { font-size: 11px; padding: 5px 10px; }
-  #list-panel { max-height: 150px; }
+  #list-panel { max-height: 150px; overflow-y:scroll; }
 
   /* 切面區塊 */
   .plane-hdr { padding: 6px 12px; font-size: 12px; }
@@ -3620,7 +3621,7 @@ function hideListBanner(){
 }
 document.getElementById('list-banner-toggle').addEventListener('click',()=>{
   listPanelOpen=!listPanelOpen;
-  document.getElementById('list-panel').style.display=listPanelOpen?'flex':'none';
+  document.getElementById('list-panel').style.display=listPanelOpen?'block':'none';
   document.getElementById('list-banner-toggle').textContent=listPanelOpen?'▼':'▶';
 });
 
