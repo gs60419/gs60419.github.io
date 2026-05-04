@@ -1405,6 +1405,163 @@ h1 {
   line-height: 1.45;
 }
 
+.rt30-detail-page {
+  padding-bottom: 28px;
+}
+
+.rt30-detail-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 24px 0 34px;
+}
+
+.rt30-detail-nav a {
+  padding: 10px 14px;
+  border: 3px solid var(--ink);
+  background: var(--cloud);
+  color: var(--ink);
+  font-weight: 900;
+  text-decoration: none;
+  box-shadow: 4px 4px 0 var(--line);
+}
+
+.rt30-deep-section {
+  margin: 0 0 44px;
+}
+
+.rt30-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.9fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.rt30-mini-model {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.rt30-mini-model span,
+.rt30-stat-table div,
+.rt30-axis-grid article,
+.rt30-world-list article,
+.rt30-flow li {
+  border: 3px solid var(--ink);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 5px 5px 0 var(--line);
+}
+
+.rt30-mini-model span {
+  min-height: 78px;
+  display: grid;
+  place-items: center;
+  padding: 12px;
+  color: var(--deep-blue);
+  font-weight: 900;
+  text-align: center;
+}
+
+.rt30-stat-table {
+  display: grid;
+  gap: 10px;
+}
+
+.rt30-stat-table div {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+}
+
+.rt30-stat-table strong {
+  color: var(--deep-blue);
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.rt30-stat-table span {
+  color: var(--muted);
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.rt30-axis-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.rt30-axis-grid article {
+  display: grid;
+  gap: 6px;
+  min-height: 132px;
+  padding: 16px;
+}
+
+.rt30-axis-grid strong {
+  color: var(--deep-blue);
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.rt30-axis-grid span,
+.rt30-world-list h3,
+.rt30-flow strong {
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.rt30-axis-grid small,
+.rt30-world-list p,
+.rt30-flow span {
+  color: var(--muted);
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.rt30-world-list {
+  display: grid;
+  gap: 12px;
+}
+
+.rt30-world-list article {
+  padding: 16px;
+}
+
+.rt30-world-list h3 {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+}
+
+.rt30-world-list p {
+  margin: 0;
+}
+
+.rt30-flow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rt30-flow li {
+  display: grid;
+  gap: 8px;
+  min-height: 136px;
+  padding: 16px;
+}
+
+.rt30-example code {
+  color: var(--deep-blue);
+  font-weight: 900;
+}
 .language-block h2 {
   margin: 0 0 14px;
   font-size: 1.35rem;
@@ -1456,6 +1613,10 @@ h1 {
   .intro-grid,
   .rt30-notes,
   .rt30-coloring,
+  .rt30-split,
+  .rt30-mini-model,
+  .rt30-axis-grid,
+  .rt30-flow,
   .ring-gallery,
   .puffology-hero,
   .rpg-shell,
