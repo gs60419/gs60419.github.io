@@ -35,6 +35,9 @@
         <a href="#what">核心概念</a>
         <a href="#geometry">幾何骨架</a>
         <a href="#axes">六軸語意</a>
+        <a href="#poles">不同極點</a>
+        <a href="#coloring">著色法</a>
+        <a href="#planes">三個平面</a>
         <a href="#workflow">AI 工作流</a>
       </section>
 
@@ -100,6 +103,61 @@
             <p>概念與關係完整，但可能缺少具體差異與現實支撐。</p>
           </article>
         </div>
+      </section>
+
+      <section class="rt30-deep-section" id="poles">
+        <div class="language-block zh">
+          <h2>不同極點：同一顆球，換一個北方</h2>
+          <p>互動頁裡的 <code>V1 頂</code>、<code>V2 頂</code>、<code>F1 頂</code> 不是普通鏡頭按鈕。它們是在幫你換觀察基準：同一個 RT30 結構，從不同頂點或不同面看下去，會看到不同的分層、對稱與壓力方向。</p>
+          <p>這一點很重要，因為 RT30 不是只有一個正面。當你把某個端點放到視覺上的北極，整個模型就會像重新排隊一樣，讓你看見「這條軸當主軸時，其他面如何圍繞它」。</p>
+        </div>
+        <div class="rt30-axis-grid">
+          <article><strong>V1</strong><span>預設極點</span><small>以第一個 V5 頂點作為北方，適合看基本緯帶與主軸分層。</small></article>
+          <article><strong>V2</strong><span>替代極點</span><small>換另一個 V5 頂點當北方，用來比較同一結構在不同軸端下的排列。</small></article>
+          <article><strong>F1</strong><span>面向視角</span><small>從某個菱形面正上方看，適合觀察一個張力面如何連到周圍邊與頂點。</small></article>
+        </div>
+      </section>
+
+      <section class="rt30-deep-section" id="coloring">
+        <div class="language-block zh">
+          <h2>不同著色法：把同一個結構讀成不同地圖</h2>
+          <p>互動頁的著色法不是單純換顏色，而是換「讀法」。彩虹適合辨識三十個面；緯帶適合看某個極點向外擴散的層次；立方體模式則把面分成體驗、工程、抽象三種視角。</p>
+        </div>
+        <div class="rt30-world-list">
+          <article>
+            <h3>彩虹</h3>
+            <p>30 個面各自不同顏色，最適合第一次找面、比對 F 標號、確認高亮有沒有落到正確位置。</p>
+          </article>
+          <article>
+            <h3>V1 緯帶</h3>
+            <p>以 V1 作為極點，從北到南分層。這像把球體切成幾圈，觀察問題距離主極點有多近。</p>
+          </article>
+          <article>
+            <h3>V2 緯帶</h3>
+            <p>換 V2 作為極點。它和 V1 緯帶的差異，能幫你看出「換一條軸當主角」後，面群如何重新排列。</p>
+          </article>
+          <article>
+            <h3>立方體</h3>
+            <p>用三世界讀法把面分成體驗、工程、抽象。這是最接近語義分析的著色法，能直接看問題偏向哪種視角。</p>
+          </article>
+          <article>
+            <h3>閃電</h3>
+            <p>強調特殊路徑與穿越感，適合看問題不是固定在某個面，而是沿著某條轉換路徑移動。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="rt30-deep-section rt30-split" id="planes">
+        <div class="language-block zh">
+          <h2>三個平面：把軸與軸的交會切開來看</h2>
+          <p>互動頁左側的切面區塊可以同時開三個平面：<code>P1</code>、<code>P2</code>、<code>P3</code>。每個平面由兩條軸決定，意思是：你可以指定兩個語意方向，直接看它們張開的截面如何穿過整顆 RT30。</p>
+          <p>這很適合拿來比較多組張力。例如一個問題同時有「差異 / 支撐」、「連結 / 流動」、「結構 / 核心」三組拉扯，就可以用三個平面把它們分開觀察，而不是全部混在同一張圖裡。</p>
+        </div>
+        <ol class="rt30-flow">
+          <li><strong>P1</strong><span>第一組切面，通常放最主要的問題張力。</span></li>
+          <li><strong>P2</strong><span>第二組切面，用來比較另一組軸是否支撐或干擾 P1。</span></li>
+          <li><strong>P3</strong><span>第三組切面，適合放補充條件、隱藏卡點或解法方向。</span></li>
+        </ol>
       </section>
 
       <section class="rt30-deep-section" id="workflow">
