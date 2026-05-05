@@ -32,16 +32,20 @@
       </section>
 
       <section class="rt30-detail-nav" aria-label="RT30 detailed sections">
-        <a href="#what">核心概念</a>
-        <a href="#geometry">幾何骨架</a>
-        <a href="#axes">六軸語意</a>
-        <a href="#poles">不同極點</a>
-        <a href="#coloring">著色法</a>
-        <a href="#planes">三個平面</a>
-        <a href="#workflow">AI 工作流</a>
+        <a href="#chapter-read">一、讀法入口</a>
+        <a href="#chapter-geometry">二、幾何結構</a>
+        <a href="#chapter-operate">三、互動操作</a>
+        <a href="#chapter-ai">四、AI 流程</a>
       </section>
 
-      <section class="rt30-deep-section" id="what">
+      <section class="rt30-chapter" id="chapter-read" aria-labelledby="chapter-read-title">
+        <div class="rt30-chapter-head">
+          <p>Chapter 01</p>
+          <h2 id="chapter-read-title">讀法入口</h2>
+          <span>先知道 RT30 為什麼不是分類表，而是把問題變成可觀察形狀的語義盤。</span>
+        </div>
+
+        <section class="rt30-deep-section" id="what">
         <div class="language-block zh">
           <h2>RT30 在做什麼</h2>
           <p>一般的分類表會把問題放進格子。RT30 比較像把問題放到一個可以旋轉的語義球體上，讓你看到它靠近哪幾條力量、卡在哪些張力面、正在往哪條路徑轉換。</p>
@@ -54,8 +58,16 @@
           <span>狀態解讀</span>
         </div>
       </section>
+      </section>
 
-      <section class="rt30-deep-section rt30-split" id="geometry">
+      <section class="rt30-chapter" id="chapter-geometry" aria-labelledby="chapter-geometry-title">
+        <div class="rt30-chapter-head">
+          <p>Chapter 02</p>
+          <h2 id="chapter-geometry-title">幾何結構</h2>
+          <span>這一章看 RT30 的硬骨架：三十面、六軸、3 價鞍點、5 價軸點與三個視角。</span>
+        </div>
+
+        <section class="rt30-deep-section rt30-split" id="geometry">
         <div class="language-block zh">
           <h2>幾何骨架</h2>
           <p>RT30 使用菱形三十面體作為骨架。它有 32 個頂點、60 條邊、30 個菱形面。這些不是裝飾數字，而是三種不同的思考位置。</p>
@@ -124,8 +136,16 @@
           </article>
         </div>
       </section>
+      </section>
 
-      <section class="rt30-deep-section" id="poles">
+      <section class="rt30-chapter" id="chapter-operate" aria-labelledby="chapter-operate-title">
+        <div class="rt30-chapter-head">
+          <p>Chapter 03</p>
+          <h2 id="chapter-operate-title">互動操作</h2>
+          <span>這一章對應互動頁真的做出來的玩法：換極點、換著色法、開三個切面。</span>
+        </div>
+
+        <section class="rt30-deep-section" id="poles">
         <div class="language-block zh">
           <h2>不同極點：同一顆球，換一個北方</h2>
           <p>互動頁裡的 <code>V1 頂</code>、<code>V3 頂</code>、<code>F1 頂</code> 不是普通鏡頭按鈕。它們是在幫你換觀察基準：同一個 RT30 結構，從不同頂點或不同面看下去，會看到不同的分層、對稱與壓力方向。</p>
@@ -180,8 +200,16 @@
           <li><strong>P3</strong><span>第三組切面，適合放補充條件、隱藏卡點或解法方向。</span></li>
         </ol>
       </section>
+      </section>
 
-      <section class="rt30-deep-section" id="workflow">
+      <section class="rt30-chapter" id="chapter-ai" aria-labelledby="chapter-ai-title">
+        <div class="rt30-chapter-head">
+          <p>Chapter 04</p>
+          <h2 id="chapter-ai-title">AI 分析流程</h2>
+          <span>最後看它怎麼和 AI 來回交換資料：基準、載入、高亮、匯出、解讀。</span>
+        </div>
+
+        <section class="rt30-deep-section" id="workflow">
         <div class="language-block zh">
           <h2>AI 工作流</h2>
           <p>互動頁真正好玩的地方，是它可以和 AI 來回接資料。先把 RT30 的基準結構匯出給 AI，讓 AI 知道目前的六軸與幾何位置；再把問題轉成 JSON，載回互動頁高亮；最後把高亮結果匯出，請 AI 轉回自然語言解讀。</p>
@@ -199,6 +227,7 @@
           <p>像 <code>Δ+×ψ+</code> 這種寫法，代表問題落在「差異推進」與「連結擴張」交會的面上。像 <code>π−</code> 則是支撐不足、容器崩解或存在條件受阻的端點。</p>
           <p>邊的格式會更像路徑，例如 <code>Δ+/{Δ+·π+·ψ+}</code>。前半是主要端點，後半是它通往的交會點，所以它描述的是問題正在怎麼轉換。</p>
         </div>
+      </section>
       </section>
     </main>
 
