@@ -1566,6 +1566,10 @@ h1 {
   gap: 12px;
 }
 
+.rt30-deep-section:not(.rt30-split) > .rt30-world-list {
+  margin-top: 18px;
+}
+
 .rt30-world-list article {
   padding: 16px;
 }
