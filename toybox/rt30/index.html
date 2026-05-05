@@ -3344,6 +3344,25 @@ function resolveRef(ref, symMap, axisMap){
       return faces.map(fi=>({type:'face', orig:fi}));
     }
     // 真的不存在（不同軸但幾何上不相鄰）
+    // 模糊備援：找含有任一指定 V5 的相鄰面
+    const specV5s = [];
+    if(va!==undefined) specV5s.push(va);
+    if(vb!==undefined) specV5s.push(vb);
+    if(specV5s.length===0) specV5s.push(...(axisMap[axisA]||[]), ...(axisMap[axisB]||[]));
+    const fuzzyFaces=[];
+    for(const fv5 of specV5s){
+      for(let ffi=0;ffi<rt30Faces.length;ffi++){
+        const [,ffb,,ffd]=rt30Faces[ffi];
+        if((ffb===fv5||ffd===fv5)&&!fuzzyFaces.includes(ffi)) fuzzyFaces.push(ffi);
+      }
+    }
+    if(fuzzyFaces.length>0){
+      const warnMsg=`⚠ 面不存在：「${r}」，改顯示相鄰的 ${fuzzyFaces.length} 個面供參考`;
+      return [
+        {type:'face', orig:fuzzyFaces[0], warn:warnMsg},
+        ...fuzzyFaces.slice(1).map(ffi=>({type:'face', orig:ffi}))
+      ];
+    }
     const allV5 = [...(axisMap[axisA]||[]), ...(axisMap[axisB]||[])];
     return [{type:'face_missing', v5list:allV5, ref:r}];
   }
@@ -3387,7 +3406,30 @@ function resolveRef(ref, symMap, axisMap){
         if(ei>=0 && !matchedEdges.includes(ei)) matchedEdges.push(ei);
       }
     }
-    if(matchedEdges.length===0) return [{err:`邊找不到：「${r}」`}];
+    if(matchedEdges.length===0){
+      // 模糊備援：找所有從 v5sym 延伸的邊（不限其他V5配對）
+      const fuzzyEdges = [];
+      for(const v5orig of v5candidates){
+        for(let fv3=0;fv3<20;fv3++){
+          const fNbrs=[];
+          for(const [fa,fb] of rt30Edges){
+            if(fa===fv3&&isV5(fb)) fNbrs.push(fb);
+            else if(fb===fv3&&isV5(fa)) fNbrs.push(fa);
+          }
+          if(!fNbrs.includes(v5orig)) continue;
+          const fei=findEdgeByEnds(v5orig, fv3);
+          if(fei>=0 && !fuzzyEdges.includes(fei)) fuzzyEdges.push(fei);
+        }
+      }
+      if(fuzzyEdges.length>0){
+        const warnMsg=`⚠ 邊找不到：「${r}」，改顯示來自 ${v5sym} 的所有邊（${fuzzyEdges.length} 條）供參考`;
+        return [
+          {type:'edge', orig:fuzzyEdges[0], warn:warnMsg},
+          ...fuzzyEdges.slice(1).map(ei=>({type:'edge', orig:ei}))
+        ];
+      }
+      return [{err:`邊找不到：「${r}」`}];
+    }
     return matchedEdges.map(ei=>({type:'edge', orig:ei}));
   }
 
@@ -3398,7 +3440,31 @@ function resolveRef(ref, symMap, axisMap){
     const v5s = parts.map(p=>symMap[p.trim()]);
     if(v5s.some(v=>v===undefined)) return [{err:`V3符號找不到：「${r}」`}];
     const v3orig = findV3ByNeighbors(...v5s);
-    if(v3orig<0) return [{err:`V3不存在：「${r}」`}];
+    if(v3orig<0){
+      // 模糊備援：找任意 2/3 V5 相符的 V3
+      const seen=new Set(), fuzzyV3s=[];
+      for(let pi=0;pi<3;pi++) for(let pj=pi+1;pj<3;pj++){
+        const ka=Math.min(v5s[pi],v5s[pj]), kb=Math.max(v5s[pi],v5s[pj]);
+        const key=`${ka}-${kb}`; if(seen.has(key)) continue; seen.add(key);
+        for(let fv3=0;fv3<20;fv3++){
+          const fNbrs=[];
+          for(const [fa,fb] of rt30Edges){
+            if(fa===fv3&&isV5(fb)) fNbrs.push(fb);
+            else if(fb===fv3&&isV5(fa)) fNbrs.push(fa);
+          }
+          if(fNbrs.includes(v5s[pi])&&fNbrs.includes(v5s[pj])&&!fuzzyV3s.includes(fv3))
+            fuzzyV3s.push(fv3);
+        }
+      }
+      if(fuzzyV3s.length>0){
+        const warnMsg=`⚠ V3不存在：「${r}」，改顯示 2/3 V5 相符的 ${fuzzyV3s.length} 個頂點供參考`;
+        return [
+          {type:'vertex', orig:fuzzyV3s[0], warn:warnMsg},
+          ...fuzzyV3s.slice(1).map(orig=>({type:'vertex', orig}))
+        ];
+      }
+      return [{err:`V3不存在：「${r}」`}];
+    }
     return [{type:'vertex', orig:v3orig}];
   }
 
@@ -3407,6 +3473,15 @@ function resolveRef(ref, symMap, axisMap){
   const bothPoles = axisMap[r];
   if(bothPoles && bothPoles.length>0)
     return [...new Set(bothPoles)].map(orig=>({type:'vertex', orig}));
+  // 模糊備援：顯示所有已定義的 V5 頂點供參考
+  const definedV5s=[...new Set(Object.values(symMap))].filter(isV5);
+  if(definedV5s.length>0){
+    const warnMsg=`⚠ 符號找不到：「${r}」，顯示所有已定義的 V5 頂點（${definedV5s.length} 個）供參考`;
+    return [
+      {type:'vertex', orig:definedV5s[0], warn:warnMsg},
+      ...definedV5s.slice(1).map(orig=>({type:'vertex', orig}))
+    ];
+  }
   return [{err:`符號找不到：「${r}」`}];
 }
 
@@ -3444,6 +3519,7 @@ function resolveItem(item, symMap, axisMap){
   [...(item.vertices||[]), ...(item.faces||[])].forEach(ref=>{
     resolveRef(String(ref), symMap, axisMap).forEach(r=>{
       if(r.err){ warns.push(r.err); return; }
+      if(r.warn) warns.push(r.warn);
       if(r.type==='face')        { if(!faces.includes(r.orig)) faces.push(r.orig); }
       else if(r.type==='vertex') { if(!vertices.includes(r.orig)) vertices.push(r.orig); }
       else if(r.type==='face_missing'){
@@ -3458,6 +3534,7 @@ function resolveItem(item, symMap, axisMap){
     const {refStr, mode} = normalizeEdgeRef(raw);
     resolveRef(refStr, symMap, axisMap).forEach(r=>{
       if(r.err){ warns.push(r.err); return; }
+      if(r.warn) warns.push(r.warn);
       if(r.type==='edge'){
         if(!edges.includes(r.orig)) edges.push(r.orig);
         if(mode) edgeModes[r.orig] = mode;
@@ -3841,27 +3918,27 @@ function buildInstructions(){
     return `${SPECTRA_NAMES[i]}（${a}／${b}）：${a}${desc(a)}　${b}${desc(b)}`;
   }).join('\n');
 
-  return `【RT30 幾何分析 — 只能輸出 JSON】
-唯一任務：將問題轉為 RT30 幾何結構。輸出從 [ 開始、到 ] 結束，不含任何其他文字。
-若「---」後方沒有問題，請回覆：「請在此輸入要分析的問題」，不輸出 JSON。
+  return `使用者正在使用「RT30 語意幾何分析系統」，希望將問題轉化為幾何結構後在球體視覺化介面上呈現。請協助將以下問題轉換為系統所使用的 RT30 格式（JSON 陣列）。
 
-【六利語意軸】
+輸出請直接從 [ 開始、到 ] 結束，無需任何說明文字。
+若「---」後方沒有問題，請回覆「請在此輸入要分析的問題」，不輸出 JSON。
+
+【六利語意軸（本次設定）】
 ${spectraLines}
-極性：+ 增強/主動　− 削弱/受阻
+極性：+ 增強 / 主動　− 削弱 / 受阻
 
-【幾何結構規則】
-面(faces)　同極性共鳴 → "${ex1}+×${ex3}+" 或 "${ex1}−×${ex3}−"　⛔禁止異極性
-頂點(vertices)　單軸極端或光譜張力 → "${ex1}+" 或 ["${ex1}+","${ex2}−"]
+【格式說明】
+面(faces)　兩軸同向共鳴 → "${ex1}+×${ex3}+" 或 "${ex1}−×${ex3}−"（同極性才合法）
+頂點(vertices)　單軸極端或張力對 → "${ex1}+" 或 ["${ex1}+","${ex2}−"]
 邊(edges)　光譜內過渡 → {"type":"${ex1}+/{${ex1}+·${ex2}+·${ex3}−}","mode":"compensation|expansion|translation|collapse"}
 
-【輸出規則】
-每個問題先輸出 1 個 parent item（母問題），再輸出 2～4 個子問題 item：
-・parent item：{"q":N,"type":"parent","title":"母問題標題","split_reason":"說明為何這樣拆分"}
-・子問題 item：{"q":N,"sq":1,"title":"子問題標題","faces":[...],"world":"..."}
-・子問題優先混合多種結構（面+頂點、面+邊等），避免只有單一結構
+每個問題請先輸出一個母問題說明，再輸出 2～4 個子問題：
+・母問題：{"q":N,"type":"parent","title":"母問題標題","split_reason":"拆分說明"}
+・子問題：{"q":N,"sq":1,"title":"子問題標題","faces":[...],"world":"..."}
+・子問題盡量混合不同結構（面+頂點、面+邊等），避免只用單一結構
 ・面落在單一視角時加 "world"：體驗(缺ηΩ) ／ 工程(缺ψφ) ／ 抽象(缺Δπ)
 
-【範例】
+【格式範例】
 [
   {"q":1,"type":"parent","title":"主要問題描述","split_reason":"從差異、結構、關係三個維度切入"},
   {"q":1,"sq":1,"title":"爆發缺支撐","faces":["${ex1}+×${ex3}+"],"vertices":["${ex2}−"],"world":"體驗"},
@@ -3870,7 +3947,7 @@ ${spectraLines}
   {"q":2,"sq":1,"title":"光譜拉扯","vertices":["${ex1}+","${ex2}−"],"edges":[{"type":"${ex1}+/{${ex1}+·${ex3}+·${ex2}−}","mode":"translation"}]}
 ]
 
-以下是要轉換的問題，請逐一處理並合併輸出為單一 JSON 陣列：
+以下是需要轉換的問題，請逐一處理並合併為單一 JSON 陣列輸出：
 ---
 `;
 }
@@ -3982,6 +4059,41 @@ function generateBaselineExport(seg=0){
 }
 
 // ── 匯出 Modal 事件 ──
+// ── generateBaselineExport v2 壓縮版 ──
+generateBaselineExport = function(seg=0){
+  const symMap = buildSymToOrig();
+  const hasSymbols = Object.keys(symMap).length > 0;
+  const axesOut = {};
+  axisPairs.forEach(([a,b], idx)=>{
+    axesOut[axisLabels[idx]] = axisSymbolState[idx] || axisLabels[idx];
+  });
+  const facesOut = faceSort.map(d => faceSymStr(d.orig));
+  const v3sOut = vertSort
+    .filter(d => !isV5(d.orig))
+    .map(d => {
+      const orig = d.orig;
+      const conn = [];
+      for(const [ea,eb] of rt30Edges){
+        if(ea===orig && isV5(eb)) conn.push(eb);
+        else if(eb===orig && isV5(ea)) conn.push(ea);
+      }
+      return conn.sort((x,y)=>dispIdx[x]-dispIdx[y]).map(v=>v5SymOrLabel(v)).join('.');
+    });
+  const J = JSON.stringify.bind(JSON);
+  const lines = [
+    '{',
+    '  "_instructions": ' + J(buildInstructions()) + ',',
+    '  "description": "RT30 基準結構 v2-compressed",',
+    '  "format": "面=主軸對(A+xB+) V3=三連V5(A+.B+.C-) 邊可由V3推算 軸:{A1:符號,...}",',
+    '  "symbolsAssigned": ' + hasSymbols + ',',
+    '  "axes": ' + J(axesOut) + ',',
+    '  "faces": ' + J(facesOut) + ',',
+    '  "v3s": ' + J(v3sOut),
+    '}'
+  ];
+  return lines.join('\n');
+};
+
 function refreshExpOutput(){
   document.getElementById('exp-output').value = generateProblemExport();
 }
@@ -4576,84 +4688,4 @@ function applyLang(){
         <h3>🗺 2D Net (Unfolded)</h3>
         <div class="help-row"><span class="help-key">🗺 Net</span><span class="help-desc">Switch to 2D flat net (press <em>🌐 3D</em> to return)</span></div>
         <div class="help-row"><span class="help-key">Layout</span><span class="help-desc">5 columns × 6 rows of rhombuses; top 3 rows = north hemisphere</span></div>
-        <div class="help-row"><span class="help-key">Highlights</span><span class="help-desc"><b>All rhombuses sharing a highlighted element light up</b> simultaneously</span></div>
-        <div class="help-row"><span class="help-key">Click</span><span class="help-desc">Faces/edges/vertices on the net are clickable and synced with the table</span></div>
-      </div>
-      <div class="help-sec">
-        <h3>📋 Problem List</h3>
-        <div style="background:#2a1a00;border:1px solid #f59e0b;border-radius:4px;padding:8px 12px;margin-bottom:10px;font-size:12.5px;color:#fcd34d;line-height:1.7">
-          ⚠️ <b>Do this first:</b><br>
-          Go to the <em>Axis</em> tab on the right → assign a semantic symbol (Δ π ψ φ η Ω) to each of the 6 axes.<br>
-          Without symbols set, AI results cannot be mapped to the correct geometry.
-        </div>
-        <div class="help-row"><span class="help-key">📋 Load List</span><span class="help-desc">Paste JSON problem data using axis symbols (e.g. <em>Δ+×η−</em>) to describe faces/edges/vertices</span></div>
-        <div class="help-row"><span class="help-key">List panel</span><span class="help-desc">After loading, a panel appears — click any item to highlight its elements</span></div>
-        <div class="help-row"><span class="help-key">↓ Export</span><span class="help-desc">Export current highlights as JSON for reloading or further AI analysis</span></div>
-      </div>
-      <div class="help-sec">
-        <h3>✦ Cutting Planes</h3>
-        <div class="help-row"><span class="help-key">Planes section</span><span class="help-desc">Expand at the bottom of the panel, select two axes to display a cross-section</span></div>
-        <div class="help-row"><span class="help-key">Up to 3</span><span class="help-desc">P1 / P2 / P3 can be shown simultaneously</span></div>
-      </div>`;
-
-  const helpBody = document.querySelector('#modal-help .help-body');
-  if(helpBody) helpBody.innerHTML = uiLang==='zh' ? helpBodyZh : helpBodyEn;
-
-  // ── 載入清單 format hint ──
-  const fmtHint = document.querySelector('#modal-load .modal-hint');
-  if(fmtHint) fmtHint.textContent = uiLang==='zh'
-    ? '面   "Δ×η"  或  "Δ+×η−"   ← 兩個主軸用 × 分隔（+/− 可省略）\n頂點  "Δ+"               ← V5 軸端點\n邊   "π−/η−"            ← V5 / 另一相鄰 V5（找共同 V3）\n陣列  [ {...}, {...} ]    ← 多題一起貼，全部高亮'
-    : 'Face   "Δ×η"  or  "Δ+×η−"   ← two axes separated by × (+/− optional)\nVertex "Δ+"               ← V5 axis endpoint\nEdge   "π−/η−"            ← V5 / another adjacent V5 (shared V3)\nArray  [ {...}, {...} ]    ← multiple items, all highlighted';
-
-  // ── AI 提示詞 block ──
-  const promptBlock = document.getElementById('ai-prompt-block');
-  if(promptBlock){
-    const zhPrompt = promptBlock.dataset.zh || promptBlock.innerText;
-    if(!promptBlock.dataset.zh) promptBlock.dataset.zh = promptBlock.innerText;
-    const enPrompt = `Analyze the following problems and output a JSON array, one object per problem.
-
-Six semantic axes (operational grammar):
-  Δ: Find differences    π: Find support      ψ: See connections
-  φ: Track flow          η: Decompose struct  Ω: Distill essence
-
-Polarity:
-  Δ+ more difference (disruption/breakthrough)   Δ− less difference (convergence)
-  π+ more stability (consolidate/reinforce)       π− less stability (collapse)
-  ψ+ more connection (collaboration/expand)       ψ− less connection (isolation)
-  φ+ flow smooth (well-regulated)                 φ− flow blocked (stuck/dysregulated)
-  η+ structure forming (reorganized)              η− structure collapsing (dissolved)
-  Ω+ compression success (simplified/clear)       Ω− compression failed (chaotic/overloaded)
-
-[faces] Tension between two operations → "A×B"
-[edges] Transition between operations, with mode:
-  compensation  expansion  translation  collapse
-[vertices] Single operation at extreme → "A+" or "A−"
-
-Output format (omit unused keys):
-[
-  {
-    "title": "System Failure",
-    "faces": ["Δ×π", "η×Ω"],
-    "edges": [{"type":"π/Δ","mode":"collapse"}],
-    "vertices": ["π−"]
-  }
-]
-
-Problems to analyze:
-(paste your problems here)`;
-    promptBlock.innerText = uiLang==='zh' ? promptBlock.dataset.zh : enPrompt;
-  }
-
-  // Rebuild table for i18n headers
-  buildTable();
-}
-
-document.getElementById('b-lang').addEventListener('click', () => {
-  uiLang = uiLang==='zh' ? 'en' : 'zh';
-  applyLang();
-});
-
-</script>
-
-</body>
-</html>
+       
