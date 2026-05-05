@@ -3340,24 +3340,46 @@ function resolveRef(ref, symMap, axisMap){
       return faces.map(fi=>({type:'face', orig:fi}));
     }
     // 真的不存在（不同軸但幾何上不相鄰）
-    // 模糊備援：找含有任一指定 V5 的相鄰面
-    const specV5s = [];
-    if(va!==undefined) specV5s.push(va);
-    if(vb!==undefined) specV5s.push(vb);
-    if(specV5s.length===0) specV5s.push(...(axisMap[axisA]||[]), ...(axisMap[axisB]||[]));
-    const fuzzyFaces=[];
-    for(const fv5 of specV5s){
-      for(let ffi=0;ffi<rt30Faces.length;ffi++){
-        const [,ffb,,ffd]=rt30Faces[ffi];
-        if((ffb===fv5||ffd===fv5)&&!fuzzyFaces.includes(ffi)) fuzzyFaces.push(ffi);
+    // 路徑備援：BFS 找 V5 間最短路徑，沿途面高亮成帶狀
+    const startV5s = va!==undefined ? [va] : (axisMap[axisA]||[]);
+    const endV5s   = vb!==undefined ? [vb] : (axisMap[axisB]||[]);
+    let bestPath = null;
+    for(const sv of startV5s){
+      for(const ev of endV5s){
+        if(sv===ev) continue;
+        const queue=[[sv]], visited=new Set([sv]);
+        let found=null;
+        bfsLoop: while(queue.length>0){
+          const path=queue.shift(), cur=path[path.length-1];
+          const nbrs=[];
+          for(let fi=0;fi<rt30Faces.length;fi++){
+            const [,fb,,fd]=rt30Faces[fi];
+            if(fb===cur && !nbrs.includes(fd)) nbrs.push(fd);
+            else if(fd===cur && !nbrs.includes(fb)) nbrs.push(fb);
+          }
+          for(const nbr of nbrs){
+            if(visited.has(nbr)) continue;
+            const np=[...path, nbr];
+            if(nbr===ev){ found=np; break bfsLoop; }
+            visited.add(nbr); queue.push(np);
+          }
+        }
+        if(found && (!bestPath || found.length<bestPath.length)) bestPath=found;
       }
     }
-    if(fuzzyFaces.length>0){
-      const warnMsg=`⚠ 面不存在：「${r}」，改顯示相鄰的 ${fuzzyFaces.length} 個面供參考`;
-      return [
-        {type:'face', orig:fuzzyFaces[0], warn:warnMsg},
-        ...fuzzyFaces.slice(1).map(ffi=>({type:'face', orig:ffi}))
-      ];
+    if(bestPath){
+      const pathFaces=[];
+      for(let pi=0;pi<bestPath.length-1;pi++){
+        const fi=findFaceByV5Pair(bestPath[pi], bestPath[pi+1]);
+        if(fi>=0 && !pathFaces.includes(fi)) pathFaces.push(fi);
+      }
+      if(pathFaces.length>0){
+        const warnMsg=`⚠ 面不存在：「${r}」，改顯示 ${bestPath.length-1} 步路徑帶（${pathFaces.length} 個面）供參考`;
+        return [
+          {type:'face', orig:pathFaces[0], warn:warnMsg},
+          ...pathFaces.slice(1).map(fi=>({type:'face', orig:fi}))
+        ];
+      }
     }
     const allV5 = [...(axisMap[axisA]||[]), ...(axisMap[axisB]||[])];
     return [{type:'face_missing', v5list:allV5, ref:r}];
@@ -4053,6 +4075,74 @@ function generateBaselineExport(seg=0){
   }
   return JSON.stringify(out, null, 2);
 }
+
+// ── buildInstructions v2：動態範例 + 修正規則說明 ──
+buildInstructions = function(){
+  const s = axisSymbolState;
+  const desc = sym => SYM_DESC[sym]||'';
+  const ex = s.filter(Boolean);
+  const ex1=ex[0]||'A', ex2=ex[1]||'B', ex3=ex[2]||'C';
+  const spectraLines = SPECTRA_PAIRS.map((pair,i)=>{
+    const [a,b]=pair;
+    return `${SPECTRA_NAMES[i]}（${a}／${b}）：${a}${desc(a)}　${b}${desc(b)}`;
+  }).join('\n');
+
+  // 從真實 faces 清單各取一個同極性 & 跨極性範例
+  const allFaceStrs = faceSort.map(d=>faceSymStr(d.orig));
+  const samePolFace = allFaceStrs.find(f=>{const m=f.match(/([+−])[×x*][^+−]*([+−])/);return m&&m[1]===m[2];}) || `${ex1}+×${ex3}+`;
+  const crossPolFace= allFaceStrs.find(f=>{const m=f.match(/([+−])[×x*][^+−]*([+−])/);return m&&m[1]!==m[2];}) || `${ex1}+×${ex2}−`;
+
+  // 從真實 v3s 推合法邊範例
+  const getEdge=(v3orig,pivot)=>{
+    const conn=[];
+    for(const [ea,eb] of rt30Edges){
+      if(ea===v3orig&&isV5(eb)) conn.push(eb);
+      else if(eb===v3orig&&isV5(ea)) conn.push(ea);
+    }
+    const syms=conn.sort((x,y)=>dispIdx[x]-dispIdx[y]).map(v=>v5SymOrLabel(v));
+    return syms.length===3 ? `${syms[pivot]}/{${syms.join('·')}}` : null;
+  };
+  const v3list=vertSort.filter(d=>!isV5(d.orig));
+  let exEdge1=`${ex1}+/{${ex1}+·${ex2}+·${ex3}−}`, exEdge2=`${ex2}+/{${ex2}+·${ex3}+·${ex1}−}`;
+  if(v3list.length>0){const e=getEdge(v3list[0].orig,0);if(e)exEdge1=e;}
+  if(v3list.length>1){const e=getEdge(v3list[1].orig,1);if(e)exEdge2=e;}
+  const exVtx=ex2?`${ex2}−`:'B−';
+
+  return `使用者正在使用「RT30 語意幾何分析系統」，希望將問題轉化為幾何結構後在球體視覺化介面上呈現。請協助將以下問題轉換為系統所使用的 RT30 格式（JSON 陣列）。
+
+輸出請直接從 [ 開始、到 ] 結束，無需任何說明文字。
+若「---」後方沒有問題，請回覆「請在此輸入要分析的問題」，不輸出 JSON。
+
+【六利語意軸（本次設定）】
+${spectraLines}
+極性：+ 增強 / 主動　− 削弱 / 受阻
+
+【格式說明】
+面(faces)　請從上方 faces 清單選取（含同極性共振與跨極性張力，以清單為準）
+頂點(vertices)　單軸極端或張力對 → "${ex1}+" 或 ["${ex1}+","${ex2}−"]
+邊(edges)　光譜內過渡 → {"type":"${ex1}+/{${ex1}+·${ex2}+·${ex3}−}","mode":"..."}
+　　edges 的 {…} 必須來自 v3s 清單中的三連點；不可自行組合不存在的三連點
+　　mode：expansion＝語義往外展開　translation＝換框架轉譯　compensation＝補足支撐缺口　collapse＝語義壓縮坍縮
+
+每個問題請先輸出一個母問題說明，再輸出 2～4 個子問題：
+・母問題：{"q":N,"type":"parent","title":"母問題標題","split_reason":"拆分說明"}
+・子問題：{"q":N,"sq":1,"title":"子問題標題","faces":[...],"world":"..."}
+・子問題盡量混合不同結構（面+頂點、面+邊等），避免只用單一結構
+・面落在單一視角時加 "world"：體驗(缺ηΩ) ／ 工程(缺ψφ) ／ 抽象(缺Δπ)
+
+【格式範例】（以下結構均來自當前 faces/v3s 清單）
+[
+  {"q":1,"type":"parent","title":"主要問題描述","split_reason":"從差異、結構、關係三個維度切入"},
+  {"q":1,"sq":1,"title":"同向共振","faces":["${samePolFace}"],"vertices":["${exVtx}"],"world":"體驗"},
+  {"q":1,"sq":2,"title":"跨極張力","faces":["${crossPolFace}"],"edges":[{"type":"${exEdge1}","mode":"compensation"}],"world":"工程"},
+  {"q":2,"type":"parent","title":"第二個問題","split_reason":"分為張力面與過渡路徑"},
+  {"q":2,"sq":1,"title":"光譜拉扯","vertices":["${ex1}+","${ex2}−"],"edges":[{"type":"${exEdge2}","mode":"translation"}]}
+]
+
+以下是需要轉換的問題，請逐一處理並合併為單一 JSON 陣列輸出：
+---
+`;
+};
 
 // ── 匯出 Modal 事件 ──
 // ── generateBaselineExport v2 壓縮版 ──
