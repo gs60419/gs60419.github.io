@@ -4093,7 +4093,6 @@ generateBaselineExport = function(seg=0){
   ];
   return lines.join('\n');
 };
-
 function refreshExpOutput(){
   document.getElementById('exp-output').value = generateProblemExport();
 }
@@ -4688,4 +4687,84 @@ function applyLang(){
         <h3>🗺 2D Net (Unfolded)</h3>
         <div class="help-row"><span class="help-key">🗺 Net</span><span class="help-desc">Switch to 2D flat net (press <em>🌐 3D</em> to return)</span></div>
         <div class="help-row"><span class="help-key">Layout</span><span class="help-desc">5 columns × 6 rows of rhombuses; top 3 rows = north hemisphere</span></div>
-       
+        <div class="help-row"><span class="help-key">Highlights</span><span class="help-desc"><b>All rhombuses sharing a highlighted element light up</b> simultaneously</span></div>
+        <div class="help-row"><span class="help-key">Click</span><span class="help-desc">Faces/edges/vertices on the net are clickable and synced with the table</span></div>
+      </div>
+      <div class="help-sec">
+        <h3>📋 Problem List</h3>
+        <div style="background:#2a1a00;border:1px solid #f59e0b;border-radius:4px;padding:8px 12px;margin-bottom:10px;font-size:12.5px;color:#fcd34d;line-height:1.7">
+          ⚠️ <b>Do this first:</b><br>
+          Go to the <em>Axis</em> tab on the right → assign a semantic symbol (Δ π ψ φ η Ω) to each of the 6 axes.<br>
+          Without symbols set, AI results cannot be mapped to the correct geometry.
+        </div>
+        <div class="help-row"><span class="help-key">📋 Load List</span><span class="help-desc">Paste JSON problem data using axis symbols (e.g. <em>Δ+×η−</em>) to describe faces/edges/vertices</span></div>
+        <div class="help-row"><span class="help-key">List panel</span><span class="help-desc">After loading, a panel appears — click any item to highlight its elements</span></div>
+        <div class="help-row"><span class="help-key">↓ Export</span><span class="help-desc">Export current highlights as JSON for reloading or further AI analysis</span></div>
+      </div>
+      <div class="help-sec">
+        <h3>✦ Cutting Planes</h3>
+        <div class="help-row"><span class="help-key">Planes section</span><span class="help-desc">Expand at the bottom of the panel, select two axes to display a cross-section</span></div>
+        <div class="help-row"><span class="help-key">Up to 3</span><span class="help-desc">P1 / P2 / P3 can be shown simultaneously</span></div>
+      </div>`;
+
+  const helpBody = document.querySelector('#modal-help .help-body');
+  if(helpBody) helpBody.innerHTML = uiLang==='zh' ? helpBodyZh : helpBodyEn;
+
+  // ── 載入清單 format hint ──
+  const fmtHint = document.querySelector('#modal-load .modal-hint');
+  if(fmtHint) fmtHint.textContent = uiLang==='zh'
+    ? '面   "Δ×η"  或  "Δ+×η−"   ← 兩個主軸用 × 分隔（+/− 可省略）\n頂點  "Δ+"               ← V5 軸端點\n邊   "π−/η−"            ← V5 / 另一相鄰 V5（找共同 V3）\n陣列  [ {...}, {...} ]    ← 多題一起貼，全部高亮'
+    : 'Face   "Δ×η"  or  "Δ+×η−"   ← two axes separated by × (+/− optional)\nVertex "Δ+"               ← V5 axis endpoint\nEdge   "π−/η−"            ← V5 / another adjacent V5 (shared V3)\nArray  [ {...}, {...} ]    ← multiple items, all highlighted';
+
+  // ── AI 提示詞 block ──
+  const promptBlock = document.getElementById('ai-prompt-block');
+  if(promptBlock){
+    const zhPrompt = promptBlock.dataset.zh || promptBlock.innerText;
+    if(!promptBlock.dataset.zh) promptBlock.dataset.zh = promptBlock.innerText;
+    const enPrompt = `Analyze the following problems and output a JSON array, one object per problem.
+
+Six semantic axes (operational grammar):
+  Δ: Find differences    π: Find support      ψ: See connections
+  φ: Track flow          η: Decompose struct  Ω: Distill essence
+
+Polarity:
+  Δ+ more difference (disruption/breakthrough)   Δ− less difference (convergence)
+  π+ more stability (consolidate/reinforce)       π− less stability (collapse)
+  ψ+ more connection (collaboration/expand)       ψ− less connection (isolation)
+  φ+ flow smooth (well-regulated)                 φ− flow blocked (stuck/dysregulated)
+  η+ structure forming (reorganized)              η− structure collapsing (dissolved)
+  Ω+ compression success (simplified/clear)       Ω− compression failed (chaotic/overloaded)
+
+[faces] Tension between two operations → "A×B"
+[edges] Transition between operations, with mode:
+  compensation  expansion  translation  collapse
+[vertices] Single operation at extreme → "A+" or "A−"
+
+Output format (omit unused keys):
+[
+  {
+    "title": "System Failure",
+    "faces": ["Δ×π", "η×Ω"],
+    "edges": [{"type":"π/Δ","mode":"collapse"}],
+    "vertices": ["π−"]
+  }
+]
+
+Problems to analyze:
+(paste your problems here)`;
+    promptBlock.innerText = uiLang==='zh' ? promptBlock.dataset.zh : enPrompt;
+  }
+
+  // Rebuild table for i18n headers
+  buildTable();
+}
+
+document.getElementById('b-lang').addEventListener('click', () => {
+  uiLang = uiLang==='zh' ? 'en' : 'zh';
+  applyLang();
+});
+
+</script>
+
+</body>
+</html>
