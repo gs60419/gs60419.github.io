@@ -1437,6 +1437,66 @@ tr[data-orig] { cursor:pointer; }
 }
 .legend span { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; vertical-align:middle; }
 
+/* ── 統一歷史面板 ── */
+#unified-hist {
+  font-size:12px; border-top:1px solid #1e2a3a;
+  max-height:280px; overflow-y:auto;
+  flex-shrink:0;
+}
+#unified-hist::-webkit-scrollbar { width:4px; }
+#unified-hist::-webkit-scrollbar-track { background:#0a1220; }
+#unified-hist::-webkit-scrollbar-thumb { background:#2a3a50; border-radius:2px; }
+.uh-header { display:flex; align-items:center; padding:4px 8px; background:#0a1220; gap:4px; }
+.uh-header-title { flex:1; color:#64748b; font-size:11px; }
+.uh-entry { border-bottom:1px solid #0f1e30; }
+.uh-loaded { background:#060e1a; }
+.uh-entry-hdr { display:flex; align-items:center; gap:4px; padding:4px 6px; cursor:default; }
+.uh-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+.uh-title { flex:1; color:#94a3b8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12px; }
+.uh-loaded .uh-title { color:#cbd5e1; }
+.uh-icon-btn { background:transparent; border:1px solid #334155; color:#64748b; border-radius:3px; padding:1px 4px; cursor:pointer; font-size:11px; flex-shrink:0; }
+.uh-icon-btn:hover { border-color:#60a5fa; color:#60a5fa; }
+.uh-del-btn:hover { border-color:#f87171!important; color:#f87171!important; }
+.uh-focus-on { border-color:#a78bfa!important; color:#a78bfa!important; }
+.uh-load-btn { background:#0e2040; border:1px solid #3b82f6; color:#60a5fa; border-radius:3px; padding:1px 6px; cursor:pointer; font-size:11px; flex-shrink:0; }
+.uh-load-btn:hover { background:#1a3060; }
+.uh-body { background:#040b14; border-top:1px solid #0f1e30; }
+.uh-show-all { padding:5px 10px; color:#34d399; font-size:11px; cursor:pointer; }
+.uh-show-all:hover, .uh-show-all.li-active { background:#0e2a1c; color:#6ee7b7; }
+.uh-empty { padding:8px 10px; color:#374151; font-size:11px; }
+#unified-hist .list-parent { padding-left:12px; }
+#unified-hist .list-item { padding-left:20px; }
+
+/* ── 圖層面板 ── */
+#layers-panel {
+  padding: 4px 8px 6px;
+  background: #0a1628;
+  border-bottom: 1px solid #1e3a5a;
+  font-size: 12px;
+}
+.lp-row {
+  display: flex; align-items: center; gap: 5px;
+  padding: 3px 0; border-bottom: 1px solid #0f2040;
+}
+.lp-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.lp-title { flex: 1; color: #cbd5e1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lp-btn {
+  background: transparent; border: 1px solid #334155;
+  color: #94a3b8; border-radius: 3px;
+  padding: 1px 5px; cursor: pointer; font-size: 11px; flex-shrink: 0;
+}
+.lp-btn:hover { border-color: #60a5fa; color: #60a5fa; }
+.lp-del:hover { border-color: #f87171 !important; color: #f87171 !important; }
+#lp-clr-all {
+  width: 100%; margin-top: 5px; padding: 3px;
+  background: transparent; border: 1px solid #f87171;
+  color: #f87171; border-radius: 4px; font-size: 11px; cursor: pointer;
+}
+#lp-clr-all:hover { background: #2a1010; }
+
 /* ── 問題清單 banner ── */
 #list-banner {
   padding:7px 14px;
@@ -1775,19 +1835,18 @@ tr[data-orig] { cursor:pointer; }
       <button class="btn sym-pre" data-sym="Ω" data-tip="Ω 提煉核心">Ω</button>
       <button class="btn sym-pre" id="b-sym-clr" data-sym="" data-tip="清除所有符號" style="color:#6b7280;border-color:#6b7280">✕</button>
     </div>
-    <div style="display:flex;gap:3px;width:100%;margin-top:3px">
-      <select id="hist-select" style="flex:1;background:#1e2a3a;color:#94a3b8;border:1px solid #334155;border-radius:4px;font-size:12px;padding:2px 4px;min-width:0"></select>
-      <button id="hist-del" class="btn" style="color:#f87171;border-color:#f87171;padding:2px 6px;font-size:12px" title="刪除選取的這筆">✕</button>
-      <button id="hist-clear" class="btn" style="color:#f87171;border-color:#f87171;padding:2px 6px;font-size:12px" title="清空全部歷史">🗑</button>
-    </div>
   </div>
-  <div id="list-banner" style="display:none">
-    <button id="list-banner-toggle">▶</button>
-    <span style="color:#34d399">📋</span>
-    <span id="list-banner-title"></span>
-    <button class="btn" id="b-unload" style="font-size:11px;padding:2px 8px;margin-left:auto;border-color:#f87171;color:#f87171">✕ 卸載</button>
-  </div>
-  <div id="list-panel"></div>
+  <!-- 統一歷史面板 -->
+  <div id="unified-hist"></div>
+  <!-- 保留隱藏元素供舊事件監聽器使用 -->
+  <select id="hist-select" style="display:none"></select>
+  <button id="hist-del" style="display:none"></button>
+  <button id="hist-clear" style="display:none"></button>
+  <div id="layers-panel" style="display:none"></div>
+  <div id="list-banner" style="display:none!important"><button id="list-banner-toggle"></button><span id="list-banner-title"></span></div>
+  <div id="list-panel" style="display:none"></div>
+  <button id="btn-focus" style="display:none">🔍 聚焦</button>
+  <button id="b-unload" style="display:none">✕ 卸載</button>
   <div class="plane-sec">
     <div class="plane-hdr" id="plane-hdr">
       <span>✦ 切面</span><span id="plane-arrow">▸</span>
@@ -2635,6 +2694,13 @@ const hlFaces = new Set();
 const hlEdgeTubes = new Map();
 const hlFaceMeshes = new Map();
 
+// ── 多層高亮系統 ──
+const layerFaceMeshes = new Map(); // key: `L${id}_f${orig}`
+const layerEdgeTubes  = new Map(); // key: `L${id}_e${orig}`
+const LAYER_HUES = [0, 210, 120, 35, 270, 185]; // 紅 藍 綠 橙 紫 青
+let layers = []; // [{id,title,hue,active,rawItems,items}]
+let nextLayerId = 0;
+
 // 邊高亮用圓柱體（WebGL 不支援線寬 > 1px）
 function makeEdgeTube(origIdx){
   const [a,b]=rt30Edges[origIdx];
@@ -2674,6 +2740,300 @@ function makeFaceMesh(origIdx){
   rt30Group.add(mesh);
   return mesh;
 }
+
+function makeFaceMeshColored(origIdx, color, zScale){
+  const [a,b,c,d] = rt30Faces[origIdx];
+  const s = zScale;
+  const va=new THREE.Vector3(...rt30V[a]).multiplyScalar(s);
+  const vb=new THREE.Vector3(...rt30V[b]).multiplyScalar(s);
+  const vc=new THREE.Vector3(...rt30V[c]).multiplyScalar(s);
+  const vd=new THREE.Vector3(...rt30V[d]).multiplyScalar(s);
+  const geo=new THREE.BufferGeometry();
+  const pos=new Float32Array([...va.toArray(),...vb.toArray(),...vc.toArray(),...va.toArray(),...vc.toArray(),...vd.toArray()]);
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  geo.computeVertexNormals();
+  const c3=(color instanceof THREE.Color)?color:new THREE.Color(color);
+  const mat=new THREE.MeshPhongMaterial({color:c3,emissive:c3,emissiveIntensity:0.4,side:THREE.DoubleSide,transparent:true,opacity:0.78,flatShading:true});
+  const mesh=new THREE.Mesh(geo,mat);
+  rt30Group.add(mesh);
+  return mesh;
+}
+
+function makeEdgeTubeColored(origIdx, color){
+  const [a,b]=rt30Edges[origIdx];
+  const va=new THREE.Vector3(...rt30V[a]);
+  const vb=new THREE.Vector3(...rt30V[b]);
+  const dir=vb.clone().sub(va);
+  const len=dir.length();
+  const mid=va.clone().add(vb).multiplyScalar(0.5);
+  const geo=new THREE.CylinderGeometry(0.045,0.045,len,8);
+  const c3=(color instanceof THREE.Color)?color:new THREE.Color(color);
+  const mat=new THREE.MeshPhongMaterial({color:c3,emissive:c3,emissiveIntensity:0.5,transparent:true,opacity:0.88});
+  const tube=new THREE.Mesh(geo,mat);
+  tube.position.copy(mid);
+  tube.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());
+  rt30Group.add(tube);
+  return tube;
+}
+
+// ── 圖層顏色工具 ──
+function hue2color(hue, lightness=58){
+  const c=new THREE.Color(); c.setHSL(hue/360, 0.78, lightness/100); return c;
+}
+function hue2css(hue, lightness=58){ return `hsl(${hue},78%,${lightness}%)`; }
+
+// ── 圖層高亮管理 ──
+function applyLayerHighlights(layer){
+  if(!layer.active) return;
+  const layerIdx = layers.indexOf(layer);
+  const zScale = 1.015 + layerIdx * 0.010;
+  const geoList = layer.items.filter(it=>it.type!=='parent');
+  const n = geoList.length;
+  geoList.forEach((item, idx)=>{
+    const l = n<=1 ? 55 : 42 + (idx/(n-1))*26;
+    const color = hue2color(layer.hue, l);
+    item._faceKeys = []; item._edgeKeys = []; // 追蹤此 item 擁有的 mesh keys
+    item.faces.forEach(o=>{
+      const key=`L${layer.id}_f${o}`;
+      if(!layerFaceMeshes.has(key)) layerFaceMeshes.set(key, makeFaceMeshColored(o, color, zScale));
+      item._faceKeys.push(key);
+    });
+    item.edges.forEach(o=>{
+      const key=`L${layer.id}_e${o}`;
+      if(!layerEdgeTubes.has(key)) layerEdgeTubes.set(key, makeEdgeTubeColored(o, new THREE.Color(0xffffff)));
+      item._edgeKeys.push(key);
+    });
+    item.vertices.forEach(o=>{
+      if(vertMeshes[o]){
+        vertMeshes[o].material.color.copy(color);
+        vertMeshes[o].material.emissive.copy(color);
+        vertMeshes[o].material.emissiveIntensity=0.9;
+        vertMeshes[o].scale.setScalar(2.2);
+      }
+    });
+  });
+}
+
+function clearLayerHighlights(layerId){
+  const prefix=`L${layerId}_`;
+  const fkeys=[...layerFaceMeshes.keys()].filter(k=>k.startsWith(prefix));
+  fkeys.forEach(k=>{ rt30Group.remove(layerFaceMeshes.get(k)); layerFaceMeshes.delete(k); });
+  const ekeys=[...layerEdgeTubes.keys()].filter(k=>k.startsWith(prefix));
+  ekeys.forEach(k=>{ rt30Group.remove(layerEdgeTubes.get(k)); layerEdgeTubes.delete(k); });
+}
+
+function redrawAllLayers(){
+  layerFaceMeshes.forEach(m=>rt30Group.remove(m)); layerFaceMeshes.clear();
+  layerEdgeTubes.forEach(t=>rt30Group.remove(t));  layerEdgeTubes.clear();
+  for(let i=0;i<rt30V.length;i++){
+    if(vertMeshes[i]){
+      const v5=isV5(i);
+      vertMeshes[i].material.color.set(v5?0xf5c518:0x60a5fa);
+      vertMeshes[i].material.emissive.set(v5?0xf5c518:0x60a5fa);
+      vertMeshes[i].material.emissiveIntensity=0.25;
+      vertMeshes[i].scale.setScalar(1);
+    }
+  }
+  layers.filter(l=>l.active).forEach(applyLayerHighlights);
+}
+
+// ── 選取聚焦系統 ──
+let focusModeActive = false;
+
+function dimAllLayersExcept(selectedItem){
+  // 主圖層：非選取項變暗；其他圖層保持原樣
+  const primary = layers[layers.length-1];
+  if(!primary) return;
+  primary.items.filter(it=>it.type!=='parent').forEach(item=>{
+    const dim = item !== selectedItem;
+    (item._faceKeys||[]).forEach(k=>{
+      const m=layerFaceMeshes.get(k); if(m) m.material.opacity = dim?0.15:0.78;
+    });
+    (item._edgeKeys||[]).forEach(k=>{
+      const t=layerEdgeTubes.get(k); if(t) t.material.opacity = dim?0.10:0.88;
+    });
+  });
+}
+
+function restoreAllLayerOpacity(){
+  layerFaceMeshes.forEach(m=>{ m.material.opacity=0.78; });
+  layerEdgeTubes.forEach(t=>{ t.material.opacity=0.88; });
+}
+
+function setFocusMode(on, selectedItem){
+  focusModeActive = on;
+  if(on && selectedItem){
+    layerFaceMeshes.forEach(m=>{ m.visible=false; });
+    layerEdgeTubes.forEach(t=>{ t.visible=false; });
+    // 頂點還原
+    for(let i=0;i<rt30V.length;i++){
+      if(vertMeshes[i]){
+        const v5=isV5(i);
+        vertMeshes[i].material.color.set(v5?0xf5c518:0x60a5fa);
+        vertMeshes[i].material.emissive.set(v5?0xf5c518:0x60a5fa);
+        vertMeshes[i].material.emissiveIntensity=0.25;
+        vertMeshes[i].scale.setScalar(1);
+      }
+    }
+    clearAllHighlights();
+    applyItemHighlight(selectedItem);
+  } else {
+    layerFaceMeshes.forEach(m=>{ m.visible=true; });
+    layerEdgeTubes.forEach(t=>{ t.visible=true; });
+    clearAllHighlights();
+    if(selectedItem){
+      dimAllLayersExcept(selectedItem);
+      applyItemHighlight(selectedItem);
+    } else {
+      restoreAllLayerOpacity();
+    }
+  }
+  const btn=document.getElementById('btn-focus');
+  if(btn){ btn.classList.toggle('on', focusModeActive); btn.textContent=focusModeActive?'🔍 聚焦中':'🔍 聚焦'; }
+}
+
+// ── 統一歷史面板核心函式 ──
+function dimLayerExcept(layer, selectedItem){
+  if(!layer) return;
+  layer.items.filter(it=>it.type!=='parent').forEach(item=>{
+    const dim = item!==selectedItem;
+    (item._faceKeys||[]).forEach(k=>{ const m=layerFaceMeshes.get(k); if(m) m.material.opacity=dim?0.15:0.78; });
+    (item._edgeKeys||[]).forEach(k=>{ const t=layerEdgeTubes.get(k); if(t) t.material.opacity=dim?0.10:0.88; });
+  });
+}
+
+function selectLayerItem(lid, itemIdx){
+  const layer=layers.find(l=>l.id===lid); if(!layer||!layer.items[itemIdx]) return;
+  const item=layer.items[itemIdx];
+  activeLayerId=lid; activeItemIdx=itemIdx; activeParentQ=null;
+  if(focusModeActive){ setFocusMode(true,item); }
+  else { clearAllHighlights(); restoreAllLayerOpacity(); dimLayerExcept(layer,item); applyItemHighlight(item); }
+  loadedItems=layer.items; buildTable(); syncTableSel(); buildUnifiedHistPanel();
+}
+
+function selectLayerShowAll(lid){
+  activeLayerId=null; activeItemIdx=-1; activeParentQ=null;
+  clearAllHighlights();
+  if(focusModeActive) setFocusMode(false,null);
+  restoreAllLayerOpacity();
+  const layer=layers.find(l=>l.id===lid);
+  if(layer) loadedItems=layer.items;
+  buildTable(); syncTableSel(); buildUnifiedHistPanel();
+}
+
+function selectLayerParentGroup(lid, q){
+  const layer=layers.find(l=>l.id===lid); if(!layer) return;
+  activeLayerId=lid; activeItemIdx=-2; activeParentQ=q;
+  clearAllHighlights(); restoreAllLayerOpacity();
+  layer.items.filter(it=>it.type!=='parent').forEach(item=>{
+    const dim=item.q!==q;
+    (item._faceKeys||[]).forEach(k=>{ const m=layerFaceMeshes.get(k); if(m) m.material.opacity=dim?0.15:0.78; });
+    (item._edgeKeys||[]).forEach(k=>{ const t=layerEdgeTubes.get(k); if(t) t.material.opacity=dim?0.10:0.88; });
+  });
+  layer.items.forEach(item=>{ if(item.q===q&&item.type!=='parent') applyItemHighlight(item); });
+  loadedItems=layer.items; buildTable(); syncTableSel(); buildUnifiedHistPanel();
+}
+
+function buildLayerItemsHTML(layer){
+  const items=layer.items, lid=layer.id;
+  const geoCount=items.filter(it=>it.type!=='parent').length;
+  const allActive=activeLayerId===lid&&activeItemIdx===-1;
+  let h=`<div class="uh-show-all${allActive?' li-active':''}" data-action="show-all" data-lid="${lid}">▸ 全部顯示（${geoCount} 題）</div>`;
+  const hasParent=items.some(it=>it.type==='parent');
+  if(hasParent){
+    const qs=[...new Set(items.map(it=>it.q).filter(q=>q!=null))].sort((a,b)=>a-b);
+    qs.forEach(q=>{
+      const parent=items.find(it=>it.q===q&&it.type==='parent');
+      const children=items.map((it,i)=>({it,i})).filter(({it})=>it.q===q&&it.type!=='parent');
+      if(parent){
+        const pActive=activeLayerId===lid&&activeItemIdx===-2&&activeParentQ===q;
+        const reasonStr=parent.split_reason?`<div class="list-parent-reason">${parent.split_reason}</div>`:'';
+        h+=`<div class="list-parent${pActive?' li-active':''}" data-action="parent" data-lid="${lid}" data-q="${q}"><div class="list-parent-title">Q${q}　${parent.title||''}</div>${reasonStr}</div>`;
+      }
+      children.forEach(({it,i})=>{
+        const iActive=activeLayerId===lid&&activeItemIdx===i;
+        const warnStr=it.warns?.length?`<div class="list-item-warn">⚠ ${it.warns.join(' / ')}</div>`:'';
+        const worldTag=it.world?`<span style="color:${WORLD_COLORS[WORLD_NAMES.indexOf(it.world)]||'#94a3b8'};font-size:10px;margin-left:5px">[${it.world}]</span>`:'';
+        const sqTag=it.sq!=null?`<span style="color:#4a6a8a;font-size:10px;margin-right:4px">${it.sq}.</span>`:'';
+        h+=`<div class="list-item li-sub${iActive?' li-active':''}" data-action="item" data-lid="${lid}" data-li="${i}"><div class="list-item-title">${sqTag}${it.title||''}${worldTag}</div><div class="list-item-refs">${refsToHTML(it.refs||[])}</div>${warnStr}</div>`;
+      });
+    });
+    items.forEach((it,i)=>{
+      if(it.q!=null||it.type==='parent') return;
+      const iActive=activeLayerId===lid&&activeItemIdx===i;
+      const warnStr=it.warns?.length?`<div class="list-item-warn">⚠ ${it.warns.join(' / ')}</div>`:'';
+      const worldTag=it.world?`<span style="color:${WORLD_COLORS[WORLD_NAMES.indexOf(it.world)]||'#94a3b8'};font-size:10px;margin-left:5px">[${it.world}]</span>`:'';
+      h+=`<div class="list-item${iActive?' li-active':''}" data-action="item" data-lid="${lid}" data-li="${i}"><div class="list-item-title">${it.title||''}${worldTag}</div><div class="list-item-refs">${refsToHTML(it.refs||[])}</div>${warnStr}</div>`;
+    });
+  } else {
+    items.forEach((item,i)=>{
+      if(item.type==='parent') return;
+      const iActive=activeLayerId===lid&&activeItemIdx===i;
+      const warnStr=item.warns?.length?`<div class="list-item-warn">⚠ ${item.warns.join(' / ')}</div>`:'';
+      const worldTag=item.world?`<span style="color:${WORLD_COLORS[WORLD_NAMES.indexOf(item.world)]||'#94a3b8'};font-size:10px;margin-left:5px">[${item.world}]</span>`:'';
+      h+=`<div class="list-item${iActive?' li-active':''}" data-action="item" data-lid="${lid}" data-li="${i}"><div class="list-item-title">${item.title||''}${worldTag}</div><div class="list-item-refs">${refsToHTML(item.refs||[])}</div>${warnStr}</div>`;
+    });
+  }
+  return h;
+}
+
+function buildUnifiedHistPanel(){
+  const container=document.getElementById('unified-hist'); if(!container) return;
+  const hist=histLoad();
+  let h=`<div class="uh-header"><span class="uh-header-title">📂 歷史（${hist.length}）</span>`;
+  if(hist.length>0) h+=`<button data-action="clear-all-hist" class="uh-icon-btn uh-del-btn" title="清空全部歷史">🗑</button>`;
+  h+=`</div>`;
+  if(hist.length===0){ h+=`<div class="uh-empty">尚無歷史記錄</div>`; }
+  else {
+    hist.forEach((entry,hi)=>{
+      const layer=layers.find(l=>l.json===entry.json);
+      const isLoaded=!!layer;
+      const dot=isLoaded?`<span class="uh-dot" style="background:${hue2css(layer.hue)}"></span>`:`<span class="uh-dot" style="background:#374151"></span>`;
+      const warnCount=isLoaded?layer.items.reduce((s,it)=>s+(it.warns?.length||0),0):0;
+      const warnBadge=warnCount>0?`<span style="color:#f59e0b;font-size:10px"> ⚠${warnCount}</span>`:'';
+      const focusOn=focusModeActive&&activeLayerId===(isLoaded?layer.id:null);
+      h+=`<div class="uh-entry${isLoaded?' uh-loaded':''}"><div class="uh-entry-hdr">${dot}<span class="uh-title">${entry.title}${warnBadge}</span>`;
+      if(!isLoaded) h+=`<button class="uh-load-btn" data-action="load-hist" data-hi="${hi}">載入</button>`;
+      if(isLoaded) h+=`<button class="uh-icon-btn${focusOn?' uh-focus-on':''}" data-action="focus" data-lid="${layer.id}" title="聚焦">🔍</button><button class="uh-icon-btn" data-action="toggle" data-lid="${layer.id}" title="切換顯示">${layer.active?'👁':'🙈'}</button><button class="uh-icon-btn" data-action="expand" data-lid="${layer.id}">${layer.expanded?'▼':'▶'}</button>`;
+      h+=`<button class="uh-icon-btn uh-del-btn" data-action="${isLoaded?'del-layer':'del-hist'}" data-lid="${isLoaded?layer.id:''}" data-hi="${hi}" title="刪除">✕</button></div>`;
+      if(isLoaded&&layer.expanded) h+=`<div class="uh-body">${buildLayerItemsHTML(layer)}</div>`;
+      h+=`</div>`;
+    });
+  }
+  container.innerHTML=h;
+  container.onclick=e=>{
+    const el=e.target.closest('[data-action]'); if(!el) return;
+    const action=el.dataset.action;
+    const lid=el.dataset.lid?parseInt(el.dataset.lid):null;
+    const hi=el.dataset.hi!==undefined?parseInt(el.dataset.hi):null;
+    if(action==='show-all') selectLayerShowAll(lid);
+    else if(action==='parent') selectLayerParentGroup(lid,parseInt(el.dataset.q));
+    else if(action==='item') selectLayerItem(lid,parseInt(el.dataset.li));
+    else if(action==='toggle'){ const l=layers.find(x=>x.id===lid); if(l){l.active=!l.active;redrawAllLayers();buildUnifiedHistPanel();}}
+    else if(action==='expand'){ const l=layers.find(x=>x.id===lid); if(l){l.expanded=!l.expanded;buildUnifiedHistPanel();}}
+    else if(action==='del-layer'){
+      clearLayerHighlights(lid); layers=layers.filter(l=>l.id!==lid);
+      if(layers.length>0){const p=layers[layers.length-1];loadedItems=p.items;rawItems=p.rawItems;rawTitle=p.title;}
+      else{loadedItems=[];rawItems=[];rawTitle='';}
+      redrawAllLayers(); buildUnifiedHistPanel();
+    }
+    else if(action==='del-hist'){ const a=histLoad();a.splice(hi,1);histSave(a);buildUnifiedHistPanel(); }
+    else if(action==='load-hist'){ const a=histLoad();if(a[hi])loadJsonString(a[hi].json,false); }
+    else if(action==='clear-all-hist'){
+      if(!confirm(`確定要清空全部 ${histLoad().length} 筆歷史？`)) return;
+      layers.forEach(l=>clearLayerHighlights(l.id)); layers=[];
+      loadedItems=[];rawItems=[];rawTitle=''; histSave([]); redrawAllLayers(); buildUnifiedHistPanel();
+    }
+    else if(action==='focus'){
+      const layer=layers.find(x=>x.id===lid);
+      const selItem=activeLayerId===lid&&activeItemIdx>=0?layer?.items[activeItemIdx]:null;
+      const nowOn=!(focusModeActive&&activeLayerId===lid);
+      activeLayerId=lid; setFocusMode(nowOn,selItem); buildUnifiedHistPanel();
+    }
+  };
+}
+
+function buildLayersPanel(){ buildUnifiedHistPanel(); }
 
 function clearAllHighlights(){
   hlVerts.forEach(i=>{
@@ -3046,6 +3406,7 @@ function buildATable(){
       else if(activeTab==='e') buildETable(); // 同步更新邊表格符號欄
       else if(activeTab==='f') buildFTable(); // 同步更新面表格符號欄
       updatePlaneDropdowns();                 // 同步更新切面下拉選單
+      reResolveItems();                       // 重新解析已載入圖層的警告與幾何
     });
   });
 }
@@ -3597,35 +3958,48 @@ let rawItems = [];      // 原始未解析的 JSON items
 let rawTitle  = '';     // 原始標題
 let activeItemIdx = -1; // -1=全部, -2=母問題群組
 let activeParentQ = null;
+let activeLayerId = null; // 目前選取項所在的圖層 id
 
-// 用目前的符號映射重新解析 rawItems，更新高亮
+// 用目前的符號映射重新解析所有圖層
 function reResolveItems(){
-  if(rawItems.length===0) return;
+  if(layers.length===0) return;
   const symMap = buildSymToOrig();
   if(Object.keys(symMap).length===0) return;
   const axisMap = buildAxisToV5Pairs(symMap);
-  loadedItems = rawItems.map(item => {
-    const r = resolveItem(item, symMap, axisMap);
-    if(r.faces.length){ const wi=getFaceWorld(r.faces[0]); r.world=wi!==null?WORLD_NAMES[wi]:null; }
-    else r.world=null;
-    return r;
+  layers.forEach(layer=>{
+    layer.items = layer.rawItems.map(item => {
+      const r = resolveItem(item, symMap, axisMap);
+      if(r.faces.length){ const wi=getFaceWorld(r.faces[0]); r.world=wi!==null?WORLD_NAMES[wi]:null; }
+      else r.world=null;
+      return r;
+    });
   });
+  // 更新主要圖層
+  const primary = layers[layers.length-1];
+  loadedItems = primary.items;
   activeItemIdx=-1; activeParentQ=null;
   clearAllHighlights();
-  geoItems().forEach(applyItemHighlight);
+  redrawAllLayers();
   buildTable(); syncTableSel();
-  const totalWarns=loadedItems.reduce((s,it)=>s+it.warns.length,0);
-  buildListPanel();
-  showListBanner(rawTitle, totalWarns);
+  buildUnifiedHistPanel(); // 同步更新歷史面板（含警告角標）
 }
 
 function geoItems(){ return loadedItems.filter(it=>it.type!=='parent'); }
 
 function selectListItem(idx){
   activeItemIdx = idx; activeParentQ = null;
-  clearAllHighlights();
-  if(idx===-1){ geoItems().forEach(applyItemHighlight); }
-  else { applyItemHighlight(loadedItems[idx]); }
+  const item = idx>=0 ? loadedItems[idx] : null;
+  if(focusModeActive){
+    setFocusMode(true, item); // 聚焦模式：切換到新選取項
+  } else {
+    clearAllHighlights();
+    if(item){
+      dimAllLayersExcept(item);
+      applyItemHighlight(item);
+    } else {
+      restoreAllLayerOpacity(); // 全部顯示：還原所有圖層亮度
+    }
+  }
   buildTable(); syncTableSel();
   document.querySelectorAll('.list-item,.list-parent').forEach(el=>el.classList.remove('li-active'));
   if(idx===-1) document.querySelector('.list-panel-all')?.classList.add('li-active');
@@ -3635,6 +4009,16 @@ function selectListItem(idx){
 function selectParentGroup(q){
   activeItemIdx = -2; activeParentQ = q;
   clearAllHighlights();
+  restoreAllLayerOpacity();
+  // 主圖層中，非此群組的 item 變暗
+  const primary = layers[layers.length-1];
+  if(primary){
+    primary.items.filter(it=>it.type!=='parent').forEach(item=>{
+      const dim = item.q !== q;
+      (item._faceKeys||[]).forEach(k=>{ const m=layerFaceMeshes.get(k); if(m) m.material.opacity=dim?0.15:0.78; });
+      (item._edgeKeys||[]).forEach(k=>{ const t=layerEdgeTubes.get(k); if(t) t.material.opacity=dim?0.10:0.88; });
+    });
+  }
   loadedItems.forEach(item=>{ if(item.q===q && item.type!=='parent') applyItemHighlight(item); });
   buildTable(); syncTableSel();
   document.querySelectorAll('.list-item,.list-parent').forEach(el=>el.classList.remove('li-active'));
@@ -3800,27 +4184,36 @@ function loadJsonString(text, fromModal=false){
   }
   const axisMap = buildAxisToV5Pairs(symMap);
   const items = Array.isArray(parsed) ? parsed : [parsed];
-  const firstQ = String(items[0]?.q || items[0]?.title || '').trim();
+  // 優先找有 title 的 parent item，再退回 q 編號
+  const titleItem = items.find(it=>it.title && it.title.toString().trim()) || items[0];
+  const firstQ = String(titleItem?.title || titleItem?.q || '').trim();
   const snippet = firstQ.length > 18 ? firstQ.slice(0, 18) + '…' : firstQ;
   const title = Array.isArray(parsed)
     ? (snippet ? `${snippet}（${items.length} 題）` : `${items.length} 個問題`)
     : (parsed.title || parsed.q || '（無標題）');
-  rawItems=items; rawTitle=title;
-
-  loadedItems = items.map(item => {
+  // 解析 items
+  const resolvedItems = items.map(item => {
     const r = resolveItem(item, symMap, axisMap);
     if(r.faces.length){ const wi=getFaceWorld(r.faces[0]); r.world=wi!==null?WORLD_NAMES[wi]:null; }
     else r.world=null;
     return r;
   });
+
+  // 新增圖層（不取代舊圖層）
+  const hue = LAYER_HUES[layers.length % LAYER_HUES.length];
+  const newLayer = { id: nextLayerId++, title, hue, active: true, rawItems: items, items: resolvedItems, json: text, expanded: true };
+  layers.push(newLayer);
+
+  // 主要圖層 = 最後載入的（供 list panel / export）
+  rawItems=items; rawTitle=title;
+  loadedItems = resolvedItems;
+
   activeItemIdx=-1; activeParentQ=null;
-  clearAllHighlights();
-  geoItems().forEach(applyItemHighlight);
+  clearAllHighlights(); // 清除互動式白色高亮
+  applyLayerHighlights(newLayer); // 套用新圖層的彩色高亮
   buildTable(); syncTableSel();
-  const totalWarns=loadedItems.reduce((s,it)=>s+it.warns.length,0);
-  buildListPanel();
-  showListBanner(title, totalWarns);
-  histAdd(text, title);
+  histAdd(text, title);      // 先存歷史，buildUnifiedHistPanel 才看得到新筆記
+  buildLayersPanel();        // 再建面板（此時 histLoad() 已含新筆記）
   return true;
 }
 
@@ -3830,13 +4223,21 @@ document.getElementById('modal-ok').addEventListener('click',()=>{
   if(loadJsonString(text, true))
     document.getElementById('modal-load').classList.add('hidden');
 });
+document.getElementById('btn-focus').addEventListener('click',()=>{
+  const item = activeItemIdx>=0 ? loadedItems[activeItemIdx] : null;
+  setFocusMode(!focusModeActive, item);
+});
 document.getElementById('b-unload').addEventListener('click',()=>{
+  // 清除全部圖層
+  layers.forEach(l=>clearLayerHighlights(l.id));
+  layers=[]; nextLayerId=0;
   clearAllHighlights();
   loadedItems=[]; rawItems=[]; rawTitle='';
   document.getElementById('list-panel').innerHTML='';
   listPanelOpen=false;
   document.getElementById('list-banner-toggle').textContent='▶';
   hideListBanner();
+  buildLayersPanel();
 });
 // 點擊背景關閉
 document.getElementById('modal-load').addEventListener('click', e=>{
@@ -4924,6 +5325,7 @@ document.getElementById('hist-clear').addEventListener('click', ()=>{
 // ── 初始化 ──
 applyLang();
 histRefreshUI();
+buildLayersPanel();
 
 </script>
 
