@@ -1775,6 +1775,11 @@ tr[data-orig] { cursor:pointer; }
       <button class="btn sym-pre" data-sym="Ω" data-tip="Ω 提煉核心">Ω</button>
       <button class="btn sym-pre" id="b-sym-clr" data-sym="" data-tip="清除所有符號" style="color:#6b7280;border-color:#6b7280">✕</button>
     </div>
+    <div style="display:flex;gap:3px;width:100%;margin-top:3px">
+      <select id="hist-select" style="flex:1;background:#1e2a3a;color:#94a3b8;border:1px solid #334155;border-radius:4px;font-size:12px;padding:2px 4px;min-width:0"></select>
+      <button id="hist-del" class="btn" style="color:#f87171;border-color:#f87171;padding:2px 6px;font-size:12px" title="刪除選取的這筆">✕</button>
+      <button id="hist-clear" class="btn" style="color:#f87171;border-color:#f87171;padding:2px 6px;font-size:12px" title="清空全部歷史">🗑</button>
+    </div>
   </div>
   <div id="list-banner" style="display:none">
     <button id="list-banner-toggle">▶</button>
@@ -3757,53 +3762,73 @@ function showModalErr(msg){
   el.style.display = msg ? 'block' : 'none';
 }
 
-document.getElementById('modal-ok').addEventListener('click',()=>{
-  const text = document.getElementById('modal-json').value.trim();
-  showModalErr('');
+// ── 歷史記錄 ──
+const HIST_KEY='rt30_history', HIST_MAX=15;
+function histLoad(){ try{return JSON.parse(localStorage.getItem(HIST_KEY)||'[]');}catch{return[];} }
+function histSave(a){ localStorage.setItem(HIST_KEY,JSON.stringify(a)); }
+function histAdd(jsonStr,title){
+  const a=histLoad();
+  const idx=a.findIndex(h=>h.json===jsonStr);
+  if(idx>=0) a.splice(idx,1);
+  a.unshift({json:jsonStr,title,time:Date.now()});
+  if(a.length>HIST_MAX) a.length=HIST_MAX;
+  histSave(a); histRefreshUI();
+}
+function histRefreshUI(){
+  const sel=document.getElementById('hist-select');
+  if(!sel) return;
+  const a=histLoad();
+  sel.innerHTML=`<option value="">📂 歷史（${a.length}）</option>`;
+  a.forEach((h,i)=>{
+    const d=new Date(h.time);
+    const lbl=`${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')} ${h.title}`;
+    const o=document.createElement('option');
+    o.value=i; o.textContent=lbl; sel.appendChild(o);
+  });
+}
 
+// ── 核心載入函數（供 modal 和歷史記錄共用）──
+function loadJsonString(text, fromModal=false){
   let parsed;
   try { parsed = JSON.parse(text); }
-  catch(e){ showModalErr('JSON 格式錯誤：'+e.message); return; }
+  catch(e){ if(fromModal) showModalErr('JSON 格式錯誤：'+e.message); return false; }
 
   const symMap = buildSymToOrig();
   if(Object.keys(symMap).length===0){
-    showModalErr('⚠ 尚未在「軸」頁籤指定任何符號，無法解析。\n請先到「軸 (6)」頁，為每條穿心軸選擇符號（Δ φ η 等）。');
-    return;
+    if(fromModal) showModalErr('⚠ 尚未在「軸」頁籤指定任何符號，無法解析。\n請先到「軸 (6)」頁，為每條穿心軸選擇符號（Δ φ η 等）。');
+    return false;
   }
   const axisMap = buildAxisToV5Pairs(symMap);
-
-  // 接受單一物件或物件陣列
   const items = Array.isArray(parsed) ? parsed : [parsed];
-  const title = Array.isArray(parsed) ? `${items.length} 個問題` : (parsed.title||'（無標題）');
-  rawItems = items;   // 儲存原始資料供換軸後重算
-  rawTitle  = title;
+  const firstQ = (items[0]?.q || items[0]?.title || '').trim();
+  const snippet = firstQ.length > 18 ? firstQ.slice(0, 18) + '…' : firstQ;
+  const title = Array.isArray(parsed)
+    ? (snippet ? `${snippet}（${items.length} 題）` : `${items.length} 個問題`)
+    : (parsed.title || parsed.q || '（無標題）');
+  rawItems=items; rawTitle=title;
 
-  // 解析每個 item，並用幾何計算覆蓋 world
   loadedItems = items.map(item => {
     const r = resolveItem(item, symMap, axisMap);
-    if(r.faces.length){
-      const wi = getFaceWorld(r.faces[0]);
-      r.world = wi !== null ? WORLD_NAMES[wi] : null;
-    } else {
-      r.world = null; // 無面的 item 不強制判斷世界
-    }
+    if(r.faces.length){ const wi=getFaceWorld(r.faces[0]); r.world=wi!==null?WORLD_NAMES[wi]:null; }
+    else r.world=null;
     return r;
   });
-  activeItemIdx = -1; activeParentQ = null;
-
-  // 高亮全部（跳過 parent）
+  activeItemIdx=-1; activeParentQ=null;
   clearAllHighlights();
   geoItems().forEach(applyItemHighlight);
   buildTable(); syncTableSel();
-
-  const totalWarns = loadedItems.reduce((s,it)=>s+it.warns.length, 0);
-  const geoCount = geoItems().length;
-  console.log('[RT30 loader] loaded', loadedItems.length, 'items (', geoCount, 'geo),', totalWarns, 'warns');
-
+  const totalWarns=loadedItems.reduce((s,it)=>s+it.warns.length,0);
   buildListPanel();
   showListBanner(title, totalWarns);
+  histAdd(text, title);
+  return true;
+}
 
-  document.getElementById('modal-load').classList.add('hidden');
+document.getElementById('modal-ok').addEventListener('click',()=>{
+  const text = document.getElementById('modal-json').value.trim();
+  showModalErr('');
+  if(loadJsonString(text, true))
+    document.getElementById('modal-load').classList.add('hidden');
 });
 document.getElementById('b-unload').addEventListener('click',()=>{
   clearAllHighlights();
@@ -4867,6 +4892,38 @@ document.getElementById('b-lang').addEventListener('click', () => {
   uiLang = uiLang==='zh' ? 'en' : 'zh';
   applyLang();
 });
+
+// ── 歷史記錄事件 ──
+document.getElementById('hist-select').addEventListener('change', function(){
+  const idx = parseInt(this.value);
+  if(isNaN(idx)) return;
+  const a = histLoad();
+  if(a[idx]) loadJsonString(a[idx].json, false);
+  this.value = '';  // 回到placeholder
+});
+
+document.getElementById('hist-del').addEventListener('click', ()=>{
+  const sel = document.getElementById('hist-select');
+  const idx = parseInt(sel.value);
+  if(isNaN(idx)){ return; }
+  const a = histLoad();
+  a.splice(idx, 1);
+  histSave(a);
+  sel.value = '';
+  histRefreshUI();
+});
+
+document.getElementById('hist-clear').addEventListener('click', ()=>{
+  const a = histLoad();
+  if(a.length === 0) return;
+  if(!confirm(`確定要清空全部 ${a.length} 筆歷史記錄？`)) return;
+  histSave([]);
+  histRefreshUI();
+});
+
+// ── 初始化 ──
+applyLang();
+histRefreshUI();
 
 </script>
 
