@@ -4332,7 +4332,7 @@ function generateProblemExport(){
   } else {
     json = JSON.stringify(loadedItems.filter(it=>it.type!=='parent').map(toGeoObj), null, 2);
   }
-  return RT30_READ_PROMPT + json;
+  return buildReadPrompt() + json;
 }
 
 // ── 動態基準提示詞 ──
@@ -4631,9 +4631,25 @@ document.getElementById('b-export').addEventListener('click',()=>{
   refreshExpOutput();
   document.getElementById('modal-export').classList.remove('hidden');
 });
-const RT30_READ_PROMPT =
-`你現在是「RT30 解讀者」，請將幾何結構轉為自然、易懂的狀態分析。
+// 六種極軸各自的解讀焦點
+const POLAR_LENS = {
+  'Δ': { name:'找出差異', question:'這份資料裡，哪裡有最顯著的落差、對比或斷裂？極軸正端（Δ+）的元素在擾動什麼，負端（Δ−）在趨向什麼？' },
+  'π': { name:'找到支撐', question:'哪些元素是當前結構的錨點（π+），哪些正在失去支撐（π−）？整體是否有穩固基礎？' },
+  'ψ': { name:'看見連結', question:'ψ+ 的元素在擴展哪些關係？ψ− 的元素在斷裂或孤立什麼？連結網絡的密度如何？' },
+  'φ': { name:'追蹤流動', question:'φ+ 代表流動順暢的路徑，φ− 代表受阻或停滯的節點。能量、資源或意圖在哪裡卡住？' },
+  'η': { name:'拆解結構', question:'η+ 的元素正在生成什麼新結構？η− 的元素正在瓦解或簡化什麼？現有架構是否足夠？' },
+  'Ω': { name:'提煉核心', question:'Ω+ 代表清晰與核心；Ω− 代表混亂或尚未提煉的部分。這份資料的本質是什麼，什麼是雜訊？' },
+};
 
+function buildReadPrompt(){
+  const polarSym = axisSymbolState[0] || '';
+  const lens = POLAR_LENS[polarSym];
+  const polarLine = lens
+    ? `\n【本次極軸：${polarSym} ${lens.name}】\n解讀時請以此為主鏡頭：${lens.question}\n其他五條軸的 +/− 分布是圍繞這個核心問題展開的背景結構。\n`
+    : '';
+
+  return `你現在是「RT30 解讀者」，請將幾何結構轉為自然、易懂的狀態分析。
+${polarLine}
 規則：
 - 語言簡單，避免過多術語
 - 幾何符號（如 ψ−×Δ−）可適度保留在括號中作為依據，但每段最多 1～2 個
@@ -4672,6 +4688,7 @@ const RT30_READ_PROMPT =
 【分析資料 — 所有引用必須以此為準】
 
 `;
+}
 
 document.getElementById('exp-copy').addEventListener('click',()=>{
   const ta = document.getElementById('exp-output');
