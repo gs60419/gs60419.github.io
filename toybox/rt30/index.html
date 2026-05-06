@@ -3800,7 +3800,7 @@ function loadJsonString(text, fromModal=false){
   }
   const axisMap = buildAxisToV5Pairs(symMap);
   const items = Array.isArray(parsed) ? parsed : [parsed];
-  const firstQ = (items[0]?.q || items[0]?.title || '').trim();
+  const firstQ = String(items[0]?.q || items[0]?.title || '').trim();
   const snippet = firstQ.length > 18 ? firstQ.slice(0, 18) + '…' : firstQ;
   const title = Array.isArray(parsed)
     ? (snippet ? `${snippet}（${items.length} 題）` : `${items.length} 個問題`)
