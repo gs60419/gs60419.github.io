@@ -1966,7 +1966,7 @@ tr[data-orig] { cursor:pointer; }
 
     <div id="modal-err"></div>
     <div class="modal-btns">
-      <button class="btn" id="modal-cancel">取消</button>
+      <button class="btn" id="modal-cancel">關閉</button>
       <button class="btn" id="modal-ok" style="border-color:#34d399;color:#34d399">載入</button>
     </div>
   </div>
@@ -1978,7 +1978,7 @@ const LANG_DATA = {
   zh: {
     subtitle:'菱形三十面體 Rhombic Triacontahedron',
     statV:'頂點 V', statE:'邊 E', statF:'面 F',
-    step1:'📤 基準 → AI', step2:'📋 載入清單', step3:'↓ 匯出結果',
+    step1:'第1步: 📋 生成提示詞', step2:'第2步: 📥 貼入AI回覆', step3:'第3步: 📤 複製結果給AI',
     btnVL:'V 標號', btnEL:'E 標號', btnFL:'F 標號',
     btnWire:'線框', btnSurf:'面片', btnAxis:'軸',
     viewLbl:'視角：', btnV1:'V1 頂', btnV2:'V2 頂', btnF1:'F1 頂', btnRot:'自轉',
@@ -2008,7 +2008,7 @@ const LANG_DATA = {
   en: {
     subtitle:'Rhombic Triacontahedron',
     statV:'Vertex V', statE:'Edge E', statF:'Face F',
-    step1:'📤 Baseline → AI', step2:'📋 Load List', step3:'↓ Export',
+    step1:'Step1: 📋 Gen Prompt', step2:'Step2: 📥 Paste AI Reply', step3:'Step3: 📤 Copy Results',
     btnVL:'V Labels', btnEL:'E Labels', btnFL:'F Labels',
     btnWire:'Wire', btnSurf:'Faces', btnAxis:'Axes',
     viewLbl:'View:', btnV1:'V1 Top', btnV2:'V2 Top', btnF1:'F1 Top', btnRot:'Rotate',
@@ -2964,11 +2964,8 @@ function applySymPreset(startSym){
     for(let j=0;j<6;j++) axisSymbolState[j]='';
   } else {
     for(let j=0;j<6;j++) axisSymbolState[j] = SYM_PRESET[(i+j)%6];
-    // 旋轉視角：找 axisPairs[i] 中朝向北半球的端點作為新北極
-    const [va, vb] = axisPairs[i];
-    const posA = rt30V[va];
-    const dotA = posA[0]*northVec.x + posA[1]*northVec.y + posA[2]*northVec.z;
-    setNorthPole(dotA >= 0 ? rt30V[va] : rt30V[vb]);
+    // 永遠以 A1 軸的 V1 頂點（axisPairs[0][0]）為北極
+    setNorthPole(rt30V[axisPairs[0][0]]);
   }
   updateAxisLabels();
   buildATable();
@@ -2976,6 +2973,7 @@ function applySymPreset(startSym){
   else if(activeTab==='e') buildETable();
   else if(activeTab==='f') buildFTable();
   updatePlaneDropdowns();
+  reResolveItems(); // 換軸後用新符號映射重新解析高亮
 }
 
 document.querySelectorAll('.sym-pre').forEach(btn=>{
@@ -3590,8 +3588,31 @@ function syncTableSel(){
 
 // 儲存載入的問題清單
 let loadedItems = [];
+let rawItems = [];      // 原始未解析的 JSON items
+let rawTitle  = '';     // 原始標題
 let activeItemIdx = -1; // -1=全部, -2=母問題群組
 let activeParentQ = null;
+
+// 用目前的符號映射重新解析 rawItems，更新高亮
+function reResolveItems(){
+  if(rawItems.length===0) return;
+  const symMap = buildSymToOrig();
+  if(Object.keys(symMap).length===0) return;
+  const axisMap = buildAxisToV5Pairs(symMap);
+  loadedItems = rawItems.map(item => {
+    const r = resolveItem(item, symMap, axisMap);
+    if(r.faces.length){ const wi=getFaceWorld(r.faces[0]); r.world=wi!==null?WORLD_NAMES[wi]:null; }
+    else r.world=null;
+    return r;
+  });
+  activeItemIdx=-1; activeParentQ=null;
+  clearAllHighlights();
+  geoItems().forEach(applyItemHighlight);
+  buildTable(); syncTableSel();
+  const totalWarns=loadedItems.reduce((s,it)=>s+it.warns.length,0);
+  buildListPanel();
+  showListBanner(rawTitle, totalWarns);
+}
 
 function geoItems(){ return loadedItems.filter(it=>it.type!=='parent'); }
 
@@ -3754,6 +3775,8 @@ document.getElementById('modal-ok').addEventListener('click',()=>{
   // 接受單一物件或物件陣列
   const items = Array.isArray(parsed) ? parsed : [parsed];
   const title = Array.isArray(parsed) ? `${items.length} 個問題` : (parsed.title||'（無標題）');
+  rawItems = items;   // 儲存原始資料供換軸後重算
+  rawTitle  = title;
 
   // 解析每個 item，並用幾何計算覆蓋 world
   loadedItems = items.map(item => {
@@ -3780,17 +3803,11 @@ document.getElementById('modal-ok').addEventListener('click',()=>{
   buildListPanel();
   showListBanner(title, totalWarns);
 
-  if(totalWarns>0){
-    const warnLines = loadedItems.flatMap(it=>it.warns.map(w=>`[${it.title}] ${w}`));
-    showModalErr(`載入完成（${totalWarns} 項警告）：\n`+warnLines.slice(0,8).join('\n')+(warnLines.length>8?'\n…':''));
-    // 不自動關閉
-  } else {
-    document.getElementById('modal-load').classList.add('hidden');
-  }
+  document.getElementById('modal-load').classList.add('hidden');
 });
 document.getElementById('b-unload').addEventListener('click',()=>{
   clearAllHighlights();
-  loadedItems=[];
+  loadedItems=[]; rawItems=[]; rawTitle='';
   document.getElementById('list-panel').innerHTML='';
   listPanelOpen=false;
   document.getElementById('list-banner-toggle').textContent='▶';
@@ -4121,7 +4138,8 @@ ${spectraLines}
 面(faces)　faces 清單為當前軸配置下的直接相鄰面；清單外的組合也可輸出，系統會自動顯示兩極點間的幾何路徑帶
 頂點(vertices)　單軸極端或張力對 → "${ex1}+" 或 ["${ex1}+","${ex2}−"]
 邊(edges)　光譜內過渡 → {"type":"${ex1}+/{${ex1}+·${ex2}+·${ex3}−}","mode":"..."}
-　　edges 的 {…} 必須來自 v3s 清單中的三連點；不可自行組合不存在的三連點
+　　v3s 清單為當前配置下存在的三連點；清單外的三連點也可輸出，系統會顯示來自該 V5 的最近接邊
+　　頂點(vertices) 三連點格式 "${ex1}+·${ex2}+·${ex3}−" 若不在 v3s 清單，系統會顯示 2/3 V5 相符的最近接頂點
 　　mode：expansion＝語義往外展開　translation＝換框架轉譯　compensation＝補足支撐缺口　collapse＝語義壓縮坍縮
 
 每個問題請先輸出一個母問題說明，再輸出 2～4 個子問題：
@@ -4625,7 +4643,7 @@ function applyLang(){
   const secTitles = document.querySelectorAll('#modal-load .modal-section-title');
   if(secTitles[0]) secTitles[0].textContent = t.formatTitle;
   if(secTitles[1]) secTitles[1].textContent = t.pasteTitle;
-  set('modal-cancel', t.cancel); set('modal-ok', t.load);
+  set('modal-cancel', t.close); set('modal-ok', t.load);
 
   // Help modal
   setQ('#modal-help h2', t.helpTitle);
