@@ -1280,7 +1280,7 @@ body {
 
 /* ── RIGHT: panel ── */
 #panel {
-  width:400px; background:#1e2b42;
+  width:430px; background:#1e2b42;
   border-left:1px solid #304a6a;
   display:flex; flex-direction:column;
   flex-shrink:0;
@@ -1351,6 +1351,11 @@ body {
 }
 .btn:hover { border-color:#a78bfa; color:#a78bfa; }
 .btn.on { background:#304a6a; border-color:#a78bfa; color:#e2e8f0; }
+/* 連續開關群組 */
+.btn-group { display:flex; margin-left:6px; }
+.btn-group .btn { border-radius:0; margin:0; border-right-width:0; }
+.btn-group .btn:first-child { border-radius:3px 0 0 3px; }
+.btn-group .btn:last-child  { border-radius:0 3px 3px 0; border-right-width:1px; }
 .sym-pre { flex:1; padding:4px 2px; font-size:14px; text-align:center; color:#c4b5fd; border-color:#4c3a8a; position:relative; }
 [data-tip] { position:relative; }
 [data-tip]::after { content:attr(data-tip); position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%); background:#1e2b42; color:#e2e8f0; font:11px 'Courier New',monospace; white-space:nowrap; padding:4px 8px; border-radius:4px; border:1px solid #304a6a; pointer-events:none; opacity:0; transition:opacity .15s; z-index:999; }
@@ -1808,8 +1813,11 @@ tr[data-orig] { cursor:pointer; }
       <button class="btn" id="b-vv1">V1 頂</button>
       <button class="btn" id="b-vv13">V2 頂</button>
       <button class="btn" id="b-vf1">F1 頂</button>
-      <button class="btn on" id="b-rot" style="margin-left:14px">自轉</button>
-      <button class="btn" id="b-zen" title="療癒模式：高速自轉＋自動換色＋閃爍標號" style="margin-left:4px">☕</button>
+      <div class="btn-group">
+        <button class="btn on" id="b-rot" title="自動水平旋轉">自轉</button>
+        <button class="btn" id="b-xmas" title="療癒模式：定時切換著色與顯示｜搭配自轉→高速旋轉">🎄</button>
+        <button class="btn" id="b-zen" title="抓狂模式：高速亂轉＋自動換色＋閃爍">☕</button>
+      </div>
     </div>
     <div style="width:100%;height:1px;background:#1e2a3a;margin:2px 0"></div>
     <span style="font-size:10px;color:#4a5568;align-self:center">著色：</span>
@@ -2046,7 +2054,9 @@ const LANG_DATA = {
     step1:'第1步: 📋 生成提示詞', step2:'第2步: 📥 貼入AI回覆', step3:'第3步: 📤 複製結果給AI',
     btnVL:'V 標號', btnEL:'E 標號', btnFL:'F 標號',
     btnWire:'線框', btnSurf:'面片', btnAxis:'軸',
-    viewLbl:'視角：', btnV1:'V1 頂', btnV2:'V2 頂', btnF1:'F1 頂', btnRot:'自轉',
+    viewLbl:'視角：', btnV1:'V1 頂', btnV2:'V2 頂', btnF1:'F1 頂', btnRot:'自轉', tipRot:'自動水平旋轉',
+    btnXmas:'🎄', tipXmas:'療癒模式：定時切換著色與顯示｜搭配自轉→高速旋轉',
+    btnZen:'☕',  tipZen:'抓狂模式：每 3 秒換軸高速旋轉＋換色＋閃爍',
     colorLbl:'著色：',
     btnCube:'立方體', btnRainbow:'彩虹', btnV1b:'V1緯帶', btnV2b:'V2緯帶', btnFlash:'閃電',
     btnClr:'✕ 清除高亮', btn3D:'🌐 3D', btnNet:'🗺 展開圖', btnHelp:'? 使用說明',
@@ -2076,7 +2086,9 @@ const LANG_DATA = {
     step1:'Step1: 📋 Gen Prompt', step2:'Step2: 📥 Paste AI Reply', step3:'Step3: 📤 Copy Results',
     btnVL:'V Labels', btnEL:'E Labels', btnFL:'F Labels',
     btnWire:'Wire', btnSurf:'Faces', btnAxis:'Axes',
-    viewLbl:'View:', btnV1:'V1 Top', btnV2:'V2 Top', btnF1:'F1 Top', btnRot:'Rotate',
+    viewLbl:'View:', btnV1:'V1 Top', btnV2:'V2 Top', btnF1:'F1 Top', btnRot:'Rotate', tipRot:'Auto horizontal rotation',
+    btnXmas:'🎄', tipXmas:'Calm mode: cycles color & display | with Rotate → high-speed spin',
+    btnZen:'☕',  tipZen:'Frenzy mode: axis switch every 3s + color + flash',
     colorLbl:'Color:',
     btnCube:'Cube', btnRainbow:'Rainbow', btnV1b:'V1 Band', btnV2b:'V2 Band', btnFlash:'Flash',
     btnClr:'✕ Clear', btn3D:'🌐 3D', btnNet:'🗺 Net', btnHelp:'? Help',
@@ -3117,6 +3129,8 @@ function applyState(){
   gAxis.visible=state.axis;
   axisLabelLobjs.forEach(l=>l.visible=state.axis);
   controls.autoRotate=state.rot;
+  // 自轉 + 🎄 同時開 → 高速；其他情況 → 正常速度
+  controls.autoRotateSpeed = (xmasActive && state.rot) ? ZEN_SPEED : ZEN_NORMAL_SPEED;
   if(isNet2DMode) renderNet2D();
 }
 
@@ -3133,12 +3147,11 @@ function applyState(){
 controls.addEventListener('start',()=>{ state.rot=false; document.getElementById('b-rot').classList.remove('on'); controls.autoRotate=false; });
 
 // ── 療癒模式 ☕ ──
-let zenActive = false;
-let zenInterval = null;
-const ZEN_SPEED = 120;         // 高速自轉倍率（原始 ×10）
-const ZEN_NORMAL_SPEED = 1.0;  // 原始速度
-const ZEN_COLOR_MODES = [0,1,2,3,4];   // 要循環的著色模式
-const ZEN_DISP_SEQ = [                  // 線框/面片/軸 交錯開關（VEF標號全關）
+// ── 自動模式共用常數 ──────────────────────────────
+const ZEN_SPEED        = 120;
+const ZEN_NORMAL_SPEED = 1.0;
+const ZEN_COLOR_MODES  = [0,1,2,3,4];
+const ZEN_DISP_SEQ     = [
   {wire:true,  surf:false, axis:false},
   {wire:false, surf:true,  axis:false},
   {wire:false, surf:false, axis:true },
@@ -3146,22 +3159,32 @@ const ZEN_DISP_SEQ = [                  // 線框/面片/軸 交錯開關（VEF�
   {wire:false, surf:true,  axis:true },
   {wire:true,  surf:true,  axis:false},
 ];
-let _zenStep = 0;
+let _zenStep    = 0;
+let zenInterval = null;
 
-function zenTick(){
-  // 換著色模式
+// 🎄 療癒模式（水平高速）
+let xmasActive = false;
+
+// ☕ 抓狂模式（每秒換一條 RT30 對稱軸心旋轉）
+let zenActive        = false;
+let _zenBaseQuat     = null;
+let _zenCumQuat      = new THREE.Quaternion();   // 累積旋轉
+let _zenCurAxisVec   = new THREE.Vector3(0,1,0); // 每幀實際使用的旋轉軸（持續插值）
+let _zenNextAxisVec  = new THREE.Vector3(0,1,0); // 目標軸（每 0.5s 換一次）
+let _zenTiltInterval = null;
+const _zenTmpQuat    = new THREE.Quaternion();
+const ZEN_RAD_PER_FRAME = 0.21;  // ≈720°/s @ 60fps
+const ZEN_AXIS_LERP  = 0.10;     // 每幀插值比例（約 0.5s 內完成 96% 轉場）
+
+// ── 共用：換色 + 換顯示 ──────────────────────────
+function _modeCycleTick(){
   const nextColor = ZEN_COLOR_MODES[_zenStep % ZEN_COLOR_MODES.length];
   const cmBtnsAll = [0,1,2,3,4].map(m=>document.getElementById(`cm-${m}`));
   cmBtnsAll.forEach(b=>b.classList.remove('on'));
   cmBtnsAll[nextColor]?.classList.add('on');
-  colorMode = nextColor;
-  applyColorMode();
-
-  // VEF 標號全關
+  colorMode = nextColor; applyColorMode();
   Object.assign(state, {vl:false, el:false, fl:false});
   ['b-vl','b-el','b-fl'].forEach(id=>document.getElementById(id)?.classList.remove('on'));
-
-  // 換線框/面片/軸組合
   const disp = ZEN_DISP_SEQ[_zenStep % ZEN_DISP_SEQ.length];
   Object.assign(state, disp);
   ['wire','surf','axis'].forEach(k=>{
@@ -3172,35 +3195,72 @@ function zenTick(){
   _zenStep++;
 }
 
+// 共用收尾
+function _modeStop(){
+  clearInterval(zenInterval); zenInterval = null;
+  Object.assign(state, {vl:false, el:false, fl:false, wire:true, surf:true, axis:true});
+  ['b-vl','b-el','b-fl'].forEach(id=>document.getElementById(id)?.classList.remove('on'));
+  ['b-wire','b-surf','b-axis'].forEach(id=>document.getElementById(id)?.classList.add('on'));
+  colorMode=0; applyColorMode();
+  [0,1,2,3,4].map(m=>document.getElementById(`cm-${m}`)).forEach((b,i)=>b?.classList.toggle('on',i===0));
+  applyState();
+}
+
+// ── 🎄 療癒模式 ──────────────────────────────────
+function xmasTick(){ _modeCycleTick(); }
+
+function startXmas(){
+  if(zenActive) stopZen();
+  xmasActive = true;
+  document.getElementById('b-xmas').classList.add('on');
+  applyState(); // 重新計算速度（有自轉→高速，無自轉→不動）
+  _zenStep = 0; xmasTick();
+  zenInterval = setInterval(xmasTick, 5000);
+}
+
+function stopXmas(){
+  xmasActive = false;
+  document.getElementById('b-xmas').classList.remove('on');
+  _modeStop();
+}
+
+document.getElementById('b-xmas').addEventListener('click',()=>{
+  if(xmasActive) stopXmas(); else startXmas();
+});
+
+// ── ☕ 抓狂模式 ───────────────────────────────────
+function zenTick(){ _modeCycleTick(); }  // 5 秒換色 / 換顯示
+
+function _zenPickAxis(){
+  // 每 0.5s 隨機選 RT30 六條對稱軸其中一條，設為插值目標
+  const ai = Math.floor(Math.random() * 6);
+  _zenNextAxisVec.copy(getAxisDir(ai));
+}
+
 function startZen(){
+  if(xmasActive) stopXmas();
   zenActive = true;
   document.getElementById('b-zen').classList.add('on');
-  // 高速自轉
+  // 關閉 autoRotate，改為手動旋轉 rt30Group
   state.rot = true;
-  controls.autoRotate = true;
-  controls.autoRotateSpeed = ZEN_SPEED;
+  controls.autoRotate = false;
   document.getElementById('b-rot').classList.add('on');
-  _zenStep = 0;
-  zenTick();
-  zenInterval = setInterval(zenTick, 5000);
+  _zenBaseQuat = rt30Group.quaternion.clone();
+  _zenCumQuat.identity();
+  _zenPickAxis();
+  _zenCurAxisVec.copy(_zenNextAxisVec); // 起始時直接對齊，不需轉場
+  _zenStep = 0; zenTick();
+  zenInterval    = setInterval(zenTick,    5000);
+  _zenTiltInterval = setInterval(_zenPickAxis, 3000);
 }
 
 function stopZen(){
   zenActive = false;
   document.getElementById('b-zen').classList.remove('on');
-  clearInterval(zenInterval);
-  zenInterval = null;
-  // 恢復正常速度
-  controls.autoRotateSpeed = ZEN_NORMAL_SPEED;
-  // 恢復預設顯示狀態
-  Object.assign(state, {vl:false, el:false, fl:false, wire:true, surf:true, axis:true});
-  ['b-vl','b-el','b-fl'].forEach(id=>document.getElementById(id)?.classList.remove('on'));
-  ['b-wire','b-surf','b-axis'].forEach(id=>document.getElementById(id)?.classList.add('on'));
-  // 恢復預設著色（彩虹）
-  colorMode=0;
-  applyColorMode();
-  [0,1,2,3,4].map(m=>document.getElementById(`cm-${m}`)).forEach((b,i)=>b?.classList.toggle('on',i===0));
-  applyState();
+  clearInterval(_zenTiltInterval); _zenTiltInterval = null;
+  if(_zenBaseQuat){ rt30Group.quaternion.copy(_zenBaseQuat); _zenBaseQuat = null; }
+  _zenCumQuat.identity();
+  _modeStop();
 }
 
 document.getElementById('b-zen').addEventListener('click',()=>{
@@ -3663,10 +3723,18 @@ function loop(){
     rt30Group.quaternion.slerp(targetQuat, 0.10);
     if(rt30Group.quaternion.angleTo(targetQuat) < 0.001){
       rt30Group.quaternion.copy(targetQuat);
+      if(zenActive){ _zenBaseQuat = targetQuat.clone(); _zenCumQuat.identity(); }
       targetQuat = null;
     }
   }
   controls.update();
+  // 抓狂模式：軸向 slerp 插值後旋轉（固定速度，平滑換軸）
+  if(zenActive && _zenBaseQuat){
+    _zenCurAxisVec.lerp(_zenNextAxisVec, ZEN_AXIS_LERP).normalize();
+    _zenTmpQuat.setFromAxisAngle(_zenCurAxisVec, ZEN_RAD_PER_FRAME);
+    _zenCumQuat.multiply(_zenTmpQuat);
+    rt30Group.quaternion.copy(_zenBaseQuat).multiply(_zenCumQuat);
+  }
   renderer.render(scene, camera);
   labelRenderer.render(scene, camera);
 }
@@ -5108,6 +5176,9 @@ function applyLang(){
   set('b-vl', t.btnVL); set('b-el', t.btnEL); set('b-fl', t.btnFL);
   set('b-wire', t.btnWire); set('b-surf', t.btnSurf); set('b-axis', t.btnAxis);
   set('b-vv1', t.btnV1); set('b-vv13', t.btnV2); set('b-vf1', t.btnF1); set('b-rot', t.btnRot);
+  document.getElementById('b-rot').title  = t.tipRot;
+  set('b-xmas', t.btnXmas); document.getElementById('b-xmas').title = t.tipXmas;
+  set('b-zen',  t.btnZen);  document.getElementById('b-zen').title  = t.tipZen;
   set('cm-3', t.btnCube); set('cm-0', t.btnRainbow);
   set('cm-1', t.btnV1b); set('cm-2', t.btnV2b); set('cm-4', t.btnFlash);
   set('b-clr', t.btnClr); set('b-help', t.btnHelp);
