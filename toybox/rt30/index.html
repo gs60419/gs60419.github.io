@@ -1809,6 +1809,7 @@ tr[data-orig] { cursor:pointer; }
       <button class="btn" id="b-vv13">V2 頂</button>
       <button class="btn" id="b-vf1">F1 頂</button>
       <button class="btn on" id="b-rot" style="margin-left:14px">自轉</button>
+      <button class="btn" id="b-zen" title="療癒模式：高速自轉＋自動換色＋閃爍標號" style="margin-left:4px">☕</button>
     </div>
     <div style="width:100%;height:1px;background:#1e2a3a;margin:2px 0"></div>
     <span style="font-size:10px;color:#4a5568;align-self:center">著色：</span>
@@ -3130,6 +3131,81 @@ function applyState(){
   });
 
 controls.addEventListener('start',()=>{ state.rot=false; document.getElementById('b-rot').classList.remove('on'); controls.autoRotate=false; });
+
+// ── 療癒模式 ☕ ──
+let zenActive = false;
+let zenInterval = null;
+const ZEN_SPEED = 120;         // 高速自轉倍率（原始 ×10）
+const ZEN_NORMAL_SPEED = 1.0;  // 原始速度
+const ZEN_COLOR_MODES = [0,1,2,3,4];   // 要循環的著色模式
+const ZEN_DISP_SEQ = [                  // 線框/面片/軸 交錯開關（VEF標號全關）
+  {wire:true,  surf:false, axis:false},
+  {wire:false, surf:true,  axis:false},
+  {wire:false, surf:false, axis:true },
+  {wire:true,  surf:false, axis:true },
+  {wire:false, surf:true,  axis:true },
+  {wire:true,  surf:true,  axis:false},
+];
+let _zenStep = 0;
+
+function zenTick(){
+  // 換著色模式
+  const nextColor = ZEN_COLOR_MODES[_zenStep % ZEN_COLOR_MODES.length];
+  const cmBtnsAll = [0,1,2,3,4].map(m=>document.getElementById(`cm-${m}`));
+  cmBtnsAll.forEach(b=>b.classList.remove('on'));
+  cmBtnsAll[nextColor]?.classList.add('on');
+  colorMode = nextColor;
+  applyColorMode();
+
+  // VEF 標號全關
+  Object.assign(state, {vl:false, el:false, fl:false});
+  ['b-vl','b-el','b-fl'].forEach(id=>document.getElementById(id)?.classList.remove('on'));
+
+  // 換線框/面片/軸組合
+  const disp = ZEN_DISP_SEQ[_zenStep % ZEN_DISP_SEQ.length];
+  Object.assign(state, disp);
+  ['wire','surf','axis'].forEach(k=>{
+    document.getElementById({wire:'b-wire',surf:'b-surf',axis:'b-axis'}[k])
+      ?.classList.toggle('on', state[k]);
+  });
+  applyState();
+  _zenStep++;
+}
+
+function startZen(){
+  zenActive = true;
+  document.getElementById('b-zen').classList.add('on');
+  // 高速自轉
+  state.rot = true;
+  controls.autoRotate = true;
+  controls.autoRotateSpeed = ZEN_SPEED;
+  document.getElementById('b-rot').classList.add('on');
+  _zenStep = 0;
+  zenTick();
+  zenInterval = setInterval(zenTick, 5000);
+}
+
+function stopZen(){
+  zenActive = false;
+  document.getElementById('b-zen').classList.remove('on');
+  clearInterval(zenInterval);
+  zenInterval = null;
+  // 恢復正常速度
+  controls.autoRotateSpeed = ZEN_NORMAL_SPEED;
+  // 恢復預設顯示狀態
+  Object.assign(state, {vl:false, el:false, fl:false, wire:true, surf:true, axis:true});
+  ['b-vl','b-el','b-fl'].forEach(id=>document.getElementById(id)?.classList.remove('on'));
+  ['b-wire','b-surf','b-axis'].forEach(id=>document.getElementById(id)?.classList.add('on'));
+  // 恢復預設著色（彩虹）
+  colorMode=0;
+  applyColorMode();
+  [0,1,2,3,4].map(m=>document.getElementById(`cm-${m}`)).forEach((b,i)=>b?.classList.toggle('on',i===0));
+  applyState();
+}
+
+document.getElementById('b-zen').addEventListener('click',()=>{
+  if(zenActive) stopZen(); else startZen();
+});
 
 applyState();
 
