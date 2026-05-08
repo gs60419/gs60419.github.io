@@ -1277,6 +1277,28 @@ body {
   position:absolute; top:0; left:0; pointer-events:none;
   width:100%; height:100%;
 }
+#weee-banner {
+  display:none;
+  position:absolute; bottom:18px; left:0; right:0;
+  text-align:center; pointer-events:none;
+  font-size:2.2rem; font-weight:900; letter-spacing:2px;
+  font-family:'Courier New', monospace;
+  background: linear-gradient(90deg,#f87171,#fb923c,#fbbf24,#34d399,#60a5fa,#a78bfa,#f472b6);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation: weee-pulse 0.4s ease-in-out infinite alternate,
+             weee-rainbow 1.2s linear infinite;
+  text-shadow: none;
+  filter: drop-shadow(0 0 12px rgba(167,139,250,0.8));
+}
+@keyframes weee-pulse {
+  from { transform: scale(1);   opacity: 0.85; }
+  to   { transform: scale(1.06); opacity: 1;   }
+}
+@keyframes weee-rainbow {
+  0%   { filter: drop-shadow(0 0 10px #f87171) hue-rotate(0deg); }
+  100% { filter: drop-shadow(0 0 10px #a78bfa) hue-rotate(360deg); }
+}
 
 /* ── RIGHT: panel ── */
 #panel {
@@ -1766,6 +1788,7 @@ tr[data-orig] { cursor:pointer; }
 <body>
 
 <div id="viewer">
+  <div id="weee-banner">WEEEEEEEEEEE~~~~~~</div>
   <div class="legend">
     <div><span style="background:#f5c518"></span>V5 頂點（正十二面型，12個）</div>
     <div><span style="background:#60a5fa"></span>V3 頂點（正二十面型，20個）</div>
@@ -3170,11 +3193,15 @@ let zenActive        = false;
 let _zenBaseQuat     = null;
 let _zenCumQuat      = new THREE.Quaternion();   // 累積旋轉
 let _zenCurAxisVec   = new THREE.Vector3(0,1,0); // 每幀實際使用的旋轉軸（持續插值）
-let _zenNextAxisVec  = new THREE.Vector3(0,1,0); // 目標軸（每 0.5s 換一次）
+let _zenNextAxisVec  = new THREE.Vector3(0,1,0); // 目標軸（每 3s 換一次）
 let _zenTiltInterval = null;
 const _zenTmpQuat    = new THREE.Quaternion();
 const ZEN_RAD_PER_FRAME = 0.21;  // ≈720°/s @ 60fps
-const ZEN_AXIS_LERP  = 0.10;     // 每幀插值比例（約 0.5s 內完成 96% 轉場）
+let ZEN_AXIS_LERP    = 0.10;     // 每幀插值比例（彩蛋觸發後加速）
+// 彩蛋：轉滿 100 圈觸發
+let _zenRotAccum  = 0;
+let _zenEasterEgg = false;
+const ZEN_EGG_THRESHOLD = 2 * Math.PI * 100; // 100 圈
 
 // ── 共用：換色 + 換顯示 ──────────────────────────
 function _modeCycleTick(){
@@ -3247,6 +3274,8 @@ function startZen(){
   document.getElementById('b-rot').classList.add('on');
   _zenBaseQuat = rt30Group.quaternion.clone();
   _zenCumQuat.identity();
+  _zenRotAccum = 0; _zenEasterEgg = false;
+  document.getElementById('weee-banner').style.display = 'none';
   _zenPickAxis();
   _zenCurAxisVec.copy(_zenNextAxisVec); // 起始時直接對齊，不需轉場
   _zenStep = 0; zenTick();
@@ -3260,6 +3289,9 @@ function stopZen(){
   clearInterval(_zenTiltInterval); _zenTiltInterval = null;
   if(_zenBaseQuat){ rt30Group.quaternion.copy(_zenBaseQuat); _zenBaseQuat = null; }
   _zenCumQuat.identity();
+  _zenRotAccum = 0; _zenEasterEgg = false;
+  ZEN_AXIS_LERP = 0.10;
+  document.getElementById('weee-banner').style.display = 'none';
   _modeStop();
 }
 
@@ -3734,6 +3766,20 @@ function loop(){
     _zenTmpQuat.setFromAxisAngle(_zenCurAxisVec, ZEN_RAD_PER_FRAME);
     _zenCumQuat.multiply(_zenTmpQuat);
     rt30Group.quaternion.copy(_zenBaseQuat).multiply(_zenCumQuat);
+    // 🥚 彩蛋：累計 100 圈後觸發
+    if(!_zenEasterEgg){
+      _zenRotAccum += ZEN_RAD_PER_FRAME;
+      if(_zenRotAccum >= ZEN_EGG_THRESHOLD){
+        _zenEasterEgg = true;
+        // 閃爍 + 換軸 全部加速到 0.1 秒
+        clearInterval(zenInterval);
+        clearInterval(_zenTiltInterval);
+        zenInterval      = setInterval(zenTick,    100);
+        _zenTiltInterval = setInterval(_zenPickAxis, 100);
+        ZEN_AXIS_LERP = 0.40;
+        document.getElementById('weee-banner').style.display = 'block';
+      }
+    }
   }
   renderer.render(scene, camera);
   labelRenderer.render(scene, camera);
