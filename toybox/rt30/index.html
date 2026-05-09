@@ -1278,6 +1278,7 @@ body {
   border-bottom:1px solid rgba(255,255,255,.55); color:#f0f6fc;
   box-shadow:0 12px 30px rgba(0,79,135,.22);
   backdrop-filter:blur(18px) saturate(1.35);
+  font-family:"Microsoft JhengHei UI","Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;
 }
 .global-topbar a { color:inherit; text-decoration:none; }
 .global-brand { display:inline-flex; align-items:center; gap:10px; font-weight:800; white-space:nowrap; }
@@ -1296,14 +1297,16 @@ body {
 .global-nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; }
 .global-nav a,
 .global-nav summary {
-  min-height:34px; padding:0 13px; border:1px solid rgba(255,255,255,.62);
+  min-height:36px; padding:0 14px; border:1px solid rgba(255,255,255,.62);
   display:inline-flex; align-items:center; justify-content:center;
   background:
     linear-gradient(180deg, rgba(255,255,255,.40), rgba(255,255,255,.12)),
     rgba(0,77,145,.18);
-  font-family:"Noto Sans TC","Microsoft JhengHei","Trebuchet MS",system-ui,sans-serif;
-  font-size:13px; font-weight:800;
-  line-height:1.35;
+  font-family:inherit;
+  font-size:14px; font-weight:700;
+  line-height:1.45;
+  letter-spacing:0;
+  text-shadow:none;
   border-radius:8px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.72), 0 6px 18px rgba(0,64,120,.16);
 }
