@@ -1000,6 +1000,16 @@ h1 {
   line-height: 1.6;
 }
 
+.realm-route-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.realm-route-list li {
+  min-height: 230px;
+  gap: 12px;
+}
+
 .toe-route-list {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
