@@ -289,38 +289,7 @@ const DEFAULT = {
   startAngle: 0,
   bgColor: '#ffffff',
   activeRing: 0,
-  connections: [
-    {
-      id: 1,
-      name: '發散三角',
-      color: '#ffa200',
-      width: 5,
-      opacity: 1,
-      close: true,
-      dash: false,
-      fillOpacity: 0,
-      points: [
-        { ri: 3, si: 0 },
-        { ri: 3, si: 2 },
-        { ri: 3, si: 4 }
-      ]
-    },
-    {
-      id: 2,
-      name: '收斂三角',
-      color: '#02b3c0',
-      width: 5,
-      opacity: 1,
-      close: true,
-      dash: false,
-      fillOpacity: 0,
-      points: [
-        { ri: 3, si: 1 },
-        { ri: 3, si: 3 },
-        { ri: 3, si: 5 }
-      ]
-    }
-  ],
+  connections: [],
   rings: [
     {
       name: '中心',
@@ -361,7 +330,7 @@ const DEFAULT = {
 //  State
 // ════════════════════════════════════════════════════
 let S = JSON.parse(JSON.stringify(DEFAULT));
-let _connId = DEFAULT.connections.length;
+let _connId = 0;
 
 // ════════════════════════════════════════════════════
 //  Math helpers
@@ -1180,7 +1149,7 @@ function deleteRing(ri){
 
 function resetDefault(){
   S = JSON.parse(JSON.stringify(DEFAULT));
-  _connId = DEFAULT.connections.length;
+  _connId = 0;
   renderControls();
   renderChart();
 }
