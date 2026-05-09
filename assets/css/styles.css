@@ -905,6 +905,18 @@ h1 {
   line-height: 1.65;
 }
 
+.article-prose p.plain-first {
+  color: var(--muted);
+  font-size: 1.06rem;
+  font-weight: 400;
+  line-height: 1.9;
+}
+
+.article-prose p.plain-first strong {
+  color: var(--ink);
+  font-weight: 900;
+}
+
 .thought-experiment-note {
   width: 100%;
 }
