@@ -1063,6 +1063,15 @@ h1 {
   font-weight: 900;
 }
 
+.mandala-figure {
+  width: min(760px, 100%);
+  margin-inline: auto;
+}
+
+.mandala-figure img {
+  aspect-ratio: 1 / 1;
+}
+
 .fairy-grid article {
   display: grid;
   gap: 8px;
