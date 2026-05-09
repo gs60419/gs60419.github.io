@@ -1,17 +1,21 @@
 :root {
   color-scheme: light;
-  --ink: #143252;
-  --muted: #54718b;
-  --paper: #f7fcff;
-  --cloud: #ffffff;
-  --aqua: #8be8f2;
-  --blue: #4ca6ff;
-  --deep-blue: #1f67c1;
-  --lime: #b8ef7d;
-  --pink: #ff9ecc;
-  --yellow: #ffe16b;
-  --line: #b8e7f5;
-  --shadow: rgba(31, 103, 193, 0.12);
+  --ink: #08315f;
+  --muted: #47718f;
+  --paper: #dff8ff;
+  --cloud: rgba(255, 255, 255, 0.72);
+  --aqua: #7ee8ff;
+  --blue: #2f9dff;
+  --deep-blue: #0966c3;
+  --lime: #8be36a;
+  --pink: #ff9ed8;
+  --yellow: #fff06d;
+  --line: rgba(111, 213, 255, 0.46);
+  --shadow: rgba(0, 91, 154, 0.18);
+  --glass: rgba(255, 255, 255, 0.56);
+  --glass-strong: rgba(255, 255, 255, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.72);
+  --aero-shadow: 0 18px 42px rgba(0, 104, 170, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.95);
   font-family: "Noto Sans TC", "Microsoft JhengHei", "Trebuchet MS", system-ui, sans-serif;
 }
 
@@ -24,10 +28,24 @@ body {
   min-height: 100vh;
   color: var(--ink);
   background:
-    linear-gradient(90deg, rgba(76, 166, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(rgba(76, 166, 255, 0.08) 1px, transparent 1px),
-    var(--paper);
-  background-size: 24px 24px;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0 8%, rgba(255, 255, 255, 0) 28%),
+    linear-gradient(180deg, #0d85dc 0%, #67caff 34%, #dcfbff 57%, #7ee8ff 72%, #2fbf82 100%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0));
+  background-attachment: fixed;
+  background-size: auto;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, 0) 0 32%, rgba(255, 255, 255, 0.48) 42%, rgba(255, 255, 255, 0) 54%),
+    linear-gradient(170deg, rgba(255, 255, 255, 0.56) 0 9%, rgba(255, 255, 255, 0) 28%),
+    linear-gradient(0deg, rgba(41, 167, 122, 0.36) 0 13%, rgba(41, 167, 122, 0) 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0) 0 61%, rgba(255, 255, 255, 0.42) 68%, rgba(255, 255, 255, 0) 78%);
 }
 
 a {
@@ -55,9 +73,13 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-  color: #f0f6fc;
-  background: #0d1117;
-  border-bottom: 1px solid #30363d;
+  color: #ffffff;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.08)),
+    linear-gradient(90deg, rgba(0, 117, 206, 0.90), rgba(0, 188, 214, 0.78), rgba(91, 190, 86, 0.70));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 12px 30px rgba(0, 79, 135, 0.22);
+  backdrop-filter: blur(18px) saturate(1.35);
 }
 
 .brand,
@@ -93,6 +115,7 @@ a {
 
 .site-header .brand-mark {
   border-color: #f0f6fc;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 0 14px rgba(255, 255, 255, 0.45);
 }
 
 .site-nav {
@@ -145,9 +168,12 @@ a {
   display: grid;
   gap: 6px;
   padding: 8px;
-  border: 1px solid #30363d;
-  background: #0d1117;
-  box-shadow: 0 12px 30px rgba(13, 17, 23, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(220, 248, 255, 0.72));
+  box-shadow: 0 16px 36px rgba(0, 91, 154, 0.20);
+  backdrop-filter: blur(18px) saturate(1.3);
+  border-radius: 8px;
 }
 
 .nav-dropdown a {
@@ -372,10 +398,119 @@ h1 {
 
 .site-header .site-nav a,
 .site-header .site-nav summary {
-  border-color: #57606a;
-  background: #161b22;
-  color: #f0f6fc;
-  box-shadow: none;
+  border-color: rgba(255, 255, 255, 0.62);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.40), rgba(255, 255, 255, 0.12)),
+    rgba(0, 77, 145, 0.18);
+  color: #ffffff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), 0 6px 18px rgba(0, 64, 120, 0.16);
+  text-shadow: 0 1px 1px rgba(0, 57, 105, 0.38);
+  border-radius: 8px;
+}
+
+.site-header .nav-dropdown a {
+  border-color: rgba(255, 255, 255, 0.72);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(206, 244, 255, 0.70));
+  color: var(--ink);
+  text-shadow: none;
+}
+
+.hero,
+.first-visit,
+.project-card,
+.toybox,
+.closing-note,
+.intro-panel,
+.book-hero,
+.book-hero-with-image,
+.book-statement,
+.book-list li,
+.version-card,
+.formula-card,
+.detail-card,
+.route-list li,
+.life-note,
+.concept-card,
+.quiz-card,
+.result-panel,
+.syntax-card,
+.rt30-card,
+.rt30-example,
+.adventurer-card,
+.guild-card,
+.series-hero,
+.series-card {
+  border-color: rgba(255, 255, 255, 0.72) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.48)) !important;
+  box-shadow: var(--aero-shadow) !important;
+  backdrop-filter: blur(16px) saturate(1.35);
+  border-radius: 8px;
+}
+
+.hero-copy,
+.book-hero,
+.book-statement,
+.project-content,
+.life-hero-copy,
+.adventurer-copy,
+.article-prose,
+.card-reading,
+.stat-card,
+.origin-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.70), rgba(255, 255, 255, 0.34)) !important;
+  backdrop-filter: blur(10px) saturate(1.25);
+}
+
+.button,
+.site-footer a,
+.toy-link,
+.choice-option,
+button,
+input,
+select,
+textarea {
+  border-color: rgba(255, 255, 255, 0.72) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(197, 239, 255, 0.72)) !important;
+  box-shadow: 0 8px 20px rgba(0, 110, 180, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+  border-radius: 8px;
+}
+
+.button:hover,
+.site-nav a:hover,
+.site-nav summary:hover,
+.site-footer a:hover,
+.toy-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0, 110, 180, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+.kicker,
+.book-number,
+.route-list li::before,
+.module-number {
+  color: #0076d8;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.70);
+}
+
+.section-heading h2,
+.book-hero h1,
+.hero-copy h1 {
+  color: #073c74;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.62);
+}
+
+.site-footer {
+  margin-top: 52px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  background: rgba(255, 255, 255, 0.40);
+  box-shadow: var(--aero-shadow);
+  backdrop-filter: blur(14px) saturate(1.25);
+  border-radius: 8px 8px 0 0;
 }
 
 .disabled {
