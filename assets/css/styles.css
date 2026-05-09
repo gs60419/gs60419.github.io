@@ -477,6 +477,10 @@ h1 {
   padding: 0 0 8px;
 }
 
+.book-section .section-heading {
+  padding-inline: 4px;
+}
+
 .book-section > .section-heading:first-child,
 .toybox > .section-heading:first-child,
 .playground > .section-heading:first-child,
@@ -1100,12 +1104,13 @@ textarea {
 
 .book-statement {
   margin: 34px 0 72px;
+  padding: 24px 28px;
   font-size: clamp(1.35rem, 3vw, 2.35rem);
   font-weight: 900;
 }
 
 .book-statement p {
-  width: min(930px, 100%);
+  width: 100%;
   margin: 0;
   line-height: 1.35;
 }
@@ -1123,10 +1128,14 @@ textarea {
 }
 
 .article-prose {
-  width: min(900px, 100%);
+  width: 100%;
   margin-bottom: 24px;
+  padding: 28px;
   font-size: 1.06rem;
   line-height: 1.9;
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  border-radius: 8px;
+  box-shadow: var(--aero-shadow);
 }
 
 .article-prose p {
@@ -2083,6 +2092,19 @@ textarea {
 
   .hero-copy {
     padding: 14px 14px 16px;
+  }
+
+  .book-section,
+  .first-visit,
+  .toybox,
+  .playground,
+  .about-page {
+    padding: 18px;
+  }
+
+  .book-statement,
+  .article-prose {
+    padding: 18px;
   }
 
   .project-grid,
