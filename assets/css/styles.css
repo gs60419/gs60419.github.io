@@ -68,6 +68,7 @@ a {
 
 .brand,
 .site-nav a,
+.site-nav summary,
 .site-footer a {
   text-decoration: none;
 }
@@ -99,15 +100,59 @@ a {
   gap: 8px;
   flex-wrap: wrap;
   justify-content: flex-end;
+  align-items: center;
 }
 
 .site-nav a,
+.site-nav summary,
 .site-footer a,
 .button {
   border: 2px solid var(--ink);
   background: var(--cloud);
   padding: 9px 13px;
   box-shadow: 4px 4px 0 var(--shadow);
+}
+
+.nav-menu {
+  position: relative;
+}
+
+.nav-menu summary {
+  display: block;
+  cursor: pointer;
+  list-style: none;
+}
+
+.nav-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav-menu summary::after {
+  content: "▾";
+  margin-left: 8px;
+  font-size: 0.78em;
+}
+
+.nav-menu[open] summary::after {
+  content: "▴";
+}
+
+.nav-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 180px;
+  display: grid;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid #30363d;
+  background: #0d1117;
+  box-shadow: 0 12px 30px rgba(13, 17, 23, 0.28);
+}
+
+.nav-dropdown a {
+  display: block;
+  white-space: nowrap;
 }
 
 main {
@@ -319,12 +364,14 @@ h1 {
 
 .button:hover,
 .site-nav a:hover,
+.site-nav summary:hover,
 .site-footer a:hover,
 .toy-link:hover {
   transform: translate(-2px, -2px);
 }
 
-.site-header .site-nav a {
+.site-header .site-nav a,
+.site-header .site-nav summary {
   border-color: #57606a;
   background: #161b22;
   color: #f0f6fc;
@@ -1858,6 +1905,12 @@ h1 {
 
   .site-header .site-nav {
     justify-content: flex-start;
+  }
+
+  .nav-dropdown {
+    position: static;
+    min-width: 0;
+    margin-top: 8px;
   }
 
   .hero-image-wrap {
