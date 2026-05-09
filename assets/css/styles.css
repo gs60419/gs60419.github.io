@@ -443,7 +443,7 @@ h1 {
 .series-card {
   border-color: rgba(255, 255, 255, 0.72) !important;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.48)) !important;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(238, 252, 255, 0.84)) !important;
   box-shadow: var(--aero-shadow) !important;
   backdrop-filter: blur(16px) saturate(1.35);
   border-radius: 8px;
@@ -460,8 +460,28 @@ h1 {
 .stat-card,
 .origin-card {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.70), rgba(255, 255, 255, 0.34)) !important;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(242, 253, 255, 0.74)) !important;
   backdrop-filter: blur(10px) saturate(1.25);
+}
+
+.first-visit,
+.toybox,
+.closing-note,
+.book-section,
+.playground,
+.about-page {
+  padding: 28px;
+}
+
+.section-heading {
+  padding: 0 0 8px;
+}
+
+.book-section > .section-heading:first-child,
+.toybox > .section-heading:first-child,
+.playground > .section-heading:first-child,
+.first-visit > .section-heading:first-child {
+  margin-top: 0;
 }
 
 .button,
@@ -477,6 +497,14 @@ textarea {
     linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(197, 239, 255, 0.72)) !important;
   box-shadow: 0 8px 20px rgba(0, 110, 180, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
   border-radius: 8px;
+}
+
+.intro-actions {
+  padding: 4px;
+}
+
+.toy-list {
+  padding: 4px;
 }
 
 .button:hover,
@@ -560,7 +588,7 @@ textarea {
 }
 
 .closing-note {
-  padding: 42px 0 64px;
+  padding: 42px 28px 64px;
   font-size: clamp(1.4rem, 3vw, 2.4rem);
   font-weight: 800;
 }
