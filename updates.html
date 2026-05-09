@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="關於 Goofy Toymaker。">
-    <title>關於 | Goofy Toymaker</title>
+    <meta name="description" content="Goofy Toymaker 的網站更新日誌。">
+    <title>更新日誌 | Goofy Toymaker</title>
     <link rel="stylesheet" href="assets/css/styles.css">
   </head>
   <body>
@@ -61,34 +61,55 @@
       </nav>
     </header>
 
-    <main class="about-page">
-      <section class="about-hero" aria-labelledby="about-title">
-        <img class="about-banner" src="assets/images/about-banner.jpg" alt="A simple pixel-style banner">
-        <div class="about-copy">
-          <p class="kicker">About</p>
-          <h1 id="about-title">一個以發想為主體的個人紀錄系統。</h1>
-          <p class="about-subtitle">A personal system for ongoing idea generation.</p>
+    <main class="project-intro book-page">
+      <section class="book-hero" aria-labelledby="updates-title">
+        <p class="kicker">Site Log</p>
+        <h1 id="updates-title">更新日誌</h1>
+        <p class="intro-lead">這裡記錄網站內容層級的更新。不是每一次排版或 commit 都會列出，而是整理成讀者看得懂的變化。</p>
+        <div class="intro-actions">
+          <a class="button" href="#latest">最近更新</a>
+          <a class="button secondary-button" href="index.html">回首頁</a>
         </div>
       </section>
 
-      <section class="about-text" aria-label="About text">
-        <div class="language-block zh">
-          <p>收錄大量未經驗證的概念與其衍生結構，並轉化為可供 AI 操作的思考玩具。</p>
-          <p>不具學術定位，<br>不作為理論或方法論使用，<br>也不是產品展示。</p>
-          <p>僅作為想法的持續生成與留存。</p>
+      <section class="book-section" id="latest" aria-labelledby="latest-title">
+        <div class="section-heading">
+          <p class="kicker">Latest</p>
+          <h2 id="latest-title">最近更新</h2>
         </div>
-
-        <div class="language-block secondary-language">
-          <p>A collection of unverified concepts and improvised structures, turned into small "thinking toys" for AI interaction.</p>
-          <p>Not academic.<br>Not a formal theory.<br>Not a product.</p>
-          <p>Just a record of continuous exploration.</p>
+        <div class="detail-grid">
+          <article class="detail-card">
+            <h3>2026.05.09</h3>
+            <p>新增 Toybox 總覽頁，並把全站導覽中的 Toybox 改成可展開清單，方便之後新增更多互動工具。</p>
+            <a class="button" href="toybox/index.html">看 Toybox</a>
+          </article>
+          <article class="detail-card">
+            <h3>2026.05.09</h3>
+            <p>全站頂部導覽改成深色 sticky 橫條，並加入小屁論、等等系列、RT30 與 Toybox 的下拉選單。</p>
+            <a class="button" href="index.html">回首頁</a>
+          </article>
+          <article class="detail-card">
+            <h3>2026.05.09</h3>
+            <p>小屁論 1.0 主頁新增建議閱讀順序，讓第一次閱讀的人可以從差異第一因一路讀到利變思想實驗。</p>
+            <a class="button" href="xiaopi/1-0/index.html#reading-title">看閱讀順序</a>
+          </article>
+          <article class="detail-card">
+            <h3>2026.05.09</h3>
+            <p>整理六界生成鏈、六界與降熵小迴圈、惡魔種子與絞殺樹等 1.0 支線頁面，讓語氣更像公開文章。</p>
+            <a class="button" href="xiaopi/1-0/index.html">看 1.0</a>
+          </article>
+          <article class="detail-card">
+            <h3>2026.05.08</h3>
+            <p>小屁論公開頁面開始整理成版本式入口，新增 1.0 到 8.0 的瀏覽架構與主要版本頁。</p>
+            <a class="button" href="xiaopi/index.html">看小屁論</a>
+          </article>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <span>Goofy Toymaker</span>
-      <a href="index.html">回到遊樂場</a>
+      <span>更新日誌</span>
+      <a href="index.html">回首頁</a>
     </footer>
   </body>
 </html>
