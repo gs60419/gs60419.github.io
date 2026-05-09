@@ -1314,7 +1314,7 @@ body {
 .global-menu summary::after { content:"▾"; margin-left:7px; font-size:.78em; }
 .global-menu[open] summary::after { content:"▴"; }
 .global-dropdown {
-  position:absolute; top:calc(100% + 8px); left:0; min-width:170px;
+  position:absolute; top:calc(100% + 8px); right:0; min-width:170px; width:max-content;
   display:grid; gap:6px; padding:8px;
   border:1px solid rgba(255,255,255,.58);
   background:linear-gradient(180deg, rgba(255,255,255,.82), rgba(220,248,255,.72));
@@ -1323,7 +1323,7 @@ body {
   border-radius:8px;
 }
 .global-dropdown a {
-  display:block; white-space:nowrap;
+  min-width:160px; display:flex; align-items:center; justify-content:flex-start; white-space:nowrap;
   color:#08315f;
   background:linear-gradient(180deg, rgba(255,255,255,.86), rgba(206,244,255,.70));
   text-shadow:none;
@@ -1346,7 +1346,7 @@ body {
     align-items:flex-start;
   }
   .global-topbar.nav-open .global-nav { display:flex; }
-  .global-dropdown { position:static; min-width:0; margin-top:8px; }
+  .global-dropdown { position:static; min-width:0; width:auto; margin-top:8px; }
 }
 
 @media (max-width:520px) {
@@ -2217,6 +2217,14 @@ if (globalTopbar && globalMenuButton) {
     globalMenuButton.setAttribute('aria-expanded', String(isOpen));
   });
 }
+document.querySelectorAll('.global-menu').forEach((menu) => {
+  menu.addEventListener('toggle', () => {
+    if (!menu.open) return;
+    document.querySelectorAll('.global-menu[open]').forEach((other) => {
+      if (other !== menu) other.open = false;
+    });
+  });
+});
 
 // ── i18n 早期定義（buildTable 需要 T()）──
 const LANG_DATA = {
