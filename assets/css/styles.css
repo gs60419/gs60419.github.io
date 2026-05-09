@@ -1022,6 +1022,23 @@ h1 {
   gap: 12px;
 }
 
+.reading-route-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.reading-route-list li {
+  min-height: 260px;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 12px;
+}
+
+.reading-route-list .button {
+  align-self: end;
+  justify-self: start;
+  margin-top: auto;
+}
+
 .toe-route-list {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
