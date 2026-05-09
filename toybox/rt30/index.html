@@ -1296,11 +1296,13 @@ body {
 .global-nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; }
 .global-nav a,
 .global-nav summary {
-  padding:7px 11px; border:1px solid rgba(255,255,255,.62);
+  min-height:34px; padding:0 13px; border:1px solid rgba(255,255,255,.62);
+  display:inline-flex; align-items:center; justify-content:center;
   background:
     linear-gradient(180deg, rgba(255,255,255,.40), rgba(255,255,255,.12)),
     rgba(0,77,145,.18);
   font-size:13px; font-weight:800;
+  line-height:1;
   border-radius:8px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.72), 0 6px 18px rgba(0,64,120,.16);
 }
