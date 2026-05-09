@@ -82,6 +82,31 @@ a {
   gap: 8px;
 }
 
+.xiaopi-subnav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto 18px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 0 8px;
+  scrollbar-width: thin;
+}
+
+.xiaopi-subnav a {
+  flex: 0 0 auto;
+  border: 2px solid var(--ink);
+  background: rgba(255, 255, 255, 0.94);
+  padding: 8px 12px;
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+
 .site-nav a,
 .site-footer a,
 .button {
@@ -300,6 +325,7 @@ h1 {
 
 .button:hover,
 .site-nav a:hover,
+.xiaopi-subnav a:hover,
 .site-footer a:hover,
 .toy-link:hover {
   transform: translate(-2px, -2px);
@@ -1816,7 +1842,8 @@ h1 {
 
 @media (max-width: 820px) {
   .site-header,
-  .site-footer {
+  .site-footer,
+  .xiaopi-subnav {
     width: min(100% - 24px, 1120px);
   }
 
