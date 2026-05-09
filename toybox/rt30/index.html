@@ -1297,8 +1297,9 @@ body {
 .global-nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; }
 .global-nav a,
 .global-nav summary {
-  min-height:36px; padding:0 14px; border:1px solid rgba(255,255,255,.62);
+  height:36px; min-height:36px; padding:0 14px; border:1px solid rgba(255,255,255,.62);
   display:inline-flex; align-items:center; justify-content:center;
+  box-sizing:border-box; vertical-align:top;
   background:
     linear-gradient(180deg, rgba(255,255,255,.40), rgba(255,255,255,.12)),
     rgba(0,77,145,.18);
@@ -1313,10 +1314,26 @@ body {
 .global-nav a:hover,
 .global-nav summary:hover { transform:translate(-1px,-1px); }
 .global-menu { position:relative; }
-.global-menu summary { display:block; cursor:pointer; list-style:none; }
+.global-menu summary {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  list-style:none;
+  appearance:none;
+}
 .global-menu summary::-webkit-details-marker { display:none; }
-.global-menu summary::after { content:"▾"; margin-left:7px; font-size:.78em; }
-.global-menu[open] summary::after { content:"▴"; }
+.global-menu summary::after {
+  content:"\25BE";
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:.9em;
+  margin-left:7px;
+  font-size:.78em;
+  line-height:1;
+}
+.global-menu[open] summary::after { content:"\25B4"; }
 .global-dropdown {
   position:absolute; top:calc(100% + 8px); right:0; min-width:170px; width:max-content;
   display:grid; gap:6px; padding:8px;
