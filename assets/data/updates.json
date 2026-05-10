@@ -1,6 +1,12 @@
 [
   {
     "date": "2026.05.10",
+    "text": "甜菜龐克聖文字科技樹補充巡禮帳、神殿核心升級與高代價全自動概念，讓 13 神殿更像可完成的朝聖路線。",
+    "href": "concepts/beetpunk/glyph-tech-tree.html",
+    "label": "看科技樹"
+  },
+  {
+    "date": "2026.05.10",
     "text": "更新資料改由 assets/data/updates.json 統一管理，首頁顯示最新幾筆，更新日誌顯示全部。",
     "href": "updates.html",
     "label": "看更新日誌"
