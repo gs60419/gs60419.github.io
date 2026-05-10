@@ -1,0 +1,56 @@
+[
+  {
+    "date": "2026.05.10",
+    "text": "更新資料改由 assets/data/updates.json 統一管理，首頁顯示最新幾筆，更新日誌顯示全部。",
+    "href": "updates.html",
+    "label": "看更新日誌"
+  },
+  {
+    "date": "2026.05.10",
+    "text": "Concepts 新增甜菜龐克專區，整理 Minecraft 甜菜 mod 的背景設定、13 神殿、甜菜衍生物與聖文字科技樹。",
+    "href": "concepts/beetpunk/index.html",
+    "label": "看甜菜龐克"
+  },
+  {
+    "date": "2026.05.10",
+    "text": "新增 Concepts 區域，用來收納非互動、非小屁論的創意概念、作品提案與設定草稿。",
+    "href": "concepts/index.html",
+    "label": "看 Concepts"
+  },
+  {
+    "date": "2026.05.09",
+    "text": "Toybox 新增同心圓圖表編輯器，預設載入差異、發散/收斂、D/P/G 與六利的同心圓模型。",
+    "href": "toybox/concentric-chart/index.html",
+    "label": "打開圖表"
+  },
+  {
+    "date": "2026.05.09",
+    "text": "新增 Toybox 總覽頁，並把全站導覽中的 Toybox 改成可展開清單，方便之後新增更多互動工具。",
+    "href": "toybox/index.html",
+    "label": "看 Toybox"
+  },
+  {
+    "date": "2026.05.09",
+    "text": "全站頂部導覽改成 sticky 橫條，並加入小屁論、等等系列、RT30 與 Toybox 的下拉選單。",
+    "href": "index.html",
+    "label": "回首頁"
+  },
+  {
+    "date": "2026.05.09",
+    "text": "小屁論 1.0 主頁新增建議閱讀順序，讓第一次閱讀的人可以從差異第一因一路讀到利變思想實驗。",
+    "href": "xiaopi/1-0/index.html#reading-title",
+    "label": "看閱讀順序"
+  },
+  {
+    "date": "2026.05.09",
+    "text": "整理六界生成鏈、六界與降熵小迴圈、惡魔種子與絞殺樹等 1.0 支線頁面，讓語氣更像公開文章。",
+    "href": "xiaopi/1-0/index.html",
+    "label": "看 1.0"
+  },
+  {
+    "date": "2026.05.08",
+    "text": "小屁論公開頁面開始整理成版本式入口，新增 1.0 到 8.0 的瀏覽架構與主要版本頁。",
+    "href": "xiaopi/index.html",
+    "label": "看小屁論"
+  }
+]
