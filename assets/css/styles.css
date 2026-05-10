@@ -349,6 +349,15 @@ h1 {
   background-size: auto, 20px 20px, 20px 20px, auto;
 }
 
+.visual-concepts {
+  background:
+    linear-gradient(135deg, rgba(255, 158, 216, 0.28), rgba(255, 240, 109, 0.24), rgba(126, 232, 255, 0.20)),
+    linear-gradient(90deg, rgba(20, 50, 82, 0.10) 1px, transparent 1px),
+    linear-gradient(rgba(20, 50, 82, 0.10) 1px, transparent 1px),
+    #fff7fb;
+  background-size: auto, 20px 20px, 20px 20px, auto;
+}
+
 .pixel-icon {
   width: 54px;
   height: 54px;
@@ -377,6 +386,14 @@ h1 {
     linear-gradient(var(--aqua), var(--aqua)) 27px 10px / 15px 15px no-repeat,
     linear-gradient(var(--yellow), var(--yellow)) 10px 27px / 15px 15px no-repeat,
     linear-gradient(var(--pink), var(--pink)) 27px 27px / 15px 15px no-repeat,
+    var(--cloud);
+}
+
+.icon-spark {
+  background:
+    linear-gradient(var(--yellow), var(--yellow)) 23px 5px / 8px 44px no-repeat,
+    linear-gradient(var(--pink), var(--pink)) 5px 23px / 44px 8px no-repeat,
+    linear-gradient(var(--aqua), var(--aqua)) 13px 13px / 28px 28px no-repeat,
     var(--cloud);
 }
 
