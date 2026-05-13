@@ -1400,12 +1400,12 @@ body {
 
 /* title bar */
 .titlebar {
-  padding:14px 16px 10px;
+  padding:10px 16px 8px;
   border-bottom:1px solid #304a6a;
   display:flex; align-items:baseline; gap:10px;
 }
-.titlebar h1 { font-size:20px; color:#f5c518; letter-spacing:.15em; }
-.titlebar span { font-size:13px; color:#8096b8; }
+.titlebar h1 { font-size:18px; color:#f5c518; letter-spacing:.15em; }
+.titlebar span { font-size:12px; color:#8096b8; }
 
 /* stats */
 .stats {
@@ -1413,12 +1413,17 @@ body {
   border-bottom:1px solid #304a6a;
 }
 .stat {
-  padding:10px 0; text-align:center;
+  padding:7px 0;
+  text-align:center;
   border-right:1px solid #304a6a;
+  display:flex;
+  align-items:baseline;
+  justify-content:center;
+  gap:7px;
 }
 .stat:last-child { border-right:none; }
-.stat-n { font-size:24px; font-weight:700; }
-.stat-l { font-size:12px; color:#8096b8; margin-top:2px; }
+.stat-n { font-size:18px; font-weight:700; line-height:1; }
+.stat-l { font-size:11px; color:#8096b8; margin-top:0; white-space:nowrap; }
 .sV { color:#f5c518; }
 .sE { color:#a78bfa; }
 .sF { color:#34d399; }
@@ -1842,15 +1847,15 @@ tr[data-orig] { cursor:pointer; }
 
   /* 標題列縮小 */
   .titlebar {
-    padding: 7px 12px 5px;
+    padding: 6px 12px 5px;
   }
-  .titlebar h1 { font-size: 15px; letter-spacing:.08em; }
+  .titlebar h1 { font-size: 14px; letter-spacing:.08em; }
   .titlebar span { font-size: 10px; }
 
   /* 統計列 */
-  .stat { padding: 6px 0; }
-  .stat-n { font-size: 18px; }
-  .stat-l { font-size: 10px; }
+  .stat { padding: 5px 0; gap:5px; }
+  .stat-n { font-size: 15px; }
+  .stat-l { font-size: 9px; }
 
   /* 工作流程按鈕 */
   .workflow { padding: 7px 12px 8px; gap: 5px; }
