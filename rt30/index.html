@@ -4,7 +4,96 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RT30 — 菱形三十面體</title>
-<link rel="stylesheet" href="../assets/css/styles.css">
+<style id="site-nav-css">
+.site-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 16px;
+  height: 44px;
+  background: linear-gradient(90deg,rgba(0,20,50,0.92),rgba(0,40,80,0.88));
+  border-bottom: 1px solid rgba(100,180,255,0.25);
+  backdrop-filter: blur(12px);
+  box-sizing: border-box;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #e2e8f0;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.brand-mark {
+  width: 18px; height: 18px;
+  background:
+    linear-gradient(#f5c518,#f5c518) 5px 0/8px 18px no-repeat,
+    linear-gradient(#38bdf8,#38bdf8) 0 5px/18px 8px no-repeat;
+  border: 2px solid #e2e8f0;
+  flex-shrink: 0;
+}
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: nowrap;
+}
+.site-nav a,
+.site-nav summary {
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  list-style: none;
+  display: block;
+}
+.site-nav a:hover,
+.site-nav summary:hover {
+  background: rgba(100,180,255,0.15);
+  color: #fff;
+}
+.nav-menu {
+  position: relative;
+}
+.nav-menu summary { list-style: none; }
+.nav-menu summary::-webkit-details-marker { display: none; }
+.nav-menu summary::after { content: " ▾"; font-size: 10px; }
+.nav-menu[open] summary::after { content: " ▴"; }
+.nav-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 160px;
+  display: grid;
+  gap: 2px;
+  padding: 6px;
+  background: rgba(5,15,35,0.96);
+  border: 1px solid rgba(100,180,255,0.3);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  backdrop-filter: blur(12px);
+  z-index: 10000;
+}
+.nav-dropdown a {
+  display: block;
+  white-space: nowrap;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #94a3b8;
+  text-decoration: none;
+}
+.nav-dropdown a:hover { background: rgba(100,180,255,0.15); color: #e2e8f0; }
+</style>
 <script>
 /**
  * @license
