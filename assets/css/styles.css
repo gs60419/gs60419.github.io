@@ -1391,6 +1391,43 @@ textarea {
   font-weight: 900;
 }
 
+.concept-stage-table {
+  display: grid;
+  gap: 0;
+  border: 3px solid var(--ink);
+  background: var(--paper);
+  overflow-x: auto;
+}
+
+.concept-stage-table__row {
+  display: grid;
+  grid-template-columns: 70px minmax(150px, 0.8fr) minmax(140px, 0.8fr) minmax(260px, 2.1fr);
+}
+
+.concept-stage-table__row > div {
+  padding: 14px 16px;
+  border-right: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+}
+
+.concept-stage-table__row > div:last-child {
+  border-right: 0;
+}
+
+.concept-stage-table__row:last-child > div {
+  border-bottom: 0;
+}
+
+.concept-stage-table__row--head {
+  background: var(--warm-gold);
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.concept-stage-table__row strong {
+  color: var(--ink);
+}
+
 .mandala-figure {
   width: min(760px, 100%);
   margin-inline: auto;
