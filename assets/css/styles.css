@@ -1248,6 +1248,11 @@ textarea {
   margin-top: 28px;
 }
 
+.route-list + .detail-grid,
+.detail-grid + .route-list {
+  margin-top: 28px;
+}
+
 .route-list {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
