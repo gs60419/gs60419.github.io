@@ -1,6 +1,12 @@
 [
   {
     "date": "2026.05.14",
+    "text": "小屁論 2.0 新增 Co-Mind v2.2 紀念頁，整理語意宇宙 OS、TaskFox、12 狐群，以及語意化學、語意行星、接力棒、鏡廊與 Snowball / Balloon / Knock 等支線。",
+    "href": "xiaopi/2-0/comind/index.html",
+    "label": "看 Co-Mind"
+  },
+  {
+    "date": "2026.05.14",
     "text": "小屁論 5.3 概念生成公開頁上線，改成文章式導讀，加入六階概念表、紅色案例與可細讀的概念生成總圖。",
     "href": "xiaopi/5-0/concept-generation/index.html",
     "label": "看 5.3"
