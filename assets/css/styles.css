@@ -1367,6 +1367,13 @@ textarea {
   line-height: 1.7;
 }
 
+.detail-card .formula-line {
+  margin-bottom: 10px;
+  color: var(--deep-blue);
+  font-weight: 900;
+  line-height: 1.45;
+}
+
 .detail-card .button {
   margin-top: 14px;
 }
