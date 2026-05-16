@@ -1,5 +1,17 @@
 [
   {
+    "date": "2026.05.17",
+    "text": "小屁論新增系統支線區，正式收納 1-9 × 六利螺旋、六利數學羅盤、RT30 × 六利與 6界接龍等跨版本操作頁。",
+    "href": "xiaopi/systems/index.html",
+    "label": "看系統支線"
+  },
+  {
+    "date": "2026.05.17",
+    "text": "6界接龍公開頁補成 18 條合法完整環總表，並加入六個起點各自的讀法卡片，讓讀者能直接從世界起點看三路線分化。",
+    "href": "xiaopi/systems/six-realms-chain/index.html",
+    "label": "看 6界接龍"
+  },
+  {
     "date": "2026.05.14",
     "text": "小屁論 3.1 發明相對論獨立頁上線，整理換軸文章導讀、Δ' = M · Δ、四種 M 矩陣，以及軸速、交換率與 AI 換軸案例。",
     "href": "xiaopi/3-0/invention-relativity/index.html",
