@@ -79,7 +79,7 @@
   },
   {
     "date": "2026.05.09",
-    "text": "Toybox 新增同心圓圖表編輯器，預設載入差異、發散/收斂、D/P/G 與六利的同心圓模型。",
+    "text": "Toybox 新增同心圓圖表編輯器，預設載入差異、發散/收斂、D/E/G 與六利的同心圓模型。",
     "href": "toybox/concentric-chart/index.html",
     "label": "打開圖表"
   },
