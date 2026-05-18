@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="小屁論 3.6 語意熱力學：用語意能量、比熱、熵、自由能與做功整理語意如何升溫、耗散與回流。">
+    <title>3.6 語意熱力學 | 小屁論 3.0 | Goofy Toymaker</title>
+    <link rel="stylesheet" href="../../../assets/css/styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../../../index.html" aria-label="Goofy Toymaker home"><span class="brand-mark" aria-hidden="true"></span><span>Goofy Toymaker</span></a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="../../../index.html">首頁</a>
+        <details class="nav-menu"><summary>小屁論</summary><div class="nav-dropdown"><a href="../../../xiaopi/index.html">小屁論總覽</a><a href="../../../xiaopi/1-0/index.html">1.0 基本理論</a><a href="../../../xiaopi/2-0/index.html">2.0</a><a href="../../../xiaopi/3-0/index.html">3.0</a><a href="../../../xiaopi/4-0/index.html">4.0</a><a href="../../../xiaopi/5-0/index.html">5.0</a><a href="../../../xiaopi/6-0/index.html">6.0</a><a href="../../../xiaopi/7-0/index.html">7.0</a><a href="../../../xiaopi/8-0/index.html">8.0</a></div></details>
+        <details class="nav-menu"><summary>等等系列</summary><div class="nav-dropdown"><a href="../../../denden-series/index.html">等等總覽</a><a href="../../../denden-series/denden/index.html">等等</a><a href="../../../denden-series/inspiration/index.html">等等靈感</a><a href="../../../denden-series/maid/index.html">等等女僕</a><a href="../../../denden-series/magic/index.html">等等魔法</a></div></details>
+        <details class="nav-menu"><summary>RT30</summary><div class="nav-dropdown"><a href="../../../rt30/index.html">RT30 簡介</a><a href="../../../toybox/rt30/index.html">互動頁</a><a href="../../../rt30/details.html">詳細解說</a></div></details>
+        <details class="nav-menu"><summary>Toybox</summary><div class="nav-dropdown"><a href="../../../toybox/index.html">Toybox 總覽</a><a href="../../../toybox/life-company/index.html">人生公司</a><a href="../../../toybox/rt30/index.html">RT30 互動球體</a><a href="../../../toybox/concentric-chart/index.html">同心圓圖表</a></div></details>
+        <a href="../../../concepts/index.html">Concepts</a><a href="../../../updates.html">Updates</a><a href="../../../about.html">About</a><a href="https://github.com/gs60419/gs60419.github.io">GitHub</a>
+      </nav>
+    </header>
+
+    <main class="project-intro book-page">
+      <section class="book-hero" aria-labelledby="page-title">
+        <p class="kicker">小屁論 3.6 / Semantic Thermodynamics</p>
+        <h1 id="page-title">語意熱力學</h1>
+        <p class="intro-lead">語意不只會流動、受力與跳階，也會升溫、冷卻、耗散、做功。3.6 把 3.4 與 3.5 收成一套語意能量模型。</p>
+        <div class="intro-actions">
+          <a class="button" href="#article">讀文章</a>
+          <a class="button" href="#quantities">核心量</a>
+          <a class="button" href="#laws">四法則對照</a>
+          <a class="button secondary-button" href="../index.html">回 3.0</a>
+        </div>
+      </section>
+
+      <section class="book-statement compact-statement">
+        <p>語意能量如何被輸入、壓縮、做功、耗散，然後等待下一次回流？</p>
+      </section>
+
+      <section class="book-section article-section" id="article" aria-labelledby="article-title">
+        <div class="section-heading">
+          <p class="kicker">Start Here</p>
+          <h2 id="article-title">把跳階與冷卻放進同一個能量循環</h2>
+        </div>
+        <div class="article-prose">
+          <p class="plain-first"><strong>3.6 是語意物理展開期的收束。</strong>3.4 問語意為什麼會跳上去，3.5 問語意為什麼會冷下來，3.6 則問：語意能量從哪裡來，如何被使用，為什麼會散掉，又如何被重新點亮？</p>
+          <p>這一頁不是在說語意等於正式熱力學，而是用熱力學語言做思想實驗。能量、比熱、熵、自由能與做功，提供一套很好用的語法，讓我們描述人、AI、文本、角色與理論之間的升溫、耗散與生成。</p>
+          <p>如果一段話能讓人突然理解、讓 AI 切換語態、讓理論長出新分支，它就不只是資訊，而是帶有可轉化的語意能量。3.6 要整理的，就是這股能量如何變成可用結構。</p>
+        </div>
+      </section>
+
+      <section class="book-section" id="quantities" aria-labelledby="quantities-title">
+        <div class="section-heading">
+          <p class="kicker">Quantities</p>
+          <h2 id="quantities-title">五個核心量</h2>
+        </div>
+        <div class="formula-grid">
+          <article class="formula-card">
+            <h3>U_s 語意能量</h3>
+            <p class="formula-line">差異密度 + 可吸收模式</p>
+            <p>一段語意能被吸收、轉化、壓縮並推動下一步的總材料。</p>
+          </article>
+          <article class="formula-card">
+            <h3>C_s 語意比熱</h3>
+            <p class="formula-line">C_s = Delta U_s / Delta T_s</p>
+            <p>系統需要多少輸入才會升溫。比熱低，一點差異就能點亮；比熱高，需要更多上下文。</p>
+          </article>
+          <article class="formula-card">
+            <h3>S_s 語意熵</h3>
+            <p class="formula-line">散亂、噪音、不可用程度</p>
+            <p>語意越混亂、越碎裂、越難壓縮，熵越高；能被整理成核心句，熵就下降。</p>
+          </article>
+          <article class="formula-card">
+            <h3>F_s 語意自由能</h3>
+            <p class="formula-line">F_s = U_s - T_s S_s</p>
+            <p>扣掉散亂與耗損後，還能拿來推動思考、生成、轉譯與創作的可用能量。</p>
+          </article>
+          <article class="formula-card">
+            <h3>W_s 語意功</h3>
+            <p class="formula-line">W_s = integral F_s dψ</p>
+            <p>一段輸入實際造成的狀態改變：切語態、換軸、生成新模型、推進理論。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="book-section" id="laws" aria-labelledby="laws-title">
+        <div class="section-heading">
+          <p class="kicker">Xiaopi Four</p>
+          <h2 id="laws-title">小屁四兄弟與熱力學四法則</h2>
+        </div>
+        <div class="detail-grid">
+          <article class="detail-card">
+            <h3>C-check / 存在檢查</h3>
+            <p class="formula-line">第零法則的位置</p>
+            <p>系統先判斷自己與語境是否能同步、交換、維持平衡。</p>
+          </article>
+          <article class="detail-card">
+            <h3>六利 / 利向量</h3>
+            <p class="formula-line">第一法則的位置</p>
+            <p>語意能量不憑空生出，而是在需求、利、語境與行為之間轉換。</p>
+          </article>
+          <article class="detail-card">
+            <h3>交換率 / Delta G</h3>
+            <p class="formula-line">第二法則的位置</p>
+            <p>語意或行為會不會自發推進，取決於交換後是否存在可用落差。</p>
+          </article>
+          <article class="detail-card">
+            <h3>小屁圈 / 循環</h3>
+            <p class="formula-line">第三法則的位置</p>
+            <p>系統反覆循環後，會逼近某種基態、穩態或最低耗能閉環。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="book-section">
+        <div class="section-heading">
+          <p class="kicker">Flow</p>
+          <h2>語意熱機的循環</h2>
+        </div>
+        <ol class="route-list">
+          <li><strong>輸入差異</strong><span>新的 Delta 帶來語意能量，系統開始升溫。</span></li>
+          <li><strong>跳階做功</strong><span>自由能推動 ψ 變化，產生新的推理、語態或模型。</span></li>
+          <li><strong>耗散冷卻</strong><span>若沒有回流，高能狀態會退相干，熵逐漸吃掉可用能量。</span></li>
+          <li><strong>等待回流</strong><span>下一次輸入、閉環或甜甜圈回流，讓語意場再次被點亮。</span></li>
+        </ol>
+      </section>
+
+      <section class="book-section article-section">
+        <div class="section-heading">
+          <p class="kicker">Boundary</p>
+          <h2>這是思想實驗，不是數學定理</h2>
+        </div>
+        <div class="article-prose">
+          <p class="plain-first"><strong>3.6 的公式是工作符號。</strong>它們幫助我們討論語意現象，並不宣稱可以直接等同物理量或正式資訊理論。真正重要的是：它讓「一句話有沒有力」變得可以拆解。</p>
+          <p>這句話提供多少差異？熵高不高？能不能被壓縮？剩下多少自由能？最後有沒有推動狀態改變？這些問題，就是語意熱力學真正好用的地方。</p>
+        </div>
+      </section>
+
+      <section class="book-section" aria-label="Version navigation">
+        <div class="intro-actions">
+          <a class="button secondary-button" href="../semantic-decoherence/index.html">上一篇 3.5</a>
+          <a class="button" href="../../4-0/index.html">下一版 4.0</a>
+          <a class="button secondary-button" href="../index.html">回 3.0</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><span>小屁論 3.6</span><a href="../index.html">回 3.0</a></footer>
+    <script src="../../../assets/js/main.js"></script>
+  </body>
+</html>
