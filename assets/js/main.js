@@ -1,5 +1,42 @@
 const toyList = document.querySelector("#toy-list");
 
+// Shared site header behavior: every page should reuse .site-header/.site-nav
+// and load this file so mobile navigation stays consistent across the site.
+document.querySelectorAll(".site-header").forEach((header, headerIndex) => {
+  const nav = header.querySelector(".site-nav");
+  const brand = header.querySelector(".brand");
+  if (!nav || !brand) return;
+
+  let button = header.querySelector(".site-menu-button");
+  if (!button) {
+    button = document.createElement("button");
+    button.className = "site-menu-button";
+    button.type = "button";
+    button.textContent = "☰";
+    brand.insertAdjacentElement("afterend", button);
+  }
+
+  const navId = nav.id || `site-nav-${headerIndex + 1}`;
+  nav.id = navId;
+  button.setAttribute("aria-label", "開啟導覽");
+  button.setAttribute("aria-expanded", "false");
+  button.setAttribute("aria-controls", navId);
+
+  button.addEventListener("click", () => {
+    const isOpen = header.classList.toggle("nav-open");
+    button.setAttribute("aria-expanded", String(isOpen));
+  });
+
+  nav.querySelectorAll(".nav-menu").forEach((menu) => {
+    menu.addEventListener("toggle", () => {
+      if (!menu.open) return;
+      nav.querySelectorAll(".nav-menu[open]").forEach((other) => {
+        if (other !== menu) other.open = false;
+      });
+    });
+  });
+});
+
 const toys = [];
 
 if (toyList && toys.length > 0) {

@@ -101,6 +101,7 @@ a {
   gap: 10px;
   font-weight: 800;
   color: inherit;
+  white-space: nowrap;
 }
 
 .brand-mark {
@@ -124,6 +125,19 @@ a {
   flex-wrap: wrap;
   justify-content: flex-end;
   align-items: center;
+}
+
+.site-menu-button {
+  display: none;
+  width: 38px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.44), rgba(255, 255, 255, 0.12));
+  color: #ffffff;
+  cursor: pointer;
+  font: 800 1.35rem/1 "Trebuchet MS", system-ui, sans-serif;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), 0 6px 18px rgba(0, 64, 120, 0.16);
 }
 
 .site-nav a,
@@ -2273,14 +2287,33 @@ textarea {
   }
 
   .site-header {
-    align-items: flex-start;
-    flex-direction: column;
-    justify-content: center;
-    padding: 12px;
+    min-height: 58px;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 14px;
+  }
+
+  .site-menu-button {
+    display: grid;
+    place-items: center;
+    margin-left: auto;
   }
 
   .site-header .site-nav {
+    display: none;
+    width: 100%;
     justify-content: flex-start;
+  }
+
+  .site-header.nav-open {
+    align-items: flex-start;
+  }
+
+  .site-header.nav-open .site-nav {
+    display: flex;
   }
 
   .nav-dropdown {
