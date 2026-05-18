@@ -1,5 +1,11 @@
 [
   {
+    "date": "2026.05.18",
+    "text": "新增 Tiny Puffology 英文版小屁論總覽，整理英文入門說明、核心生成鏈、六利系統與 12 極性曼陀羅。",
+    "href": "tiny-puffology/index.html",
+    "label": "看英文總覽"
+  },
+  {
     "date": "2026.05.17",
     "text": "小屁論新增系統支線區，讓跨版本的操作盤、橋接盤與實驗語法不必再硬塞回 1.0~8.0 主排。",
     "href": "xiaopi/systems/index.html",
