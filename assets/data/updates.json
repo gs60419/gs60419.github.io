@@ -1,5 +1,11 @@
 [
   {
+    "date": "2026.05.19",
+    "text": "小屁論 3.0 新增 3.7 渣渣理論公開頁，整理資訊壓縮後的 Noise-AR、Context-AR 與 Structure-AR，並把 3.2-3.7 收成殘層再生閱讀線。",
+    "href": "xiaopi/3-0/residue-theory/index.html",
+    "label": "看 3.7"
+  },
+  {
     "date": "2026.05.18",
     "text": "新增 Tiny Puffology 英文版小屁論總覽，整理英文入門說明、核心生成鏈、六利系統與 12 極性曼陀羅。",
     "href": "tiny-puffology/index.html",
