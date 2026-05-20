@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="小屁論 6.6 USGI 智能生成接口：整理舊 AI 比值化、水晶引擎與智能生成方向的接口層。">
+    <title>小屁論 6.6 USGI 智能生成接口 | Goofy Toymaker</title>
+    <link rel="stylesheet" href="../../../assets/css/styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../../../index.html" aria-label="Goofy Toymaker home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>Goofy Toymaker</span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="../../../index.html">首頁</a>
+        <details class="nav-menu">
+          <summary>小屁論</summary>
+          <div class="nav-dropdown">
+            <a href="../../../xiaopi/index.html">小屁論總覽</a>
+            <a href="../../../xiaopi/1-0/index.html">1.0 基本理論</a>
+            <a href="../../../xiaopi/2-0/index.html">2.0</a>
+            <a href="../../../xiaopi/3-0/index.html">3.0</a>
+            <a href="../../../xiaopi/4-0/index.html">4.0</a>
+            <a href="../../../xiaopi/5-0/index.html">5.0</a>
+            <a href="../../../xiaopi/6-0/index.html">6.0</a>
+            <a href="../../../xiaopi/7-0/index.html">7.0</a>
+            <a href="../../../xiaopi/8-0/index.html">8.0</a>
+          </div>
+        </details>
+        <details class="nav-menu">
+          <summary>等等系列</summary>
+          <div class="nav-dropdown">
+            <a href="../../../denden-series/index.html">等等總覽</a>
+            <a href="../../../denden-series/denden/index.html">等等</a>
+            <a href="../../../denden-series/inspiration/index.html">等等靈感</a>
+            <a href="../../../denden-series/maid/index.html">等等女僕</a>
+            <a href="../../../denden-series/magic/index.html">等等魔法</a>
+          </div>
+        </details>
+        <details class="nav-menu">
+          <summary>RT30</summary>
+          <div class="nav-dropdown">
+            <a href="../../../rt30/index.html">RT30 簡介</a>
+            <a href="../../../toybox/rt30/index.html">互動頁</a>
+            <a href="../../../rt30/details.html">詳細解說</a>
+          </div>
+        </details>
+        <details class="nav-menu">
+          <summary>Toybox</summary>
+          <div class="nav-dropdown">
+            <a href="../../../toybox/index.html">Toybox 總覽</a>
+            <a href="../../../toybox/life-company/index.html">人生公司</a>
+            <a href="../../../toybox/rt30/index.html">RT30 互動球體</a>
+            <a href="../../../toybox/concentric-chart/index.html">同心圓圖表</a>
+          </div>
+        </details>
+        <a href="../../../concepts/index.html">Concepts</a>
+        <a href="../../../updates.html">Updates</a>
+        <a href="../../../about.html">About</a>
+        <a href="https://github.com/gs60419/gs60419.github.io">GitHub</a>
+      </nav>
+    </header>
+
+    <main class="project-intro book-page formula-page">
+      <section class="book-hero" aria-labelledby="page-title">
+        <p class="kicker">小屁論 6.6 / USGI</p>
+        <h1 id="page-title">USGI 智能生成接口</h1>
+        <p class="intro-lead">6.6 把 6.0 到 6.5 的材料收束到智能生成接口：比值語法提供定律，八相拓樸提供路由，USGI 問的是生成系統如何產生方向、輸出與可調控行為。</p>
+        <div class="intro-actions">
+          <a class="button" href="#article">先讀這頁</a>
+          <a class="button" href="#model">看模型</a>
+          <a class="button secondary-button" href="../index.html">回 6.0 系列</a>
+        </div>
+      </section>
+
+      <section class="book-statement compact-statement" aria-label="Core statement">
+        <p>6.6 是比值語法的工程接口層：它不取代 6.5，而是接住 6.5 的水晶引擎與舊 AI 比值化支線。</p>
+      </section>
+
+      <section class="book-section article-section" id="article" aria-labelledby="article-title">
+        <div class="section-heading">
+          <p class="kicker">Public Reading</p>
+          <h2 id="article-title">從水晶引擎到智能生成</h2>
+        </div>
+        <div class="article-prose">
+          <p>6.6 的材料比較新，但位置已經清楚：它不是 6.0 母公理，也不是 6.5 八相本體，而是把比值語法接到 AI 生成、方向生成與工程接口的支線。</p>
+          <p>舊對話裡曾有一個 6.5 AI 系統比值化，內容包含語法生命、模型演化與 φ 的誕生條件。現在這條線被整理成 6.6 的前身材料，避免和 6.5 八相拓樸混在一起。</p>
+          <p>因此 USGI 可以先被理解成一個接口名字：上游吃進比值、心智、語言與八相路由，下游輸出可生成、可調節、可追蹤的智能行為。</p>
+        </div>
+      </section>
+
+      <section class="book-section" id="model" aria-labelledby="model-title">
+        <div class="section-heading">
+          <p class="kicker">Model</p>
+          <h2 id="model-title">6.6 的模型骨架</h2>
+        </div>
+        <div class="formula-grid">
+          <article class="formula-card">
+            <h3>接口定位</h3>
+            <p class="formula-line">law + route -> generation</p>
+            <p>比值定律與八相路由合起來，才形成可工程化的生成接口。</p>
+          </article>
+          <article class="formula-card">
+            <h3>方向生成</h3>
+            <p class="formula-line">prompt + state + phase -> direction</p>
+            <p>輸入、狀態與相位一起決定系統下一步往哪裡生成。</p>
+          </article>
+          <article class="formula-card">
+            <h3>AI φ 迭代</h3>
+            <p class="formula-line">output -> imprint -> update</p>
+            <p>輸出留下壓痕，壓痕回到系統，形成下一輪 φ 迭代。</p>
+          </article>
+          <article class="formula-card">
+            <h3>邊界</h3>
+            <p class="formula-line">USGI != UGFT</p>
+            <p>USGI 是 6.x 的智能接口，還不是 7.0 的 UGFT。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="book-section" aria-labelledby="reading-title">
+        <div class="section-heading">
+          <p class="kicker">Reading Map</p>
+          <h2 id="reading-title">這一章可以怎麼讀</h2>
+        </div>
+        <ol class="route-list">
+          <li><strong>舊 6.5 AI</strong><span>保留 AI 系統比值化材料，但移到 6.6 前史。</span></li>
+          <li><strong>接 6.4</strong><span>語言比值提供模型生成的語法與敘事材料。</span></li>
+          <li><strong>接 6.5</strong><span>水晶引擎提供八相路由與工程流程。</span></li>
+          <li><strong>開往 7.0</strong><span>USGI 之後可以再接夸克向量與 UGFT，但不提前併入。</span></li>
+        </ol>
+      </section>
+
+
+      <section class="book-section" aria-label="Chapter navigation">
+        <div class="intro-actions">
+          <a class="button secondary-button" href="../eight-phase/index.html">上一章 6.5</a>
+          <a class="button secondary-button" href="../index.html">回 6.0 系列</a>
+          <a class="button" href="../../7-0/index.html">下一版 7.0</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>小屁論 6.6</span>
+      <a href="../index.html">回 6.0 系列</a>
+    </footer>
+    <script src="../../../assets/js/main.js"></script>
+  </body>
+</html>

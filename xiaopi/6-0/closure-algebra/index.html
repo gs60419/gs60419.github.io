@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="小屁論 6.1 語法閉包代數：各種 A = B / C 的比值公式如何互相碰撞、組合、比較，最後形成可讀、可重複、可穩定的語法閉包。">
+    <title>小屁論 6.1 語法閉包代數 | Goofy Toymaker</title>
+    <link rel="stylesheet" href="../../../assets/css/styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../../../index.html" aria-label="Goofy Toymaker home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>Goofy Toymaker</span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="../../../index.html">首頁</a>
+        <details class="nav-menu">
+          <summary>小屁論</summary>
+          <div class="nav-dropdown">
+            <a href="../../../xiaopi/index.html">小屁論總覽</a>
+            <a href="../../../xiaopi/1-0/index.html">1.0 基本理論</a>
+            <a href="../../../xiaopi/2-0/index.html">2.0</a>
+            <a href="../../../xiaopi/3-0/index.html">3.0</a>
+            <a href="../../../xiaopi/4-0/index.html">4.0</a>
+            <a href="../../../xiaopi/5-0/index.html">5.0</a>
+            <a href="../../../xiaopi/6-0/index.html">6.0</a>
+            <a href="../../../xiaopi/7-0/index.html">7.0</a>
+            <a href="../../../xiaopi/8-0/index.html">8.0</a>
+          </div>
+        </details>
+        <details class="nav-menu">
+          <summary>等等系列</summary>
+          <div class="nav-dropdown">
+            <a href="../../../denden-series/index.html">等等總覽</a>
+            <a href="../../../denden-series/denden/index.html">等等</a>
+            <a href="../../../denden-series/inspiration/index.html">等等靈感</a>
+            <a href="../../../denden-series/maid/index.html">等等女僕</a>
+            <a href="../../../denden-series/magic/index.html">等等魔法</a>
+          </div>
+        </details>
+        <details class="nav-menu">
+          <summary>RT30</summary>
+          <div class="nav-dropdown">
+            <a href="../../../rt30/index.html">RT30 簡介</a>
+            <a href="../../../toybox/rt30/index.html">互動頁</a>
+            <a href="../../../rt30/details.html">詳細解說</a>
+          </div>
+        </details>
+        <details class="nav-menu">
+          <summary>Toybox</summary>
+          <div class="nav-dropdown">
+            <a href="../../../toybox/index.html">Toybox 總覽</a>
+            <a href="../../../toybox/life-company/index.html">人生公司</a>
+            <a href="../../../toybox/rt30/index.html">RT30 互動球體</a>
+            <a href="../../../toybox/concentric-chart/index.html">同心圓圖表</a>
+          </div>
+        </details>
+        <a href="../../../concepts/index.html">Concepts</a>
+        <a href="../../../updates.html">Updates</a>
+        <a href="../../../about.html">About</a>
+        <a href="https://github.com/gs60419/gs60419.github.io">GitHub</a>
+      </nav>
+    </header>
+
+    <main class="project-intro book-page formula-page">
+      <section class="book-hero" aria-labelledby="page-title">
+        <p class="kicker">小屁論 6.1 / Syntax Closure Algebra</p>
+        <h1 id="page-title">語法閉包代數</h1>
+        <p class="intro-lead">6.1 是各種 A = B / C 的比值競技場。交換率、圓周率、效率、速度、壓力、電流、熵率全部丟進來，看哪些只是漂亮公式，哪些真的能互相咬合、回到同一套語法裡繼續運算。</p>
+        <div class="intro-actions">
+          <a class="button" href="#article">先讀這頁</a>
+          <a class="button" href="#arena">進入大亂鬥</a>
+          <a class="button" href="#closure-test">閉包判準</a>
+          <a class="button secondary-button" href="../index.html">回 6.0 系列</a>
+        </div>
+      </section>
+
+      <section class="book-statement compact-statement" aria-label="Core statement">
+        <p>6.1 的樂趣在於：任何 A = B / C 都可以先上場，但只有能被重新讀取、再次運算、形成穩態的比值，才有資格進入語法閉包。</p>
+      </section>
+
+      <section class="book-section article-section" id="article" aria-labelledby="article-title">
+        <div class="section-heading">
+          <p class="kicker">Public Reading</p>
+          <h2 id="article-title">比值吃進比值，吐出來還是比值</h2>
+        </div>
+        <div class="article-prose">
+          <p>6.0 把 π = C / D、交換率 a = gain / cost、φ = difference / scale 放在同一張桌上。6.1 接著做一件很有趣的事：既然它們都是「某種東西除以某種尺度」，那它們能不能彼此相乘、相除、嵌套、比較，甚至長成一套自己的代數？</p>
+          <p>這就是語法閉包代數。它不是單純蒐集公式，也不是看到分數就喊同構。6.1 真正關心的是：一個比值經過另一個比值處理後，結果還能不能回到同一套語法裡被理解。可以的話，它就開始有閉包味；不行的話，它只是一次漂亮的類比。</p>
+          <p>所以這章可以很嚴肅，也可以很胡鬧。嚴肅的地方是它有判準：同語法可讀、可重複運算、穩態回返、邊界不崩壞。胡鬧的地方是所有 A = B / C 都可以先上擂台。速度、密度、壓力、效率、熵、回報率、語言壓縮率、注意力負載，全部都可以互相挑戰。</p>
+          <p>最後留下來的不是公式的長度，而是語法的生命力：它能不能把差異變成結構，把結構變成下一次可操作的差異。</p>
+        </div>
+      </section>
+
+      <section class="book-section" id="model" aria-labelledby="model-title">
+        <div class="section-heading">
+          <p class="kicker">Model</p>
+          <h2 id="model-title">6.1 的四層玩法</h2>
+        </div>
+        <div class="formula-grid">
+          <article class="formula-card">
+            <h3>φ₁ 基本比值</h3>
+            <p class="formula-line">φ₁ = A / B</p>
+            <p>最小單位。只要它能說明「某物相對於某尺度」，就可以先進場。</p>
+          </article>
+          <article class="formula-card">
+            <h3>φ₂ 組合比值</h3>
+            <p class="formula-line">φ₂ = φa × φb</p>
+            <p>兩個比值相乘，像密度 × 速度、電流 × 電壓。重點是組合後還有沒有可讀角色。</p>
+          </article>
+          <article class="formula-card">
+            <h3>φ₃ 比值的比值</h3>
+            <p class="formula-line">φ₃ = φa / φb</p>
+            <p>拿一個比值去衡量另一個比值，例如回報率 / 熵率、速度 / 場強。</p>
+          </article>
+          <article class="formula-card">
+            <h3>φ₄ 語法閉包</h3>
+            <p class="formula-line">φ₄ = Closure(φ₁, φ₂, φ₃)</p>
+            <p>不是第四個普通公式，而是整組 φ 能回到可讀、可重複、可穩態的語法狀態。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="book-section" id="arena" aria-labelledby="arena-title">
+        <div class="section-heading">
+          <p class="kicker">Formula Arena</p>
+          <h2 id="arena-title">A = B / C 大亂鬥</h2>
+        </div>
+        <div class="formula-grid">
+          <article class="formula-card">
+            <h3>交換率</h3>
+            <p class="formula-line">a = gain / cost</p>
+            <p>行為系統的比值。它問的是：這件事值得嗎？收益相對於代價是否足以讓系統行動？</p>
+          </article>
+          <article class="formula-card">
+            <h3>圓周率</h3>
+            <p class="formula-line">π = circumference / diameter</p>
+            <p>幾何世界的穩定比值。尺度改變，比例不變，所以它是 6.0 接入 6.1 的母型。</p>
+          </article>
+          <article class="formula-card">
+            <h3>效率</h3>
+            <p class="formula-line">η = output / input</p>
+            <p>工程與生命系統都會問的比值：吃進多少、吐出多少，損耗在哪裡。</p>
+          </article>
+          <article class="formula-card">
+            <h3>速度</h3>
+            <p class="formula-line">v = distance / time</p>
+            <p>空間變化相對於時間尺度。它一進場，就能和密度、壓力、場強打成一片。</p>
+          </article>
+          <article class="formula-card">
+            <h3>壓力</h3>
+            <p class="formula-line">P = force / area</p>
+            <p>力量除以承受面積。很適合拿來讀心理壓力、語言壓縮與系統邊界負載。</p>
+          </article>
+          <article class="formula-card">
+            <h3>電流</h3>
+            <p class="formula-line">I = charge / time</p>
+            <p>流動的量相對於時間。放到語法裡，可以類比資訊、注意力或能量流速。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="book-section" aria-labelledby="collision-title">
+        <div class="section-heading">
+          <p class="kicker">Collisions</p>
+          <h2 id="collision-title">比值撞比值會發生什麼事？</h2>
+        </div>
+        <ol class="route-list reading-route-list">
+          <li><strong>密度 × 速度</strong><span>像流量。不是只問東西有多密，也問它穿過邊界的速度有多快。</span></li>
+          <li><strong>電流 × 電壓</strong><span>像功率。流動量遇到推動差，會變成可做功的強度。</span></li>
+          <li><strong>回報率 × 時間</strong><span>像累積收益。短期漂亮不一定能閉包，時間會測試它能不能維持。</span></li>
+          <li><strong>回報率 / 熵率</strong><span>像系統是否划算。收益長得比混亂快，系統才有穩定擴張的可能。</span></li>
+          <li><strong>速度 / 場強</strong><span>像逃逸能力。跑得快不夠，還要看場本身把你拉回去的力有多強。</span></li>
+          <li><strong>邊際效用 / 回報率</strong><span>像興奮退潮。回報還在，但新增價值下降時，心智會開始換路徑。</span></li>
+        </ol>
+      </section>
+
+      <section class="book-section article-section" aria-labelledby="play-title">
+        <div class="section-heading">
+          <p class="kicker">How To Play</p>
+          <h2 id="play-title">這章可以當成一個公式遊戲</h2>
+        </div>
+        <div class="article-prose">
+          <p>玩法很簡單：先拿一個 A = B / C，問它的分子是什麼、分母是什麼、它描述的相對關係是什麼。然後把它丟去撞另一個 A = B / C。</p>
+          <p>例如「壓力 = 力 / 面積」撞上「情緒負載 = 刺激量 / 承受容量」，會發現兩者都在講一件事：同樣的力，如果落在更小的承受面上，就會變得更尖銳。這時候不是說心理壓力等於物理壓力，而是說它們共享一個可回扣的比值語法。</p>
+          <p>再例如「回報率 / 熵率」可以拿來讀一個計畫、一段關係、一個 AI 系統，甚至一個創作坑。只要收益增加得比混亂快，系統就有可能繼續長；如果混亂長得比收益快，再華麗的公式也會散掉。</p>
+          <p>6.1 好玩的地方就在這裡：它允許公式跨領域亂鬥，但不允許亂鬥完就裝死。每次碰撞都要回來問：結果可讀嗎？還能再算嗎？會穩住嗎？能接往 6.2 的壓痕嗎？</p>
+        </div>
+      </section>
+
+      <section class="book-section" id="closure-test" aria-labelledby="closure-title">
+        <div class="section-heading">
+          <p class="kicker">Closure Test</p>
+          <h2 id="closure-title">閉包不是變複雜，而是變得能回扣</h2>
+        </div>
+        <ol class="route-list">
+          <li><strong>同語法可讀</strong><span>結果仍能被讀成分子 / 分母、差異 / 尺度、輸出 / 輸入這類相對關係。</span></li>
+          <li><strong>可重複運算</strong><span>結果不能只能用一次，還要能再次進入比較、組合、修正或映射。</span></li>
+          <li><strong>穩態回返</strong><span>系統仍在變動，但語法形狀沒有崩掉，可以鬆鬆寫成 dφ/dt ≈ 0。</span></li>
+          <li><strong>邊界不崩壞</strong><span>不能靠硬湊單位完成。公式變長不代表閉包，語法角色站得住才算。</span></li>
+        </ol>
+      </section>
+
+      <section class="book-section" aria-labelledby="levels-title">
+        <div class="section-heading">
+          <p class="kicker">Levels</p>
+          <h2 id="levels-title">從單次公式到語法生命</h2>
+        </div>
+        <div class="detail-grid">
+          <article class="detail-card">
+            <h3>Level 0｜單次組合</h3>
+            <p>兩個比值發生相乘、相除、嵌套或映射。這只是上場，還不是勝利。</p>
+          </article>
+          <article class="detail-card">
+            <h3>Level 1｜可讀閉包</h3>
+            <p>結果仍能用同一套比值語法解釋，讀者知道它在衡量什麼。</p>
+          </article>
+          <article class="detail-card">
+            <h3>Level 2｜可重複閉包</h3>
+            <p>結果可以再次進入 φ 運算，成為下一輪比較、選擇或轉換的材料。</p>
+          </article>
+          <article class="detail-card">
+            <h3>Level 3｜穩態閉包</h3>
+            <p>系統在流動中維持可辨認結構。它不是靜止，而是不散。</p>
+          </article>
+          <article class="detail-card">
+            <h3>Level 4｜生命化閉包</h3>
+            <p>閉包開始支撐自我維持、回圈、壓痕或方向性，這裡就自然接到 6.2。</p>
+          </article>
+          <article class="detail-card">
+            <h3>失敗狀態｜單位沙拉</h3>
+            <p>公式看起來很猛，但語法角色全部糊掉，不能再讀、不能再算、也不能穩住。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="book-section" aria-label="Chapter navigation">
+        <div class="intro-actions">
+          <a class="button secondary-button" href="../index.html">回 6.0</a>
+          <a class="button secondary-button" href="../index.html">回 6.0 系列</a>
+          <a class="button" href="../indentation-cone/index.html">下一章 6.2</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>小屁論 6.1</span>
+      <a href="../index.html">回 6.0 系列</a>
+    </footer>
+    <script src="../../../assets/js/main.js"></script>
+  </body>
+</html>
