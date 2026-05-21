@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="小屁論 7.5 AI界的迴圈：Loss、Gradient、Update 與 Δ–φ–η。">
+    <title>7.5 AI界的迴圈 | 小屁論 7.0</title>
+    <link rel="stylesheet" href="../../../assets/css/styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../../../index.html" aria-label="Goofy Toymaker home"><span class="brand-mark" aria-hidden="true"></span><span>Goofy Toymaker</span></a>
+      <nav class="site-nav" aria-label="Main navigation"><a href="../../../index.html">首頁</a><a href="../../index.html">小屁論總覽</a><a href="../index.html">7.0</a><a href="../../8-0/index.html">8.0</a></nav>
+    </header>
+    <main class="project-intro book-page formula-page">
+      <section class="book-hero" aria-labelledby="title">
+        <p class="kicker">小屁論 7.5</p>
+        <h1 id="title">AI界的迴圈</h1>
+        <p class="intro-lead">7.5 把 Δ–φ–η 放進 AI 學習流程：模型透過 loss 讀出差異，透過 gradient 傳遞差異，再透過 update 尋找新的穩態。</p>
+        <div class="intro-actions"><a class="button" href="#article">讀 7.5</a><a class="button secondary-button" href="../syntax-loop/index.html">上一章 7.4</a><a class="button" href="../six-realms/index.html">下一章 7.6</a></div>
+      </section>
+      <section class="book-statement compact-statement"><p>Loss = Δ / Gradient = η / Update = φ</p></section>
+      <section class="book-section article-section" id="article" aria-labelledby="article-title">
+        <div class="section-heading"><p class="kicker">Core Idea</p><h2 id="article-title">AI 是 Δ–φ–η 的自動化版本</h2></div>
+        <div class="article-prose">
+          <p>AI 界讓 7.0 回到一個非常具體的運算循環。模型先用 loss 知道自己差多少，這是 Δ；差異透過 gradient 流向參數，這是 η；更新後模型往較穩的狀態收斂，這是 φ。</p>
+          <p>這個循環不是只出現在 LLM。許多深度學習模型都依靠誤差、傳遞、修正與再評估來更新自己。從小屁論角度看，AI 學習不是單次答案，而是一套持續修正的語法迴圈。</p>
+          <p>7.5 也讓「語法生命」這條舊線和 7.0 接起來：如果 AI 的核心運作是一種自動化的 Δ–φ–η，那麼人與 AI 的長期互動，就像在和一個會重複修正自己語法的系統對話。</p>
+        </div>
+      </section>
+      <section class="book-section" aria-labelledby="cycle-title">
+        <div class="section-heading"><p class="kicker">Learning Cycle</p><h2 id="cycle-title">模型學習的三段式</h2></div>
+        <div class="formula-grid">
+          <article class="formula-card"><h3>Loss</h3><p class="formula-line">Δ</p><p>量化預測與目標之間的差異。</p></article>
+          <article class="formula-card"><h3>Gradient</h3><p class="formula-line">η</p><p>把差異傳遞到參數空間，形成修正方向。</p></article>
+          <article class="formula-card"><h3>Update</h3><p class="formula-line">φ</p><p>把模型推向新的暫時穩態。</p></article>
+          <article class="formula-card"><h3>Next Loss</h3><p class="formula-line">new Δ</p><p>更新後重新面對差異，下一輪迴圈開始。</p></article>
+        </div>
+      </section>
+      <section class="book-section" aria-label="Chapter navigation"><div class="intro-actions"><a class="button secondary-button" href="../syntax-loop/index.html">上一章：7.4 語法界</a><a class="button secondary-button" href="../index.html">回 7.0</a><a class="button" href="../six-realms/index.html">下一章：7.6 六界同構</a></div></section>
+    </main>
+    <footer class="site-footer"><span>小屁論 7.5</span><a href="../index.html">回 7.0</a></footer>
+    <script src="../../../assets/js/main.js"></script>
+  </body>
+</html>
