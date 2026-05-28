@@ -1,0 +1,33 @@
+{
+  "id": 3,
+  "next_id": 4,
+  "title": "第三章：加利，水之試煉",
+  "story": "Ga-Koro 遭感染的塔拉卡瓦攻擊。水村族人被困在下沉的屋子裡，加利必須阻止這頭水中怪物。",
+  "intro_dialogue": [
+    { "speaker": "nokama", "name": "圖拉加諾卡瑪", "text": "加利，一隻感染的塔拉卡瓦封鎖了 Ga-Koro。族人被困在沉入水中的屋子裡……" },
+    { "speaker": "gali",   "name": "加利",          "text": "諾卡瑪，放心。水，永遠找得到自己的路。" },
+    { "speaker": "nokama", "name": "圖拉加諾卡瑪", "text": "塔拉卡瓦力大無窮，正面衝撞並不智。要用智慧，而非蠻力。" },
+    { "speaker": "gali",   "name": "加利",          "text": "水從不硬碰硬，卻能穿透一切。我明白。" }
+  ],
+  "outro_dialogue": [
+    { "speaker": "gali",   "name": "加利",          "text": "感染面具——摘除了。Ga-Koro 安全了。" },
+    { "speaker": "nokama", "name": "圖拉加諾卡瑪", "text": "加利……你不只救了我們，更帶回了希望。感謝你，水之托亞。" }
+  ],
+  "victory_text": "Ga-Wahi 塔拉卡瓦已被擊敗。Ga-Koro 重獲自由。",
+  "boss": {
+    "name": "Ga-Wahi 拉西族首領（塔拉卡瓦）",
+    "hp": 900,
+    "shield": "water",
+    "image": "tarakava"
+  },
+  "board": {
+    "rows": 8,
+    "cols": 8,
+    "elements": ["fire","water","earth","ice","air","stone"]
+  },
+  "damage": {
+    "perTile": 8,
+    "comboMultiplier": true
+  },
+  "background": "ga-wahi"
+}

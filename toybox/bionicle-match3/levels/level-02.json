@@ -1,0 +1,33 @@
+{
+  "id": 2,
+  "next_id": 3,
+  "title": "第二章：塔胡，火之試煉",
+  "story": "Ta-Wahi 的岩漿地帶烽火四起。感染的科佛加蠍子受馬古他驅使，正在攻擊火村 Ta-Koro。",
+  "intro_dialogue": [
+    { "speaker": "vakama", "name": "圖拉加瓦卡瑪", "text": "塔胡，科佛加的火焰蠍子正橫行 Ta-Wahi，感染面具使牠們失去理性，攻擊我們的村落。" },
+    { "speaker": "tahu",   "name": "塔胡",          "text": "蠍子怕火嗎？牠們即將知道答案。" },
+    { "speaker": "vakama", "name": "圖拉加瓦卡瑪", "text": "切記——衝動，是英雄最大的敵人。火，可以溫暖，也可以燃盡一切。" },
+    { "speaker": "tahu",   "name": "塔胡",          "text": "……我記住了，老師。" }
+  ],
+  "outro_dialogue": [
+    { "speaker": "tahu",   "name": "塔胡",          "text": "Ta-Wahi 的蠍子首領，已葬身烈焰。這裡，依然屬於我們。" },
+    { "speaker": "vakama", "name": "圖拉加瓦卡瑪", "text": "塔胡，今天你不只擊敗了敵人，更克服了自己的急躁。這才是真正的成長。" }
+  ],
+  "victory_text": "Ta-Wahi 拉西族首領已被擊敗。塔胡守住了火村。",
+  "boss": {
+    "name": "Ta-Wahi 拉西族首領（科佛加）",
+    "hp": 800,
+    "shield": null,
+    "image": "kofo-jaga"
+  },
+  "board": {
+    "rows": 8,
+    "cols": 8,
+    "elements": ["fire","water","earth","ice","air","stone"]
+  },
+  "damage": {
+    "perTile": 8,
+    "comboMultiplier": true
+  },
+  "background": "ta-wahi"
+}

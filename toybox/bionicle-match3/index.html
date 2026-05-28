@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BIONICLE Match-3</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-container">
+
+    <header id="story-panel">
+      <h1 id="chapter-title">載入中...</h1>
+      <p id="story-text"></p>
+    </header>
+
+    <div id="boss-panel">
+      <img id="boss-portrait" alt="">
+      <div id="boss-details">
+        <div id="boss-info">
+          <span id="boss-name"></span>
+          <span id="boss-hp-text"></span>
+        </div>
+        <div id="boss-hp-track">
+          <div id="boss-hp-bar"></div>
+        </div>
+        <div id="boss-shield-info" class="hidden">
+          護盾啟動——必須消除 <span id="shield-label"></span> 才能造成傷害
+        </div>
+        <div id="seal-info" class="hidden">
+          <span id="seal-label"></span>
+          <div id="seal-track"><div id="seal-bar"></div></div>
+          <span id="seal-count">0 / 15</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="main-area">
+      <div id="energy-panel"></div>
+      <div id="board-wrap">
+        <div id="board"></div>
+        <div id="combo-banner" class="hidden"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="boss-attack-overlay" class="hidden"></div>
+
+  <div id="dialogue-overlay" class="hidden">
+    <div id="dialogue-box">
+      <img id="dialogue-portrait" alt="">
+      <div id="dialogue-content">
+        <div id="dialogue-name"></div>
+        <div id="dialogue-text"></div>
+      </div>
+      <div id="dialogue-next">▼</div>
+    </div>
+  </div>
+
+  <div id="victory-overlay" class="hidden">
+    <div id="victory-box">
+      <h2>勝利！</h2>
+      <p id="victory-msg"></p>
+      <button id="next-btn">繼續</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+{
+  "id": 6,
+  "next_id": 7,
+  "title": "第六章：列瓦，風之試煉（感染）",
+  "story": "列瓦被努伊空巢穴的感染面具控制，成了己方托亞中的威脅。歐努亞必須用力量將他解放。",
+  "intro_dialogue": [
+    { "speaker": "matau",  "name": "圖拉加馬圖",    "text": "不好了！列瓦被感染了！他的眼神空洞，面具泛著詭異的綠光……" },
+    { "speaker": "onua",   "name": "歐努亞",        "text": "馬圖，冷靜。列瓦還在裡面。" },
+    { "speaker": "matau",  "name": "圖拉加馬圖",    "text": "但他現在是敵人——他會攻擊你的！" },
+    { "speaker": "onua",   "name": "歐努亞",        "text": "他是我的同伴。感染面具，改變不了這一點。" }
+  ],
+  "outro_dialogue": [
+    { "speaker": "onua",   "name": "歐努亞",        "text": "列瓦——面具掉了。你回來了。" },
+    { "speaker": "lewa",   "name": "列瓦",          "text": "我……歐努亞……謝謝你……那個黑暗，好沉重……" },
+    { "speaker": "onua",   "name": "歐努亞",        "text": "別說了。我在。" }
+  ],
+  "victory_text": "感染列瓦已被解放。列瓦重新成為托亞之友。",
+  "boss": {
+    "name": "感染列瓦（受馬古他控制）",
+    "hp": 1200,
+    "shield": "air",
+    "image": null
+  },
+  "board": {
+    "rows": 8,
+    "cols": 8,
+    "elements": ["fire","water","earth","ice","air","stone"]
+  },
+  "damage": {
+    "perTile": 10,
+    "comboMultiplier": true
+  },
+  "background": "le-wahi"
+}

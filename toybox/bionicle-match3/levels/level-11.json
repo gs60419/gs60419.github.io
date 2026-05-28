@@ -1,0 +1,43 @@
+{
+  "id": 11,
+  "next_id": 12,
+  "title": "第十一章：暗影托亞",
+  "story": "馬古他以魔法召喚出六位托亞的黑暗分身。鏡像中的敵人擁有與英雄完全相同的力量——唯一的破解之道，是接受自己的黑暗面。",
+  "intro_dialogue": [
+    { "speaker": "makuta", "name": "馬古他",        "text": "歡迎，英雄們。讓我送給你們一份……禮物。（黑暗能量漩渦）" },
+    { "speaker": "tahu",   "name": "塔胡",          "text": "那是……我？" },
+    { "speaker": "gali",   "name": "加利",          "text": "小心！它們用的，是我們自己的力量。不能用蠻力應對。" },
+    { "speaker": "gali",   "name": "加利",          "text": "要打敗自己的影子……必須先接受它。" }
+  ],
+  "outro_dialogue": [
+    { "speaker": "gali",   "name": "加利",          "text": "影子是光的一部分。我接受我的黑暗面——（影子消散於光中）" },
+    { "speaker": "tahu",   "name": "塔胡",          "text": "我的急躁、我的自傲……那也是我。我接受它。（暗影被吸收）" },
+    { "speaker": "kopaka", "name": "科帕卡",        "text": "我們比你更了解自己。（平靜地望向黑暗）這，就是你的敗因。" }
+  ],
+  "victory_text": "暗影托亞已被六托亞各自吸收。英雄們更加完整，踏向最終決戰。",
+  "boss": {
+    "name": "暗影托亞（六位黑暗分身）",
+    "hp": 1620,
+    "type": "multiboss",
+    "targets": [
+      { "elem": "fire",  "name": "暗影塔胡",   "hp": 270 },
+      { "elem": "water", "name": "暗影加利",   "hp": 270 },
+      { "elem": "earth", "name": "暗影歐努亞", "hp": 270 },
+      { "elem": "ice",   "name": "暗影科帕卡", "hp": 270 },
+      { "elem": "air",   "name": "暗影列瓦",   "hp": 270 },
+      { "elem": "stone", "name": "暗影波哈圖", "hp": 270 }
+    ],
+    "shield": null,
+    "image": null
+  },
+  "board": {
+    "rows": 8,
+    "cols": 8,
+    "elements": ["fire","water","earth","ice","air","stone"]
+  },
+  "damage": {
+    "perTile": 15,
+    "comboMultiplier": true
+  },
+  "background": "mangaia"
+}

@@ -1,0 +1,37 @@
+{
+  "id": 12,
+  "next_id": 1,
+  "title": "終章：擊敗馬古他",
+  "story": "六托亞終於面對馬古他本尊。黑暗的主宰從容現身，宣稱自己無法被消滅。但今天，英雄們將證明——光，永遠強過黑暗。",
+  "intro_dialogue": [
+    { "speaker": "makuta", "name": "馬古他",        "text": "（一個鏽蝕、空洞的馬托倫走出黑暗）你們費盡千辛萬苦，要保護的……就是像我這樣的存在？" },
+    { "speaker": "kopaka", "name": "科帕卡",        "text": "那是謊言。" },
+    { "speaker": "makuta", "name": "馬古他",        "text": "謊言？（黑暗能量爆發，感染面具升空）我是馬托努伊之影，是暗黑本身。你們——無法消滅我。" },
+    { "speaker": "tahu",   "name": "塔胡",          "text": "那我們就試試看。" }
+  ],
+  "outro_dialogue": [
+    { "speaker": "makuta", "name": "馬古他",        "text": "你們打敗不了我……我是虛無……我是暗影……（聲音漸遠，消散）" },
+    { "speaker": "gali",   "name": "加利",          "text": "結束了嗎？" },
+    { "speaker": "tahu",   "name": "塔胡",          "text": "今天……結束了。（六托亞被白光傳送回地面）" },
+    { "speaker": "vakama", "name": "圖拉加瓦卡瑪", "text": "（含淚）托亞們……你們，回來了。" },
+    { "speaker": "takua",  "name": "塔庫亞",        "text": "這一天，六名英雄拯救了馬托努伊。我要把這一切，永遠記在編年史裡。" }
+  ],
+  "victory_text": "馬古他已被擊敗！馬托努伊重獲和平。感謝你，托亞！",
+  "boss": {
+    "name": "馬古他·泰里達克斯",
+    "hp": 3500,
+    "shield": null,
+    "sealSystem": true,
+    "image": "makuta"
+  },
+  "board": {
+    "rows": 8,
+    "cols": 8,
+    "elements": ["fire","water","earth","ice","air","stone"]
+  },
+  "damage": {
+    "perTile": 15,
+    "comboMultiplier": true
+  },
+  "background": "mangaia-core"
+}

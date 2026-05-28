@@ -1,0 +1,33 @@
+{
+  "id": 7,
+  "next_id": 8,
+  "title": "第七章：歐努亞，土之試煉",
+  "story": "Onu-Wahi 地底深處，古老的岩石怪物瓦圖卡甦醒，礦工們無路可逃。歐努亞深入黑暗，守護地底家園。",
+  "intro_dialogue": [
+    { "speaker": "whenua", "name": "圖拉加維努亞",  "text": "歐努亞，古老的岩石怪物瓦圖卡在地底深處甦醒了。礦工們退無可退。" },
+    { "speaker": "onua",   "name": "歐努亞",        "text": "Onu-Wahi 的深處，是我的地盤。" },
+    { "speaker": "whenua", "name": "圖拉加維努亞",  "text": "瓦圖卡能操控岩石本身，非常危險——" },
+    { "speaker": "onua",   "name": "歐努亞",        "text": "維努亞，我在黑暗裡生活了很久了。黑暗，從來不是威脅。" }
+  ],
+  "outro_dialogue": [
+    { "speaker": "onua",   "name": "歐努亞",        "text": "（平靜地）睡吧。你的憤怒，結束了。" },
+    { "speaker": "whenua", "name": "圖拉加維努亞",  "text": "歐努亞……你讓我想起了古老記載中那些真正的英雄。" }
+  ],
+  "victory_text": "Onu-Wahi 瓦圖卡已被封印。地底礦場重回平靜。",
+  "boss": {
+    "name": "Onu-Wahi 拉西族首領（瓦圖卡）",
+    "hp": 1200,
+    "shield": null,
+    "image": "vatuka"
+  },
+  "board": {
+    "rows": 8,
+    "cols": 8,
+    "elements": ["fire","water","earth","ice","air","stone"]
+  },
+  "damage": {
+    "perTile": 12,
+    "comboMultiplier": true
+  },
+  "background": "onu-wahi"
+}

@@ -1,0 +1,32 @@
+{
+  "id": 1,
+  "next_id": 2,
+  "title": "第一章：降臨馬托努伊",
+  "story": "遠古的膠囊從深海漂上岸邊。六名沉睡的英雄正在甦醒——消除面具，召喚托亞的力量！",
+  "intro_dialogue": [
+    { "speaker": "vakama", "name": "圖拉加瓦卡瑪", "text": "傳說古老如世界本身——當黑暗最深重之時，英雄將從大海升起。孩子們……那一天，終於來了。" },
+    { "speaker": "tahu",   "name": "塔胡",          "text": "我不知道自己是誰，也不知從何處來。但我知道——有什麼黑暗，需要我去終結。" },
+    { "speaker": "vakama", "name": "圖拉加瓦卡瑪", "text": "感染面具的拉西族已蔓延至海岸線。托亞們——展示你們的力量！" }
+  ],
+  "outro_dialogue": [
+    { "speaker": "tahu",   "name": "塔胡",          "text": "感染面具——碎了。馬托努伊，我來了。" },
+    { "speaker": "vakama", "name": "圖拉加瓦卡瑪", "text": "第一步已踏出。但路，還長得很。" }
+  ],
+  "victory_text": "感染拉西族守衛已被擊敗。托亞們踏上了馬托努伊的土地。",
+  "boss": {
+    "name": "感染拉西族守衛",
+    "hp": 600,
+    "shield": null,
+    "image": "rahi-guard"
+  },
+  "board": {
+    "rows": 8,
+    "cols": 8,
+    "elements": ["fire","water","earth","ice","air","stone"]
+  },
+  "damage": {
+    "perTile": 8,
+    "comboMultiplier": true
+  },
+  "background": "mata-nui-shore"
+}

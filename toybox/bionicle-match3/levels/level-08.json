@@ -1,0 +1,35 @@
+{
+  "id": 8,
+  "next_id": 9,
+  "title": "第八章：基尼努伊集結，黃金卡諾基",
+  "story": "六位托亞齊聚神殿基尼努伊。將各自的面具放上石台，傳說中的黃金卡諾基將會誕生，指引英雄們深入馬古他的巢穴。",
+  "intro_dialogue": [
+    { "speaker": "gali",   "name": "加利",          "text": "六枚面具，六座石台。我們需要同時放上去——黃金卡諾基才會出現。" },
+    { "speaker": "tahu",   "name": "塔胡",          "text": "那我們分頭——" },
+    { "speaker": "kopaka", "name": "科帕卡",        "text": "不。（打斷）這次，一起行動。" },
+    { "speaker": "tahu",   "name": "塔胡",          "text": "（停頓）……好。一起。" },
+    { "speaker": "gali",   "name": "加利",          "text": "這就是我們真正的力量——不是個別的火、水、土，而是六合一。" }
+  ],
+  "outro_dialogue": [
+    { "speaker": "lewa",   "name": "列瓦",          "text": "黃金面具……我感受到了所有人的力量！好像整個島嶼都在幫我飛！" },
+    { "speaker": "pohatu", "name": "波哈圖",        "text": "哇！這就是傳說中說的？比我想像的還要壯觀！" },
+    { "speaker": "onua",   "name": "歐努亞",        "text": "我們準備好了。（望向地底的方向）是時候，下去了。" }
+  ],
+  "victory_text": "黃金卡諾基誕生！六托亞已準備好進入馬古他的巢穴曼蓋亞。",
+  "boss": {
+    "name": "基尼努伊試煉（六元素守護者）",
+    "hp": 1400,
+    "shield": null,
+    "image": "nui-rama"
+  },
+  "board": {
+    "rows": 8,
+    "cols": 8,
+    "elements": ["fire","water","earth","ice","air","stone"]
+  },
+  "damage": {
+    "perTile": 12,
+    "comboMultiplier": true
+  },
+  "background": "kini-nui"
+}

@@ -1,0 +1,33 @@
+{
+  "id": 9,
+  "next_id": 10,
+  "title": "第九章：守護基尼努伊",
+  "story": "托亞們下入地底。地面上，塔庫亞率領六位馬托倫夥伴，守護基尼努伊神殿，抵擋蜂擁而來的拉西族大軍。",
+  "intro_dialogue": [
+    { "speaker": "takua",  "name": "塔庫亞",        "text": "托亞們去了地底。現在守護基尼努伊的，只有我們——六個普通的馬托倫。" },
+    { "speaker": "takua",  "name": "塔庫亞",        "text": "說實話？我很害怕。" },
+    { "speaker": "takua",  "name": "塔庫亞",        "text": "……但現在不是害怕的時候。夥伴們——站穩！" }
+  ],
+  "outro_dialogue": [
+    { "speaker": "takua",  "name": "塔庫亞",        "text": "我們撐住了。幾個普通的馬托倫，在托亞不在的時候，撐住了。" },
+    { "speaker": "takua",  "name": "塔庫亞",        "text": "也許……英雄，不一定非得是托亞。" },
+    { "speaker": "takua",  "name": "塔庫亞",        "text": "我要把這一切都記下來。每一個名字，每一場戰鬥。" }
+  ],
+  "victory_text": "馬托倫夥伴們守住了基尼努伊！托亞們可以安心在地底作戰。",
+  "boss": {
+    "name": "拉西族大軍（努伊空蜂群）",
+    "hp": 1300,
+    "shield": null,
+    "image": "nui-rama"
+  },
+  "board": {
+    "rows": 8,
+    "cols": 8,
+    "elements": ["fire","water","earth","ice","air","stone"]
+  },
+  "damage": {
+    "perTile": 12,
+    "comboMultiplier": true
+  },
+  "background": "kini-nui"
+}

@@ -1,0 +1,51 @@
+{
+  "id": 10,
+  "next_id": 11,
+  "title": "第十章：托亞凱塔對決馬納斯",
+  "story": "曼蓋亞深處，傳說中最強的拉西族——馬納斯巨蟹守護著入口。六托亞必須合體為托亞凱塔，才能與之一戰。",
+  "intro_dialogue": [
+    { "speaker": "gali",   "name": "加利",          "text": "曼蓋亞深處的聲音……是馬納斯。傳說中最強大的拉西族守衛。" },
+    { "speaker": "tahu",   "name": "塔胡",          "text": "有多強？" },
+    { "speaker": "kopaka", "name": "科帕卡",        "text": "強到我們各自的力量都不夠。必須合體——托亞凱塔。" },
+    { "speaker": "gali",   "name": "加利",          "text": "三合一。英勇之軀——塔胡、波哈圖、歐努亞。智慧之心——列瓦、加利、科帕卡。" }
+  ],
+  "outro_dialogue": [
+    { "speaker": "pohatu", "name": "波哈圖",        "text": "那些高塔——原來是給馬納斯補充力量的！摧毀它們，巨蟹就無力可用！" },
+    { "speaker": "lewa",   "name": "列瓦",          "text": "托亞凱塔的感覺……像是在夢裡飛翔，又像是大地本身在移動。" },
+    { "speaker": "tahu",   "name": "塔胡",          "text": "前面，就是馬古他了。所有人——準備好。" }
+  ],
+  "victory_text": "馬納斯巨蟹已被擊敗！通往馬古他的道路敞開。",
+  "boss": {
+    "name": "馬納斯雙蟹",
+    "hp": 2000,
+    "type": "multiboss",
+    "targets": [
+      {
+        "id": "akamai",
+        "name": "英勇之軀",
+        "hp": 1000,
+        "elems": ["fire", "stone", "earth"],
+        "colorElem": "fire"
+      },
+      {
+        "id": "wairuha",
+        "name": "智慧之心",
+        "hp": 1000,
+        "elems": ["air", "water", "ice"],
+        "colorElem": "water"
+      }
+    ],
+    "shield": null,
+    "image": "manas"
+  },
+  "board": {
+    "rows": 8,
+    "cols": 8,
+    "elements": ["fire","water","earth","ice","air","stone"]
+  },
+  "damage": {
+    "perTile": 15,
+    "comboMultiplier": true
+  },
+  "background": "mangaia"
+}

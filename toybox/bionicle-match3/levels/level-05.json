@@ -1,0 +1,33 @@
+{
+  "id": 5,
+  "next_id": 6,
+  "title": "第五章：波哈圖，石之試煉",
+  "story": "Po-Koro 的石材礦場被努伊加蠍子王佔領。所有工作停擺，整個石村陷入危機。",
+  "intro_dialogue": [
+    { "speaker": "onewa",  "name": "圖拉加歐尼瓦",  "text": "波哈圖，直說了——努伊加蠍子王佔了礦場，Po-Koro 全部工作都停擺了。" },
+    { "speaker": "pohatu", "name": "波哈圖",        "text": "完全了解。交給我。" },
+    { "speaker": "onewa",  "name": "圖拉加歐尼瓦",  "text": "努伊加的毒刺很危險，不要莽撞。" },
+    { "speaker": "pohatu", "name": "波哈圖",        "text": "歐尼瓦，我不需要莽撞。（輕鬆踢起一塊巨石）我有石頭。" }
+  ],
+  "outro_dialogue": [
+    { "speaker": "pohatu", "name": "波哈圖",        "text": "蠍子王——已入土。Po-Wahi，永遠屹立不搖。" },
+    { "speaker": "onewa",  "name": "圖拉加歐尼瓦",  "text": "嗯。（少見的停頓）……做得不錯。" }
+  ],
+  "victory_text": "Po-Wahi 努伊加蠍子王已被擊敗。石材礦場重新開工。",
+  "boss": {
+    "name": "Po-Wahi 拉西族首領（努伊加）",
+    "hp": 1100,
+    "shield": null,
+    "image": "nui-jaga"
+  },
+  "board": {
+    "rows": 8,
+    "cols": 8,
+    "elements": ["fire","water","earth","ice","air","stone"]
+  },
+  "damage": {
+    "perTile": 10,
+    "comboMultiplier": true
+  },
+  "background": "po-wahi"
+}

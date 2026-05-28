@@ -1,0 +1,35 @@
+{
+  "id": 4,
+  "next_id": 5,
+  "title": "第四章：科帕卡，冰之試煉",
+  "story": "Ko-Wahi 的雪山道路被感染的莫亞卡巨虎封鎖。科帕卡獨自前往，卻意外多了一個不請自來的夥伴。",
+  "intro_dialogue": [
+    { "speaker": "nuju",   "name": "圖拉加努朱（透過馬托洛翻譯）", "text": "（啾啾……啾啾啾）Ko-Wahi 的巨虎莫亞卡被感染了，封鎖了山道，必須阻止牠。" },
+    { "speaker": "kopaka", "name": "科帕卡",        "text": "我獨自前往。" },
+    { "speaker": "pohatu", "name": "波哈圖",        "text": "等一下！我也要去！（腳步聲）" },
+    { "speaker": "kopaka", "name": "科帕卡",        "text": "不需要幫忙。" },
+    { "speaker": "pohatu", "name": "波哈圖",        "text": "好啊。不過我跑得很快，你追不上我的。" }
+  ],
+  "outro_dialogue": [
+    { "speaker": "kopaka", "name": "科帕卡",        "text": "感染已解除。" },
+    { "speaker": "pohatu", "name": "波哈圖",        "text": "你看！兩個人一起，比一個人快多了，對吧？" },
+    { "speaker": "kopaka", "name": "科帕卡",        "text": "……（長時間沉默）……也許。" }
+  ],
+  "victory_text": "Ko-Wahi 莫亞卡已被擊敗。冰山道路重新開通。",
+  "boss": {
+    "name": "Ko-Wahi 拉西族首領（莫亞卡）",
+    "hp": 1000,
+    "shield": "ice",
+    "image": "muaka"
+  },
+  "board": {
+    "rows": 8,
+    "cols": 8,
+    "elements": ["fire","water","earth","ice","air","stone"]
+  },
+  "damage": {
+    "perTile": 10,
+    "comboMultiplier": true
+  },
+  "background": "ko-wahi"
+}
