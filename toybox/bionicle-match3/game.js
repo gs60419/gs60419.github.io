@@ -402,9 +402,43 @@ function swap(r1, c1, r2, c2) {
   [board[r1][c1], board[r2][c2]] = [board[r2][c2], board[r1][c1]];
 }
 
+function tickTurnCounters() {
+  for (const [key, dur] of infectedCells) {
+    if (dur <= 1) infectedCells.delete(key);
+    else infectedCells.set(key, dur - 1);
+  }
+  bossAttackCountdown--;
+  if (bossAttackCountdown <= 0) {
+    bossAttackCountdown = level.boss.attackInterval ?? 6;
+    pendingCounterattack = true;
+  }
+  if (damageBuffTurns > 0) {
+    damageBuffTurns--;
+    if (damageBuffTurns === 0) damageBuffMult = 1;
+  }
+}
+
 function attemptSwap(r1, c1, r2, c2) {
   swap(r1, c1, r2, c2);
-  const { cells: matches, maxRun, bombPos } = findMatches();
+
+  // ── Bomb-on-move: any swap involving a bomb detonates it immediately ──
+  const bomb1 = isBomb(board[r1][c1]); // what landed at r1,c1 (came from r2,c2)
+  const bomb2 = isBomb(board[r2][c2]); // what landed at r2,c2 (came from r1,c1)
+  if (bomb1 || bomb2) {
+    tickTurnCounters();
+    refreshCell(r1, c1);
+    refreshCell(r2, c2);
+    const bombMatches = [];
+    if (bomb1) bombMatches.push({ r: r1, c: c1 });
+    if (bomb2) bombMatches.push({ r: r2, c: c2 });
+    combo = 0;
+    isAnimating = true;
+    setTimeout(() => processMatches(bombMatches, 0, null, null), 160);
+    return;
+  }
+
+  // ── Normal flow ────────────────────────────────────────────────
+  const { cells: matches, maxRun, bombPos, lBombPos } = findMatches();
 
   if (!matches.length) {
     swap(r1, c1, r2, c2);
@@ -413,37 +447,22 @@ function attemptSwap(r1, c1, r2, c2) {
     return;
   }
 
-  // Tick down infected cell durability
-  for (const [key, dur] of infectedCells) {
-    if (dur <= 1) infectedCells.delete(key);
-    else infectedCells.set(key, dur - 1);
-  }
-
-  // Boss counterattack countdown
-  bossAttackCountdown--;
-  if (bossAttackCountdown <= 0) {
-    bossAttackCountdown = level.boss.attackInterval ?? 6;
-    pendingCounterattack = true;
-  }
-
-  // Tick down damage buff
-  if (damageBuffTurns > 0) {
-    damageBuffTurns--;
-    if (damageBuffTurns === 0) damageBuffMult = 1;
-  }
-
+  tickTurnCounters();
   refreshCell(r1, c1);
   refreshCell(r2, c2);
 
   isAnimating = true;
-  setTimeout(() => processMatches(matches, maxRun, bombPos), 160);
+  setTimeout(() => processMatches(matches, maxRun, bombPos, lBombPos), 160);
 }
 
 // ── Match finding ──────────────────────────────────────────────────
-// Returns { cells, maxRun, bombPos }
-// bombPos = center of the longest run (used for 4+ bomb placement)
+// Returns { cells, maxRun, bombPos, lBombPos }
+// bombPos  = center of longest straight run ≥4 (4+ bomb placement)
+// lBombPos = corner of an L/T shape (3+3 bomb placement, lower priority)
 function findMatches() {
-  const hit = new Set();
+  const hit  = new Set();
+  const hRun = new Set(); // cells in any horizontal 3+ run
+  const vRun = new Set(); // cells in any vertical   3+ run
   let maxRun = 0;
   let bombPos = null;
 
@@ -459,7 +478,7 @@ function findMatches() {
       } else {
         if (run >= 3) {
           const start = c - run;
-          for (let k = start; k < c; k++) hit.add(r * COLS + k);
+          for (let k = start; k < c; k++) { hit.add(r * COLS + k); hRun.add(r * COLS + k); }
           if (run > maxRun) {
             maxRun = run;
             bombPos = { r, c: start + Math.floor(run / 2), elem: getElem(board[r][start]) };
@@ -482,7 +501,7 @@ function findMatches() {
       } else {
         if (run >= 3) {
           const start = r - run;
-          for (let k = start; k < r; k++) hit.add(k * COLS + c);
+          for (let k = start; k < r; k++) { hit.add(k * COLS + c); vRun.add(k * COLS + c); }
           if (run > maxRun) {
             maxRun = run;
             bombPos = { r: start + Math.floor(run / 2), c, elem: getElem(board[start][c]) };
@@ -493,8 +512,18 @@ function findMatches() {
     }
   }
 
+  // L / T intersections: a cell in both a horizontal and a vertical 3+ run
+  let lBombPos = null;
+  for (const key of hRun) {
+    if (vRun.has(key)) {
+      const r = Math.floor(key / COLS), c = key % COLS;
+      lBombPos = { r, c, elem: getElem(board[r][c]) };
+      break; // first found is enough
+    }
+  }
+
   const cells = [...hit].map(idx => ({ r: Math.floor(idx / COLS), c: idx % COLS }));
-  return { cells, maxRun, bombPos };
+  return { cells, maxRun, bombPos, lBombPos };
 }
 
 // ── Bomb explosion patterns ────────────────────────────────────────
@@ -581,20 +610,31 @@ function spawnParticles(matches, color = null) {
 }
 
 // ── Processing chain ───────────────────────────────────────────────
-async function processMatches(matches, maxRun = 3, bombPos = null) {
+async function processMatches(matches, maxRun = 3, bombPos = null, lBombPos = null) {
   combo++;
 
-  // ── Detect bomb explosions ─────────────────────────────────────
-  const explodingBombs     = matches.filter(({ r, c }) => isBomb(board[r][c]));
-  const explodingBombElems = explodingBombs.map(({ r, c }) => getElem(board[r][c]));
-  const explosionSet       = new Set();
-  explodingBombs.forEach(({ r, c }) => {
-    const elem = getElem(board[r][c]);
-    getBombExplosion(r, c, elem).forEach(k => explosionSet.add(k));
-  });
+  // ── Detect + chain bomb explosions (BFS) ──────────────────────
+  const matchKeys       = new Set(matches.map(({ r, c }) => r * COLS + c));
+  const explodedKeys    = new Set();
+  const explodingBombElems = [];
+  const explosionSet    = new Set();
+  const bombQueue       = matches.filter(({ r, c }) => board[r][c] && isBomb(board[r][c]));
 
-  // Merge explosion extras into cleared set
-  const matchKeys    = new Set(matches.map(({ r, c }) => r * COLS + c));
+  while (bombQueue.length > 0) {
+    const { r, c } = bombQueue.shift();
+    const key = r * COLS + c;
+    if (explodedKeys.has(key)) continue;
+    explodedKeys.add(key);
+    explodingBombElems.push(getElem(board[r][c]));
+    getBombExplosion(r, c, getElem(board[r][c])).forEach(k => {
+      explosionSet.add(k);
+      // Chain: if explosion hits another unexploded bomb, queue it
+      const br = Math.floor(k / COLS), bc = k % COLS;
+      if (board[br][bc] && isBomb(board[br][bc]) && !explodedKeys.has(k))
+        bombQueue.push({ r: br, c: bc });
+    });
+  }
+
   const explosionExtra = [...explosionSet]
     .filter(k => !matchKeys.has(k))
     .map(k => ({ r: Math.floor(k / COLS), c: k % COLS }));
@@ -626,7 +666,9 @@ async function processMatches(matches, maxRun = 3, bombPos = null) {
   let bigMult = 1;
   if (maxRun >= 5)      bigMult = 2.5;
   else if (maxRun >= 4) bigMult = 1.5;
-  if (explodingBombs.length) bigMult *= 1.5;   // bomb explosion bonus
+  // Chain bomb bonus: +50% per bomb, capped at ×3
+  if (explodingBombElems.length > 0)
+    bigMult *= Math.min(3, 1 + 0.5 * explodingBombElems.length);
 
   const comboMult = level.damage.comboMultiplier ? 1 + (combo - 1) * 0.5 : 1;
 
@@ -678,8 +720,8 @@ async function processMatches(matches, maxRun = 3, bombPos = null) {
   }
 
   // ── Banner ─────────────────────────────────────────────────────
-  if (explodingBombs.length || combo > 1 || maxRun >= 4) {
-    showComboBanner(combo, damage, maxRun, explodingBombElems[0] ?? null);
+  if (explodingBombElems.length || combo > 1 || maxRun >= 4 || lBombPos) {
+    showComboBanner(combo, damage, maxRun, explodingBombElems[0] ?? null, explodingBombElems.length);
   }
 
   // ── Clear board positions ──────────────────────────────────────
@@ -688,9 +730,11 @@ async function processMatches(matches, maxRun = 3, bombPos = null) {
     infectedCells.delete(r * COLS + c);
   });
 
-  // ── Place bomb for 4+ match ────────────────────────────────────
+  // ── Place bomb for 4+ run OR L/T shape ────────────────────────
   if (maxRun >= 4 && bombPos && board[bombPos.r][bombPos.c] === null) {
     board[bombPos.r][bombPos.c] = `bomb-${bombPos.elem}`;
+  } else if (lBombPos && board[lBombPos.r][lBombPos.c] === null) {
+    board[lBombPos.r][lBombPos.c] = `bomb-${lBombPos.elem}`;
   }
 
   // ── Gravity + refill ───────────────────────────────────────────
@@ -731,9 +775,9 @@ async function processMatches(matches, maxRun = 3, bombPos = null) {
   }
 
   // ── Chain check ────────────────────────────────────────────────
-  const { cells: next, maxRun: nextRun, bombPos: nextBombPos } = findMatches();
+  const { cells: next, maxRun: nextRun, bombPos: nextBombPos, lBombPos: nextLBombPos } = findMatches();
   if (next.length) {
-    setTimeout(() => processMatches(next, nextRun, nextBombPos), 80);
+    setTimeout(() => processMatches(next, nextRun, nextBombPos, nextLBombPos), 80);
   } else {
     if (pendingCounterattack && bossHp > 0) {
       pendingCounterattack = false;
@@ -797,7 +841,7 @@ const BOMB_BANNER = {
   stone: '💥 巨石落擊',
 };
 
-function showComboBanner(n, dmg, maxRun, bombElem = null) {
+function showComboBanner(n, dmg, maxRun, bombElem = null, bombCount = 0) {
   const banner  = document.getElementById('combo-banner');
   const dmgText = dmg > 0 ? `${dmg} 傷害` :
                   multiBossTargets ? '無效元素' :
@@ -805,7 +849,10 @@ function showComboBanner(n, dmg, maxRun, bombElem = null) {
                   '護盾阻擋';
   let text, extraClass;
 
-  if (bombElem) {
+  if (bombCount >= 2) {
+    text       = `💥×${bombCount} 連鎖引爆！  ${dmgText}`;
+    extraClass = 'amazing';
+  } else if (bombElem) {
     text      = `${BOMB_BANNER[bombElem] ?? '💥 符文引爆'}！  ${dmgText}`;
     extraClass = 'amazing';
   } else if (maxRun >= 5) {
@@ -921,10 +968,10 @@ async function finishTurn() {
     return;
   }
 
-  const { cells: next, maxRun, bombPos } = findMatches();
+  const { cells: next, maxRun, bombPos, lBombPos } = findMatches();
   if (next.length) {
     combo = 0;
-    setTimeout(() => processMatches(next, maxRun, bombPos), 80);
+    setTimeout(() => processMatches(next, maxRun, bombPos, lBombPos), 80);
   } else {
     if (pendingCounterattack && bossHp > 0) {
       pendingCounterattack = false;
@@ -1042,17 +1089,12 @@ async function abilityEarth() {
       shakeBossPanel();
     }
     showAbilityBanner(`🪨 歐努亞 重拳出擊！  ${damage > 0 ? damage + ' 直接傷害' : '暗影已消滅'}`);
-  } else if (sealSystem && sealActive) {
-    showAbilityBanner(`🪨 歐努亞 重拳出擊！  （封印期間無效）`);
   } else {
+    // 重拳是物理直接傷害：穿透封印免疫，也不受門檻限制
     damage = applyShieldLogic('earth', Math.round(bossMaxHp * 0.15 * damageBuffMult));
-    // Seal threshold clamping (ability direct damage)
-    if (sealSystem && sealPhase < SEAL_THRESHOLDS.length) {
-      const threshold = SEAL_THRESHOLDS[sealPhase];
-      if (bossHp - damage < threshold) damage = Math.max(0, bossHp - threshold);
-    }
     if (damage > 0) { bossHp = Math.max(0, bossHp - damage); updateBossHpUI(); shakeBossPanel(); }
-    showAbilityBanner(`🪨 歐努亞 重拳出擊！  ${damage > 0 ? damage + ' 直接傷害' : '護盾阻擋'}`);
+    const sealLabel = (sealSystem && sealActive) ? ' 穿透封印！' : ' 直接傷害';
+    showAbilityBanner(`🪨 歐努亞 重拳出擊！  ${damage > 0 ? damage + sealLabel : '護盾阻擋'}`);
   }
   await wait(600);
   // Seal activation (might have just crossed a threshold via direct damage)
@@ -1101,10 +1143,10 @@ async function abilityAir() {
     for (let c = 0; c < COLS; c++)
       refreshCell(r, c, true);
   await wait(300);
-  const { cells: next, maxRun, bombPos } = findMatches();
+  const { cells: next, maxRun, bombPos, lBombPos } = findMatches();
   if (next.length) {
     combo = 0;
-    setTimeout(() => processMatches(next, maxRun, bombPos), 80);
+    setTimeout(() => processMatches(next, maxRun, bombPos, lBombPos), 80);
   } else {
     if (pendingCounterattack && bossHp > 0) { pendingCounterattack = false; await bossCounterattack(); }
     isAnimating = false;
