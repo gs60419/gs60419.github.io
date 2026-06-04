@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ Mosaic Maker</title>
+<style>
+:root {
+  --bg:     #13131f;
+  --bg2:    #1c1c2e;
+  --bg3:    #22223a;
+  --panel:  #191928;
+  --border: #2e2e4a;
+  --hover:  #2a2a45;
+  --sel:    #2d2d50;
+  --accent: #7c6af7;
+  --accent2:#5a4fcf;
+  --red:    #e05a6a;
+  --text:   #ddddf0;
+  --text2:  #8888aa;
+  --text3:  #5555778;
+}
+/* ── Themes ── */
+html[data-theme="black"] {
+  --bg:#000; --bg2:#0a0a0a; --bg3:#111; --panel:#0d0d0d; --border:#222; --hover:#1a1a1a; --sel:#1e1e3a;
+}
+html[data-theme="gray"] {
+  --bg:#2e2e2e; --bg2:#3a3a3a; --bg3:#333; --panel:#303030; --border:#484848; --hover:#404040; --sel:#3a3a5a;
+}
+html[data-theme="cream"] {
+  --bg:#f5ead0; --bg2:#fdf5e0; --bg3:#ede0c4; --panel:#faf0d8;
+  --border:#d8c898; --hover:#ede0b8; --sel:#ddd0a0;
+  --text:#2a1f0a; --text2:#7a6030; --accent:#7c6af7;
+}
+html[data-theme="white"] {
+  --bg:#e8e8f0; --bg2:#f5f5fa; --bg3:#dddde8; --panel:#f0f0f8;
+  --border:#c8c8d8; --hover:#dddde8; --sel:#c8c8e8;
+  --text:#111128; --text2:#555570; --accent:#5040d0;
+}
+html[data-theme="board"] {
+  --bg:#1e2e1e; --bg2:#243424; --bg3:#1a281a; --panel:#202e20;
+  --border:#3a5a3a; --hover:#2e442e; --sel:#2a4a3a;
+  --text:#d8ecd8; --text2:#88aa88; --accent:#7cd87c;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-size: 12px;
+  user-select: none;
+}
+
+/* ── Top bar ── */
+#topbar {
+  height: 46px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  flex-shrink: 0;
+}
+.brand { font-weight: 800; font-size: 14px; color: var(--accent); letter-spacing: 1px; white-space: nowrap; }
+.vdiv { width: 1px; height: 22px; background: var(--border); flex-shrink: 0; }
+#proj-name {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+  width: 130px;
+}
+#proj-name:focus { outline: none; border-color: var(--accent); }
+.grid-lbl { color: var(--text2); white-space: nowrap; font-size: 11px; }
+.grid-inp {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 3px 6px;
+  border-radius: 5px;
+  width: 46px;
+  font-size: 12px;
+  text-align: center;
+}
+.grid-inp:focus { outline: none; border-color: var(--accent); }
+button {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 4px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 11px;
+  white-space: nowrap;
+  transition: background .12s, border-color .12s;
+  line-height: 1.4;
+}
+button:hover:not(:disabled) { background: var(--hover); }
+button:disabled { opacity: .35; cursor: default; }
+button.active { background: var(--accent2); border-color: var(--accent); color: #fff; }
+button.danger:hover { background: #4a1a22; border-color: var(--red); }
+.icon-btn {
+  width: 30px; height: 30px;
+  padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+.spacer { flex: 1; }
+
+/* ── Main layout ── */
+#main {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ── Left panel ── */
+#left-panel {
+  width: 180px;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.ph {
+  padding: 8px 10px 7px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+}
+.ph button { padding: 1px 7px; font-size: 11px; margin-left: auto; }
+
+.pat-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 5px;
+}
+.pat-item {
+  padding: 7px 9px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 2px;
+  border: 1px solid transparent;
+  min-height: 34px;
+}
+.pat-item:hover { background: var(--hover); }
+.pat-item.active { background: var(--sel); border-color: var(--accent2); }
+.pat-thumb {
+  width: 24px; height: 24px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  image-rendering: pixelated;
+}
+.pat-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+}
+.pat-acts { display: flex; gap: 2px; flex-shrink: 0; opacity: 0; }
+.pat-item:hover .pat-acts { opacity: 1; }
+.pat-acts button { padding: 1px 5px; font-size: 10px; background: transparent; border: none; }
+
+/* ── Center ── */
+#center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#toolbar {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.tb-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  min-height: 42px;
+}
+.tb-row2 {
+  border-top: 1px solid var(--border);
+  background: rgba(0,0,0,.15);
+  min-height: 36px;
+  padding: 4px 10px;
+}
+.tb-lbl {
+  font-size: 11px;
+  color: var(--text2);
+  white-space: nowrap;
+}
+.color-chip {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border-radius: 2px;
+  border: 1px solid;
+}
+.tool-grp { display: flex; gap: 3px; align-items: center; }
+
+#color-swatch {
+  width: 30px; height: 30px;
+  border-radius: 5px;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color .12s;
+}
+#color-swatch:hover { border-color: var(--accent); }
+#color-input { display: none; }
+
+.pal { display: flex; gap: 3px; flex-wrap: wrap; max-width: 160px; }
+.pc {
+  width: 18px; height: 18px;
+  border-radius: 3px;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,.08);
+  transition: transform .1s, border-color .1s;
+  flex-shrink: 0;
+}
+.pc:hover { transform: scale(1.25); border-color: rgba(255,255,255,.3); }
+.pc.selected { border-color: #fff; transform: scale(1.15); }
+
+#canvas-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 20px;
+  background: var(--bg);
+}
+#main-canvas {
+  cursor: crosshair;
+  image-rendering: pixelated;
+  box-shadow: 0 4px 32px rgba(0,0,0,.6);
+}
+
+/* ── Right panel – layers ── */
+#right-panel {
+  width: 210px;
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.layer-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 5px;
+  display: flex;
+  flex-direction: column-reverse;
+}
+.layer-item {
+  padding: 7px 8px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  margin-bottom: 2px;
+}
+.layer-item:hover { background: var(--hover); }
+.layer-item.active { background: var(--sel); border-color: var(--accent2); }
+.layer-row1 { display: flex; align-items: center; gap: 4px; }
+.layer-name-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+  outline: none;
+  padding: 0 2px;
+  min-width: 0;
+}
+.layer-name-input:focus {
+  background: var(--bg3);
+  border-radius: 3px;
+  cursor: text;
+}
+.vis-btn { background: transparent; border: none; padding: 1px 3px; font-size: 13px; cursor: pointer; opacity: .7; flex-shrink: 0; }
+.vis-btn:hover { opacity: 1; }
+.lact { display: flex; gap: 2px; flex-shrink: 0; }
+.lact button { padding: 1px 5px; font-size: 10px; }
+.op-row { display: flex; align-items: center; gap: 5px; padding: 3px 2px 0; }
+.op-row span { font-size: 10px; color: var(--text2); flex-shrink: 0; }
+.op-row input[type=range] {
+  flex: 1;
+  height: 3px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.op-val { font-size: 10px; color: var(--text2); width: 30px; text-align: right; flex-shrink: 0; }
+
+/* ── Help Modal ── */
+#help-overlay { display:none; }
+#help-overlay.open { display:flex !important; }
+#help-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  width: min(680px, 92vw);
+  max-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 48px rgba(0,0,0,.5);
+  overflow: hidden;
+}
+#help-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  font-weight: 700;
+  font-size: 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  color: var(--accent);
+}
+#help-body {
+  overflow-y: auto;
+  padding: 16px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+#help-body p { color: var(--text); }
+.hs {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: var(--accent);
+  margin-top: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+.ht { border-collapse: collapse; width: 100%; }
+.ht td { padding: 4px 8px; vertical-align: top; color: var(--text); }
+.ht td:first-child { white-space: nowrap; font-weight: 600; color: var(--text2); width: 110px; }
+.ht tr:nth-child(even) td { background: rgba(255,255,255,.03); }
+.warn { font-size: 11px; color: #e08860; }
+code { background: var(--bg3); padding: 1px 5px; border-radius: 3px; font-size: 11px; }
+.key-grid {
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr auto 1fr;
+  gap: 4px 12px;
+  align-items: center;
+}
+.key {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 11px;
+  font-family: monospace;
+  color: var(--text);
+  white-space: nowrap;
+  text-align: center;
+}
+/* scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text2); }
+
+/* ── Status bar ── */
+#statusbar {
+  height: 22px;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 16px;
+  font-size: 10px;
+  color: var(--text2);
+  flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <span class="brand">✦ MOSAIC</span>
+  <div class="vdiv"></div>
+  <input type="text" id="proj-name" placeholder="專案名稱" value="新專案">
+  <div class="vdiv"></div>
+  <span class="grid-lbl">W</span>
+  <input type="number" class="grid-inp" id="gw" min="2" max="32" value="7">
+  <span class="grid-lbl">H</span>
+  <input type="number" class="grid-inp" id="gh" min="2" max="32" value="7">
+  <button onclick="applyGrid()">套用</button>
+  <div class="vdiv"></div>
+  <button onclick="saveProj()">💾 存檔</button>
+  <button onclick="document.getElementById('fi').click()">📂 載入</button>
+  <input type="file" id="fi" accept=".json" style="display:none" onchange="loadProj(event)">
+  <div class="vdiv"></div>
+  <button onclick="exportPNG(false)">📤 匯出 PNG</button>
+  <button onclick="exportPNG(true)">📦 批次匯出</button>
+  <div class="spacer"></div>
+  <button onclick="showHelp()" title="使用說明" style="font-weight:700;font-size:13px">？</button>
+</div>
+
+<div id="main">
+  <!-- Left: patterns -->
+  <div id="left-panel">
+    <div class="ph">
+      圖案群組
+      <button onclick="addPat()">＋</button>
+    </div>
+    <div class="pat-list" id="pat-list"></div>
+  </div>
+
+  <!-- Center: canvas -->
+  <div id="center">
+    <div id="toolbar">
+      <!-- 第一排：工具 -->
+      <div class="tb-row">
+        <div class="tool-grp">
+          <button class="icon-btn" id="btn-undo" onclick="undo()" title="上一步 (Ctrl+Z)" disabled>↩</button>
+          <button class="icon-btn" id="btn-redo" onclick="redo()" title="下一步 (Ctrl+Y)" disabled>↪</button>
+        </div>
+        <div class="vdiv"></div>
+        <div class="tool-grp">
+          <button class="icon-btn active" id="tb-paint" onclick="setTool('paint')" title="畫筆 (B)">✏️</button>
+          <button class="icon-btn"        id="tb-erase" onclick="setTool('erase')" title="橡皮擦 (E)">⬜</button>
+          <button class="icon-btn"        id="tb-fill"  onclick="setTool('fill')"  title="填充 (F)">🪣</button>
+          <button class="icon-btn"        id="tb-pick"  onclick="setTool('pick')"  title="取色 (I)">🔍</button>
+        </div>
+        <div class="vdiv"></div>
+        <div id="color-swatch" onclick="document.getElementById('color-input').click()" title="選色"></div>
+        <input type="color" id="color-input" value="#7c6af7" oninput="setColor(this.value)">
+        <div class="pal" id="pal"></div>
+        <div class="vdiv"></div>
+        <div class="tool-grp">
+          <button class="icon-btn" id="mh" onclick="toggleMirror('h')" title="左右鏡像 (X)">↔️</button>
+          <button class="icon-btn" id="mv" onclick="toggleMirror('v')" title="上下鏡像 (Y)">↕️</button>
+        </div>
+        <div class="vdiv"></div>
+        <button onclick="clearLayer()" class="danger" title="清除目前圖層">🗑 清除圖層</button>
+      </div>
+      <!-- 第二排：底色 -->
+      <div class="tb-row tb-row2">
+        <span class="tb-lbl">底色</span>
+        <div class="tool-grp">
+          <button class="icon-btn" id="theme-cream"  onclick="setTheme('cream')"  title="奶油黃"><span class="color-chip" style="background:#fef6e4;border-color:#ccc"></span></button>
+          <button class="icon-btn" id="theme-white"  onclick="setTheme('white')"  title="白色"><span class="color-chip" style="background:#f0f0f5;border-color:#bbb"></span></button>
+          <button class="icon-btn" id="theme-gray"   onclick="setTheme('gray')"   title="灰色"><span class="color-chip" style="background:#4a4a4a;border-color:#666"></span></button>
+          <button class="icon-btn" id="theme-black"  onclick="setTheme('black')"  title="純黑"><span class="color-chip" style="background:#000000;border-color:#444"></span></button>
+          <button class="icon-btn" id="theme-board"  onclick="setTheme('board')"  title="黑板綠"><span class="color-chip" style="background:#2a3d2a;border-color:#4a6a4a"></span></button>
+        </div>
+        <div class="vdiv"></div>
+        <span class="tb-lbl">畫布</span>
+        <div class="tool-grp">
+          <button class="icon-btn active" id="cvbg-lgray" onclick="setCanvasBg('#c8c8c8')" title="淺灰（預設）"><span class="color-chip" style="background:#c8c8c8;border-color:#999"></span></button>
+          <button class="icon-btn" id="cvbg-white" onclick="setCanvasBg('#ffffff')" title="白色"><span class="color-chip" style="background:#ffffff;border-color:#aaa"></span></button>
+          <button class="icon-btn" id="cvbg-black" onclick="setCanvasBg('#000000')" title="黑色"><span class="color-chip" style="background:#000000;border-color:#555"></span></button>
+          <button class="icon-btn" id="cvbg-cream" onclick="setCanvasBg('#fef6e4')" title="奶油黃"><span class="color-chip" style="background:#fef6e4;border-color:#ccc"></span></button>
+          <div id="cvbg-swatch" title="自訂畫布色" onclick="document.getElementById('cvbg-input').click()"
+            style="width:28px;height:28px;border-radius:5px;border:2px solid var(--border);cursor:pointer;background:#c8c8c8;display:flex;align-items:center;justify-content:center;font-size:9px;color:#666;flex-shrink:0">自訂</div>
+          <input type="color" id="cvbg-input" style="display:none" value="#c8c8c8" oninput="setCanvasBg(this.value)">
+        </div>
+        <div class="vdiv"></div>
+        <span class="tb-lbl">匯出背景</span>
+        <div class="tool-grp">
+          <button class="icon-btn" id="bg-transparent" onclick="setBg('transparent')" title="透明" style="font-size:13px">□</button>
+          <button class="icon-btn active" id="bg-white" onclick="setBg('#ffffff')" title="白色"><span class="color-chip" style="background:#ffffff;border-color:#aaa"></span></button>
+          <button class="icon-btn" id="bg-black" onclick="setBg('#000000')" title="黑色"><span class="color-chip" style="background:#000000;border-color:#555"></span></button>
+          <div id="bg-swatch" title="自訂顏色" onclick="document.getElementById('bg-input').click()"
+            style="width:28px;height:28px;border-radius:5px;border:2px solid var(--border);cursor:pointer;background:#ffffff;display:flex;align-items:center;justify-content:center;font-size:9px;color:#666;flex-shrink:0">自訂</div>
+          <input type="color" id="bg-input" style="display:none" value="#ffffff" oninput="setBg(this.value)">
+        </div>
+      </div>
+    </div>
+    <div id="canvas-area">
+      <canvas id="main-canvas"></canvas>
+    </div>
+  </div>
+
+  <!-- Right: layers -->
+  <div id="right-panel">
+    <div class="ph">
+      圖層 <span id="layer-count" style="color:var(--text2);font-weight:400;margin-left:3px"></span>
+      <button onclick="addLayer()" id="add-layer-btn">＋</button>
+    </div>
+    <div class="layer-list" id="layer-list"></div>
+  </div>
+</div>
+
+<!-- ── Help Modal ── -->
+<div id="help-overlay" onclick="if(event.target===this)hideHelp()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center;">
+  <div id="help-box">
+    <div id="help-header">
+      <span>✦ Mosaic Maker 使用說明</span>
+      <button onclick="hideHelp()" style="background:transparent;border:none;font-size:18px;color:var(--text2);cursor:pointer;line-height:1">✕</button>
+    </div>
+    <div id="help-body">
+
+      <div class="hs">🎨 這是什麼？</div>
+      <p>一個馬賽克格子紋案設計工具，支援多圖層、左右／上下鏡像對稱、圖案群組管理，適合快速設計重複性花紋與衍生款式。</p>
+
+      <div class="hs">📐 畫布設定</div>
+      <table class="ht">
+        <tr><td>W / H</td><td>設定格子欄數與列數（2–32），輸入後點「套用」。<br><span class="warn">⚠ 套用會清除所有圖案的著色資料</span></td></tr>
+      </table>
+
+      <div class="hs">🖊 工具列（上排）</div>
+      <table class="ht">
+        <tr><td>↩ ↪</td><td>上一步 / 下一步（Ctrl+Z / Ctrl+Y）</td></tr>
+        <tr><td>✏️ 畫筆</td><td>點擊或拖曳格子著色（快捷鍵 B）</td></tr>
+        <tr><td>⬜ 橡皮擦</td><td>清除格子顏色（快捷鍵 E）；<strong>右鍵</strong>隨時臨時擦除</td></tr>
+        <tr><td>🪣 填充</td><td>油漆桶，填滿相連同色區域（快捷鍵 F）</td></tr>
+        <tr><td>🔍 取色</td><td>點格子取得該格顏色（快捷鍵 I）</td></tr>
+        <tr><td>色塊</td><td>點擊開啟顏色選擇器；下方小色塊為預設色盤與最近用色</td></tr>
+        <tr><td>↔️ ↕️</td><td>左右鏡像 / 上下鏡像（可同時開）；著色時自動對稱複製（快捷鍵 X / Y）</td></tr>
+        <tr><td>🗑 清除圖層</td><td>清除目前選取圖層的所有顏色</td></tr>
+      </table>
+
+      <div class="hs">🌈 工具列（下排）</div>
+      <table class="ht">
+        <tr><td>底色</td><td>切換整個網站介面的背景主題（奶油／白／灰／黑／黑板綠）</td></tr>
+        <tr><td>畫布</td><td>切換畫布本身的底色（編輯時看到的），不影響匯出</td></tr>
+        <tr><td>匯出背景</td><td>PNG 匯出時的底色；選「□ 透明」則匯出透明背景 PNG</td></tr>
+      </table>
+
+      <div class="hs">🗂 圖案群組（左側）</div>
+      <p>一個專案可以有多個圖案。點 ＋ 新增，⿻ 複製（做衍生款），✕ 刪除。雙擊名稱可以改名。適合「一主圖案＋多個小改款」的工作流程。</p>
+
+      <div class="hs">📚 圖層（右側）</div>
+      <table class="ht">
+        <tr><td>＋</td><td>新增圖層，最多 8 層</td></tr>
+        <tr><td>👁 / 🙈</td><td>顯示／隱藏圖層</td></tr>
+        <tr><td>透明度</td><td>調整該圖層的不透明度（0–100%）</td></tr>
+        <tr><td>↑ ↓</td><td>調整圖層堆疊順序</td></tr>
+        <tr><td>名稱</td><td>點一下選取該層，直接在輸入框改名</td></tr>
+      </table>
+
+      <div class="hs">💾 存檔與匯出</div>
+      <table class="ht">
+        <tr><td>💾 存檔</td><td>下載 <code>.json</code> 專案檔，保留所有圖案、圖層、顏色資料</td></tr>
+        <tr><td>📂 載入</td><td>載入先前儲存的 <code>.json</code> 繼續編輯</td></tr>
+        <tr><td>📤 匯出 PNG</td><td>將目前圖案匯出為 PNG（每格 32px）</td></tr>
+        <tr><td>📦 批次匯出</td><td>一次匯出所有圖案的 PNG</td></tr>
+      </table>
+
+      <div class="hs">⌨️ 鍵盤快捷鍵</div>
+      <div class="key-grid">
+        <span class="key">B</span><span>畫筆</span>
+        <span class="key">E</span><span>橡皮擦</span>
+        <span class="key">F</span><span>填充</span>
+        <span class="key">I</span><span>取色</span>
+        <span class="key">X</span><span>左右鏡像</span>
+        <span class="key">Y</span><span>上下鏡像</span>
+        <span class="key">Ctrl+Z</span><span>上一步</span>
+        <span class="key">Ctrl+Y</span><span>下一步</span>
+        <span class="key">Ctrl+S</span><span>存檔</span>
+        <span class="key">右鍵</span><span>臨時橡皮擦</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="statusbar">
+  <span id="st-cell">—</span>
+  <span id="st-pat">—</span>
+  <span id="st-layer">—</span>
+  <span id="st-grid">—</span>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// CONSTANTS
+// ══════════════════════════════════════════════
+const MAX_LAYERS = 8;
+const EXPORT_CELL = 32;
+const PRESET = [
+  '#e74c3c','#e67e22','#f39c12','#f1c40f',
+  '#2ecc71','#1abc9c','#3498db','#2980b9',
+  '#9b59b6','#e91e63','#ffffff','#c0c0c0',
+  '#888899','#445566','#223344','#111122'
+];
+
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+const S = {
+  proj: { name:'新專案', gridW:7, gridH:7, patterns:[] },
+  curPat: null,   // id
+  curLayer: null, // id
+  color: '#7c6af7',
+  tool: 'paint',
+  mirrorH: false,
+  mirrorV: false,
+  drawing: false,
+  rDown: false,
+  recent: [],
+  undoStack: [],
+  redoStack: [],
+  canvasBg: '#c8c8c8',
+  exportBg: '#ffffff',
+};
+
+// ══════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════
+const uid = () => Math.random().toString(36).slice(2, 9);
+const getPat = (id) => S.proj.patterns.find(p => p.id === (id ?? S.curPat));
+const getLayer = (id) => getPat()?.layers.find(l => l.id === (id ?? S.curLayer));
+const key = (x, y) => `${x},${y}`;
+const inBounds = (x, y) => x >= 0 && y >= 0 && x < S.proj.gridW && y < S.proj.gridH;
+
+// ══════════════════════════════════════════════
+// PATTERNS
+// ══════════════════════════════════════════════
+function addPat(name) {
+  const p = {
+    id: uid(),
+    name: name ?? `圖案 ${S.proj.patterns.length + 1}`,
+    layers: []
+  };
+  S.proj.patterns.push(p);
+  S.curPat = p.id;
+  addLayer('圖層 1', p);
+  renderPatList();
+  renderLayerList();
+  renderCanvas();
+}
+
+function delPat(id) {
+  if (S.proj.patterns.length <= 1) return alert('至少保留一個圖案');
+  if (!confirm('刪除這個圖案？')) return;
+  S.proj.patterns = S.proj.patterns.filter(p => p.id !== id);
+  if (S.curPat === id) {
+    S.curPat = S.proj.patterns[0].id;
+    S.curLayer = S.proj.patterns[0].layers.at(-1)?.id;
+  }
+  renderPatList(); renderLayerList(); renderCanvas();
+}
+
+function dupPat(id) {
+  const src = getPat(id);
+  if (!src) return;
+  const copy = JSON.parse(JSON.stringify(src));
+  copy.id = uid();
+  copy.name = src.name + ' (副本)';
+  copy.layers.forEach(l => l.id = uid());
+  const idx = S.proj.patterns.findIndex(p => p.id === id);
+  S.proj.patterns.splice(idx + 1, 0, copy);
+  S.curPat = copy.id;
+  S.curLayer = copy.layers.at(-1)?.id;
+  renderPatList(); renderLayerList(); renderCanvas();
+}
+
+function selPat(id) {
+  S.curPat = id;
+  const p = getPat();
+  if (p?.layers.length) S.curLayer = p.layers.at(-1).id;
+  renderPatList(); renderLayerList(); renderCanvas();
+}
+
+// ══════════════════════════════════════════════
+// LAYERS
+// ══════════════════════════════════════════════
+function addLayer(name, pat) {
+  const p = pat ?? getPat();
+  if (!p) return;
+  if (p.layers.length >= MAX_LAYERS) return alert(`最多 ${MAX_LAYERS} 層`);
+  const l = {
+    id: uid(),
+    name: name ?? `圖層 ${p.layers.length + 1}`,
+    visible: true,
+    opacity: 1,
+    cells: {}
+  };
+  p.layers.push(l);
+  S.curLayer = l.id;
+  renderLayerList(); renderCanvas();
+  updateAddLayerBtn();
+}
+
+function delLayer(id) {
+  const p = getPat();
+  if (!p || p.layers.length <= 1) return alert('至少保留一個圖層');
+  p.layers = p.layers.filter(l => l.id !== id);
+  if (S.curLayer === id) S.curLayer = p.layers.at(-1)?.id;
+  renderLayerList(); renderCanvas(); updateAddLayerBtn();
+}
+
+function selLayer(id) {
+  S.curLayer = id;
+  renderLayerList();
+}
+
+function toggleVis(id) {
+  const l = getLayer(id);
+  if (l) { l.visible = !l.visible; renderLayerList(); renderCanvas(); }
+}
+
+function setOpacity(id, v) {
+  const l = getLayer(id);
+  if (l) { l.opacity = v / 100; renderCanvas(); }
+}
+
+function moveLayer(id, dir) {
+  const p = getPat();
+  if (!p) return;
+  const i = p.layers.findIndex(l => l.id === id);
+  const ni = i + dir;
+  if (ni < 0 || ni >= p.layers.length) return;
+  [p.layers[i], p.layers[ni]] = [p.layers[ni], p.layers[i]];
+  renderLayerList(); renderCanvas();
+}
+
+function clearLayer() {
+  const l = getLayer();
+  if (!l) return;
+  if (!confirm('清除目前圖層？')) return;
+  l.cells = {};
+  renderCanvas();
+}
+
+function updateAddLayerBtn() {
+  const p = getPat();
+  document.getElementById('add-layer-btn').disabled = !!(p && p.layers.length >= MAX_LAYERS);
+  document.getElementById('layer-count').textContent =
+    p ? `${p.layers.length}/${MAX_LAYERS}` : '';
+}
+
+// ══════════════════════════════════════════════
+// TOOLS & COLOR
+// ══════════════════════════════════════════════
+function setTool(t) {
+  S.tool = t;
+  ['paint','erase','fill','pick'].forEach(n => {
+    document.getElementById(`tb-${n}`)?.classList.toggle('active', n === t);
+  });
+  const canvas = document.getElementById('main-canvas');
+  canvas.style.cursor = t === 'pick' ? 'crosshair' :
+                        t === 'fill' ? 'cell' : 'crosshair';
+}
+
+function setColor(c) {
+  S.color = c;
+  document.getElementById('color-swatch').style.background = c;
+  document.getElementById('color-input').value = c;
+  if (S.tool === 'pick') setTool('paint');
+  S.recent = [c, ...S.recent.filter(x => x !== c)].slice(0, 8);
+  renderPalette();
+}
+
+function toggleMirror(axis) {
+  if (axis === 'h') { S.mirrorH = !S.mirrorH; document.getElementById('mh').classList.toggle('active', S.mirrorH); }
+  else              { S.mirrorV = !S.mirrorV; document.getElementById('mv').classList.toggle('active', S.mirrorV); }
+}
+
+// ══════════════════════════════════════════════
+// PAINTING
+// ══════════════════════════════════════════════
+function mirrorCells(x, y) {
+  const { gridW, gridH } = S.proj;
+  const pts = [[x, y]];
+  if (S.mirrorH) pts.push([gridW - 1 - x, y]);
+  if (S.mirrorV) pts.push([x, gridH - 1 - y]);
+  if (S.mirrorH && S.mirrorV) pts.push([gridW - 1 - x, gridH - 1 - y]);
+  return pts.filter(([cx, cy]) => inBounds(cx, cy));
+}
+
+function paint(x, y, forceErase) {
+  const l = getLayer();
+  if (!l) return;
+  const tool = forceErase ? 'erase' : S.tool;
+  if (tool === 'erase') {
+    mirrorCells(x, y).forEach(([cx, cy]) => delete l.cells[key(cx, cy)]);
+  } else if (tool === 'paint') {
+    mirrorCells(x, y).forEach(([cx, cy]) => { l.cells[key(cx, cy)] = S.color; });
+  } else if (tool === 'fill') {
+    floodFill(x, y, l);
+  } else if (tool === 'pick') {
+    const c = l.cells[key(x, y)];
+    if (c) setColor(c);
+    return;
+  }
+}
+
+function floodFill(x, y, layer) {
+  const { gridW, gridH } = S.proj;
+  const l = layer ?? getLayer();
+  if (!l) return;
+  const target = l.cells[key(x, y)] ?? null;
+  if (target === S.color) return;
+  const q = [[x, y]];
+  const seen = new Set();
+  while (q.length) {
+    const [cx, cy] = q.shift();
+    const k = key(cx, cy);
+    if (seen.has(k) || !inBounds(cx, cy)) continue;
+    if ((l.cells[k] ?? null) !== target) continue;
+    seen.add(k);
+    l.cells[k] = S.color;
+    q.push([cx+1,cy],[cx-1,cy],[cx,cy+1],[cx,cy-1]);
+  }
+}
+
+// ══════════════════════════════════════════════
+// CANVAS
+// ══════════════════════════════════════════════
+const canvas = document.getElementById('main-canvas');
+const ctx = canvas.getContext('2d');
+
+function getCellSize() {
+  const area = document.getElementById('canvas-area');
+  const aw = area.clientWidth  - 40;
+  const ah = area.clientHeight - 40;
+  const { gridW, gridH } = S.proj;
+  return Math.max(6, Math.min(Math.floor(aw / gridW), Math.floor(ah / gridH), 72));
+}
+
+function renderCanvas() {
+  const { gridW, gridH } = S.proj;
+  const cs = getCellSize();
+  canvas.width  = gridW * cs;
+  canvas.height = gridH * cs;
+
+  // canvas display background
+  ctx.fillStyle = S.canvasBg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // layers
+  const p = getPat();
+  if (p) {
+    p.layers.forEach(layer => {
+      if (!layer.visible) return;
+      ctx.globalAlpha = layer.opacity;
+      for (const [k, color] of Object.entries(layer.cells)) {
+        const [x, y] = k.split(',').map(Number);
+        ctx.fillStyle = color;
+        ctx.fillRect(x * cs, y * cs, cs, cs);
+      }
+    });
+    ctx.globalAlpha = 1;
+  }
+
+  // grid lines — 亮底用深線、暗底用亮線
+  const lum = bgLuminance(S.canvasBg);
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = lum > 0.45
+    ? 'rgba(0,0,0,0.28)'
+    : 'rgba(255,255,255,0.40)';
+  for (let x = 0; x <= gridW; x++) {
+    ctx.beginPath(); ctx.moveTo(x*cs+.5, 0); ctx.lineTo(x*cs+.5, gridH*cs); ctx.stroke();
+  }
+  for (let y = 0; y <= gridH; y++) {
+    ctx.beginPath(); ctx.moveTo(0, y*cs+.5); ctx.lineTo(gridW*cs, y*cs+.5); ctx.stroke();
+  }
+
+  updateThumbs();
+}
+
+function cellAt(e) {
+  const r = canvas.getBoundingClientRect();
+  const cs = getCellSize();
+  const x = Math.floor((e.clientX - r.left)  / cs);
+  const y = Math.floor((e.clientY - r.top) / cs);
+  return inBounds(x, y) ? { x, y } : null;
+}
+
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+canvas.addEventListener('mousedown', e => {
+  const c = cellAt(e);
+  if (!c) return;
+  pushHistory();
+  if (e.button === 2) { S.rDown = true; paint(c.x, c.y, true); renderCanvas(); return; }
+  S.drawing = true;
+  paint(c.x, c.y);
+  renderCanvas();
+});
+
+canvas.addEventListener('mousemove', e => {
+  const c = cellAt(e);
+  document.getElementById('st-cell').textContent = c ? `${c.x}, ${c.y}` : '—';
+  if (!c) return;
+  if (S.rDown) { paint(c.x, c.y, true); renderCanvas(); return; }
+  if (!S.drawing || S.tool === 'fill' || S.tool === 'pick') return;
+  paint(c.x, c.y);
+  renderCanvas();
+});
+
+canvas.addEventListener('mouseup', e => {
+  if (e.button === 2) S.rDown = false; else S.drawing = false;
+});
+canvas.addEventListener('mouseleave', () => { S.drawing = false; S.rDown = false; document.getElementById('st-cell').textContent = '—'; });
+
+// ══════════════════════════════════════════════
+// THUMBNAILS
+// ══════════════════════════════════════════════
+function renderPatThumb(p) {
+  const { gridW, gridH } = S.proj;
+  const cs = 4;
+  const oc = document.createElement('canvas');
+  oc.width = gridW * cs; oc.height = gridH * cs;
+  const c = oc.getContext('2d');
+  c.fillStyle = '#1e1e30';
+  c.fillRect(0, 0, oc.width, oc.height);
+  p.layers.forEach(l => {
+    if (!l.visible) return;
+    c.globalAlpha = l.opacity;
+    for (const [k, col] of Object.entries(l.cells)) {
+      const [x, y] = k.split(',').map(Number);
+      c.fillStyle = col;
+      c.fillRect(x*cs, y*cs, cs, cs);
+    }
+  });
+  c.globalAlpha = 1;
+  return oc.toDataURL();
+}
+
+function updateThumbs() {
+  document.querySelectorAll('.pat-thumb[data-id]').forEach(el => {
+    const p = getPat(el.dataset.id);
+    if (p) el.src = renderPatThumb(p);
+  });
+}
+
+// ══════════════════════════════════════════════
+// RENDER UI
+// ══════════════════════════════════════════════
+function renderPatList() {
+  const list = document.getElementById('pat-list');
+  list.innerHTML = '';
+  S.proj.patterns.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'pat-item' + (p.id === S.curPat ? ' active' : '');
+    el.innerHTML = `
+      <img class="pat-thumb" data-id="${p.id}" width="24" height="24" src="">
+      <span class="pat-name" title="${escH(p.name)}">${escH(p.name)}</span>
+      <div class="pat-acts">
+        <button onclick="event.stopPropagation();dupPat('${p.id}')" title="複製">⿻</button>
+        <button onclick="event.stopPropagation();delPat('${p.id}')" title="刪除">✕</button>
+      </div>`;
+    const nameEl = el.querySelector('.pat-name');
+    nameEl.addEventListener('dblclick', ev => {
+      ev.stopPropagation();
+      const inp = document.createElement('input');
+      inp.value = p.name;
+      inp.style.cssText = 'flex:1;min-width:0;background:var(--bg3);border:1px solid var(--accent);color:var(--text);font-size:12px;border-radius:3px;padding:0 3px;outline:none;';
+      nameEl.replaceWith(inp);
+      inp.focus(); inp.select();
+      const done = () => { p.name = inp.value.trim() || p.name; renderPatList(); };
+      inp.addEventListener('blur', done);
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') inp.blur(); if (e.key === 'Escape') { inp.value = p.name; inp.blur(); } });
+    });
+    el.addEventListener('click', () => selPat(p.id));
+    list.appendChild(el);
+  });
+  updateThumbs();
+}
+
+function renderLayerList() {
+  const list = document.getElementById('layer-list');
+  list.innerHTML = '';
+  const p = getPat();
+  if (!p) return;
+  p.layers.forEach((l, idx) => {
+    const el = document.createElement('div');
+    el.className = 'layer-item' + (l.id === S.curLayer ? ' active' : '');
+    el.innerHTML = `
+      <div class="layer-row1">
+        <button class="vis-btn" onclick="event.stopPropagation();toggleVis('${l.id}')">${l.visible ? '👁' : '🙈'}</button>
+        <input class="layer-name-input" value="${escH(l.name)}"
+          onclick="event.stopPropagation()"
+          onchange="(()=>{const lay=getLayer('${l.id}');if(lay)lay.name=this.value;})()">
+        <div class="lact">
+          <button title="上移" ${idx === p.layers.length-1 ? 'disabled' : ''} onclick="event.stopPropagation();moveLayer('${l.id}',1)">↑</button>
+          <button title="下移" ${idx === 0 ? 'disabled' : ''} onclick="event.stopPropagation();moveLayer('${l.id}',-1)">↓</button>
+          <button title="刪除" onclick="event.stopPropagation();delLayer('${l.id}')">✕</button>
+        </div>
+      </div>
+      <div class="op-row">
+        <span>透明度</span>
+        <input type="range" min="0" max="100" value="${Math.round(l.opacity*100)}"
+          onclick="event.stopPropagation()"
+          oninput="setOpacity('${l.id}',+this.value);document.getElementById('ov-${l.id}').textContent=this.value+'%'">
+        <span class="op-val" id="ov-${l.id}">${Math.round(l.opacity*100)}%</span>
+      </div>`;
+    el.addEventListener('click', () => selLayer(l.id));
+    list.appendChild(el);
+  });
+  updateAddLayerBtn();
+  // status
+  const lay = getLayer();
+  document.getElementById('st-layer').textContent = lay ? `圖層: ${lay.name}` : '';
+  document.getElementById('st-pat').textContent = p ? `圖案: ${p.name}` : '';
+  document.getElementById('st-grid').textContent = `${S.proj.gridW}×${S.proj.gridH}`;
+}
+
+function renderPalette() {
+  const pal = document.getElementById('pal');
+  pal.innerHTML = '';
+  const colors = [...new Set([...S.recent, ...PRESET])].slice(0, 16);
+  colors.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'pc' + (c === S.color ? ' selected' : '');
+    el.style.background = c;
+    el.title = c;
+    el.onclick = () => setColor(c);
+    pal.appendChild(el);
+  });
+}
+
+// ══════════════════════════════════════════════
+// GRID SIZE
+// ══════════════════════════════════════════════
+function applyGrid() {
+  const w = +document.getElementById('gw').value;
+  const h = +document.getElementById('gh').value;
+  if (!w || !h || w < 2 || h < 2 || w > 32 || h > 32)
+    return alert('格子大小必須在 2–32 之間');
+  if (!confirm(`套用 ${w}×${h}？\n所有圖案的繪製內容都會清除。`)) return;
+  S.proj.gridW = w; S.proj.gridH = h;
+  S.proj.patterns.forEach(p => p.layers.forEach(l => l.cells = {}));
+  renderCanvas();
+  document.getElementById('st-grid').textContent = `${w}×${h}`;
+}
+
+// ══════════════════════════════════════════════
+// SAVE / LOAD
+// ══════════════════════════════════════════════
+function saveProj() {
+  S.proj.name = document.getElementById('proj-name').value.trim() || '新專案';
+  const blob = new Blob([JSON.stringify(S.proj, null, 2)], {type:'application/json'});
+  const a = Object.assign(document.createElement('a'), {href: URL.createObjectURL(blob), download: `${S.proj.name}.json`});
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+function loadProj(ev) {
+  const file = ev.target.files[0]; if (!file) return;
+  const r = new FileReader();
+  r.onload = e => {
+    try {
+      const proj = JSON.parse(e.target.result);
+      S.proj = proj;
+      document.getElementById('proj-name').value = proj.name;
+      document.getElementById('gw').value = proj.gridW;
+      document.getElementById('gh').value = proj.gridH;
+      S.curPat   = proj.patterns[0]?.id;
+      S.curLayer = proj.patterns[0]?.layers.at(-1)?.id;
+      renderPatList(); renderLayerList(); renderCanvas();
+    } catch(err) { alert('載入失敗：' + err.message); }
+  };
+  r.readAsText(file);
+  ev.target.value = '';
+}
+
+// ══════════════════════════════════════════════
+// EXPORT PNG
+// ══════════════════════════════════════════════
+const CANVAS_BG_OPTIONS = [
+  { id: 'cvbg-checker', val: 'checker',  label: '░',  title: '格子（透明指示）', style: 'font-size:13px' },
+  { id: 'cvbg-white',   val: '#ffffff',  label: '',   title: '白色',   swatch: '#ffffff' },
+  { id: 'cvbg-black',   val: '#000000',  label: '',   title: '黑色',   swatch: '#000000' },
+  { id: 'cvbg-cream',   val: '#fef6e4',  label: '',   title: '奶油黃', swatch: '#fef6e4' },
+  { id: 'cvbg-gray',    val: '#888888',  label: '',   title: '灰色',   swatch: '#888888' },
+];
+
+function setTheme(name) {
+  document.documentElement.dataset.theme = name === 'dark' ? '' : name;
+  ['black','gray','cream','white','board'].forEach(t =>
+    document.getElementById(`theme-${t}`)?.classList.toggle('active', t === name)
+  );
+}
+
+function setCanvasBg(val) {
+  S.canvasBg = val;
+  // update button active state
+  ['lgray','white','black','cream'].forEach(t => {
+    document.getElementById(`cvbg-${t}`)?.classList.toggle('active', false);
+  });
+  const map = {'#c8c8c8':'lgray','#ffffff':'white','#000000':'black','#fef6e4':'cream'};
+  if (map[val]) document.getElementById(`cvbg-${map[val]}`)?.classList.toggle('active', true);
+  // update custom swatch
+  const sw = document.getElementById('cvbg-swatch');
+  if (sw) sw.style.background = val;
+  renderCanvas();
+}
+
+function bgLuminance(hex) {
+  if (!hex || hex === 'checker') return 0;
+  const r = parseInt(hex.slice(1,3),16)/255;
+  const g = parseInt(hex.slice(3,5),16)/255;
+  const b = parseInt(hex.slice(5,7),16)/255;
+  return 0.299*r + 0.587*g + 0.114*b;
+}
+
+function setBg(val) {
+  S.exportBg = val;
+  const isCustom = !['transparent','#ffffff','#000000'].includes(val);
+  ['transparent','#ffffff','#000000'].forEach(v => {
+    const id = v === 'transparent' ? 'bg-transparent' : v === '#ffffff' ? 'bg-white' : 'bg-black';
+    document.getElementById(id)?.classList.toggle('active', v === val);
+  });
+  document.getElementById('bg-swatch').classList.toggle('active', isCustom);
+  if (isCustom) {
+    document.getElementById('bg-swatch').style.background = val;
+    document.getElementById('bg-input').value = val;
+  }
+}
+
+function patToCanvas(p) {
+  const { gridW, gridH } = S.proj;
+  const cs = EXPORT_CELL;
+  const oc = document.createElement('canvas');
+  oc.width = gridW * cs; oc.height = gridH * cs;
+  const c = oc.getContext('2d');
+  if (S.exportBg && S.exportBg !== 'transparent') {
+    c.fillStyle = S.exportBg;
+    c.fillRect(0, 0, oc.width, oc.height);
+  }
+  p.layers.forEach(l => {
+    if (!l.visible) return;
+    c.globalAlpha = l.opacity;
+    for (const [k, color] of Object.entries(l.cells)) {
+      const [x, y] = k.split(',').map(Number);
+      c.fillStyle = color;
+      c.fillRect(x*cs, y*cs, cs, cs);
+    }
+  });
+  c.globalAlpha = 1;
+  return oc;
+}
+
+function exportPNG(all) {
+  const targets = all ? S.proj.patterns : [getPat()];
+  targets.forEach((p, i) => {
+    if (!p) return;
+    const oc = patToCanvas(p);
+    setTimeout(() => {
+      oc.toBlob(blob => {
+        const a = Object.assign(document.createElement('a'), {
+          href: URL.createObjectURL(blob),
+          download: `${S.proj.name}_${p.name}.png`
+        });
+        a.click(); URL.revokeObjectURL(a.href);
+      });
+    }, i * 250);
+  });
+}
+
+// ══════════════════════════════════════════════
+// ══════════════════════════════════════════════
+// UNDO / REDO
+// ══════════════════════════════════════════════
+const MAX_HISTORY = 50;
+
+function snapshotPat() {
+  const p = getPat();
+  if (!p) return null;
+  return { patId: p.id, layers: JSON.parse(JSON.stringify(p.layers)) };
+}
+
+function pushHistory() {
+  const snap = snapshotPat();
+  if (!snap) return;
+  S.undoStack.push(snap);
+  if (S.undoStack.length > MAX_HISTORY) S.undoStack.shift();
+  S.redoStack = [];
+  updateUndoUI();
+}
+
+function undo() {
+  if (!S.undoStack.length) return;
+  const before = S.undoStack.pop();
+  const after = snapshotPat();
+  if (after) S.redoStack.push(after);
+  applySnapshot(before);
+  updateUndoUI();
+}
+
+function redo() {
+  if (!S.redoStack.length) return;
+  const snap = S.redoStack.pop();
+  const before = snapshotPat();
+  if (before) S.undoStack.push(before);
+  applySnapshot(snap);
+  updateUndoUI();
+}
+
+function applySnapshot(snap) {
+  const p = getPat(snap.patId);
+  if (!p) return;
+  p.layers = snap.layers;
+  if (!p.layers.find(l => l.id === S.curLayer))
+    S.curLayer = p.layers.at(-1)?.id;
+  renderLayerList();
+  renderCanvas();
+}
+
+function updateUndoUI() {
+  document.getElementById('btn-undo').disabled = !S.undoStack.length;
+  document.getElementById('btn-redo').disabled = !S.redoStack.length;
+}
+
+// ══════════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ══════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); return; }
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.shiftKey && e.key === 'z'))) { e.preventDefault(); redo(); return; }
+  if (e.key === 'b' || e.key === 'B') setTool('paint');
+  if (e.key === 'e' || e.key === 'E') setTool('erase');
+  if (e.key === 'f' || e.key === 'F') setTool('fill');
+  if (e.key === 'i' || e.key === 'I') setTool('pick');
+  if (e.key === 'x' || e.key === 'X') toggleMirror('h');
+  if (!e.ctrlKey && !e.metaKey && (e.key === 'y' || e.key === 'Y')) toggleMirror('v');
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveProj(); }
+});
+
+// ══════════════════════════════════════════════
+// UTIL
+// ══════════════════════════════════════════════
+function showHelp() { document.getElementById('help-overlay').classList.add('open'); }
+function hideHelp() { document.getElementById('help-overlay').classList.remove('open'); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') hideHelp(); });
+
+function escH(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+window.addEventListener('resize', renderCanvas);
+addPat('主圖案');
+setColor('#7c6af7');
+renderPalette();
+setBg('#ffffff');
+setTheme('cream');
+setCanvasBg('#c8c8c8');
+</script>
+</body>
+</html>
