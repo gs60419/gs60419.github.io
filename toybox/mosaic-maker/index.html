@@ -57,15 +57,41 @@ body {
 
 /* ── Top bar ── */
 #topbar {
-  height: 46px;
   background: var(--bg2);
   border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+#topbar-always {
+  height: 42px;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0 12px;
-  flex-shrink: 0;
+  padding: 0 10px;
 }
+#topbar-extra {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+  overflow: hidden;
+  max-height: 200px;
+  transition: max-height .22s ease, padding .22s ease, opacity .18s ease;
+  opacity: 1;
+}
+#topbar-extra.collapsed {
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+#topbar-toggle {
+  transition: transform .22s ease;
+  min-width: 28px;
+}
+#topbar-toggle.collapsed { transform: rotate(-90deg); }
 .brand { font-weight: 800; font-size: 14px; color: var(--accent); letter-spacing: 1px; white-space: nowrap; }
 .vdiv { width: 1px; height: 22px; background: var(--border); flex-shrink: 0; }
 #proj-name {
@@ -200,6 +226,31 @@ button.danger:hover { background: #4a1a22; border-color: var(--red); }
   padding: 5px 10px;
   min-height: 42px;
 }
+/* 垂直堆疊群組 */
+.tool-col {
+  flex-direction: column !important;
+  gap: 3px !important;
+}
+/* 2×2 工具格 */
+.tool-grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+}
+/* 高版 vdiv，撐滿兩排高度 */
+.vdiv-tall {
+  height: 52px;
+}
+/* 調色盤：2排橫向 */
+.pal {
+  display: flex;
+  flex-wrap: wrap;
+  max-height: 42px;       /* 2排 chip 高度 */
+  max-width: none !important;
+  align-content: flex-start;
+  gap: 3px;
+  overflow: hidden;
+}
 .tb-row2 {
   border-top: 1px solid var(--border);
   background: rgba(0,0,0,.15);
@@ -230,7 +281,7 @@ button.danger:hover { background: #4a1a22; border-color: var(--red); }
 #color-swatch:hover { border-color: var(--accent); }
 #color-input { display: none; }
 
-.pal { display: flex; gap: 3px; flex-wrap: wrap; max-width: 160px; }
+/* .pal 定義已移至 tb-row 區塊 */
 .pc {
   width: 18px; height: 18px;
   border-radius: 3px;
@@ -400,29 +451,207 @@ code { background: var(--bg3); padding: 1px 5px; border-radius: 3px; font-size: 
   color: var(--text2);
   flex-shrink: 0;
 }
+
+/* ── Drawer backdrop ── */
+#drawer-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 90;
+}
+#drawer-backdrop.open { display: block; }
+
+/* ── Mobile bottom bar ── */
+#mobile-bar { display: none; }
+.mbar-btn {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: transparent;
+  border: none;
+  color: var(--text2);
+  font-size: 10px;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 0;
+}
+.mbar-btn:hover { background: var(--hover); color: var(--text); }
+.mbar-btn .mbar-icon { font-size: 20px; line-height: 1; }
+#mob-color-pip {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.25);
+  flex-shrink: 0;
+}
+
+/* ── Mobile settings sheet ── */
+#mob-settings-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 200;
+  align-items: flex-end;
+  justify-content: center;
+}
+#mob-settings-overlay.open { display: flex; }
+#mob-settings-sheet {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-radius: 16px 16px 0 0;
+  width: 100%;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp .22s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+.mob-sheet-handle {
+  width: 36px; height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 10px auto 6px;
+  flex-shrink: 0;
+}
+.mob-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 16px 10px;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+}
+.mob-sheet-body {
+  overflow-y: auto;
+  padding: 14px 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.mob-section {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.mob-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── RWD ── */
+@media (max-width: 768px) {
+  /* topbar */
+  #topbar {
+    height: auto;
+    min-height: 44px;
+    padding: 6px 10px;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  /* hide grid controls & hint from topbar */
+  .topbar-grid, #topbar > span:last-of-type { display: none; }
+
+  /* panels → drawers */
+  #main { position: relative; }
+  #left-panel {
+    position: fixed !important;
+    top: 0; bottom: 0; left: 0;
+    z-index: 95;
+    width: 230px !important;
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+    box-shadow: 4px 0 24px rgba(0,0,0,.5);
+  }
+  #right-panel {
+    position: fixed !important;
+    top: 0; bottom: 0; right: 0;
+    z-index: 95;
+    width: 230px !important;
+    transform: translateX(100%);
+    transition: transform .25s ease;
+    box-shadow: -4px 0 24px rgba(0,0,0,.5);
+  }
+  #left-panel.drawer-open  { transform: translateX(0); }
+  #right-panel.drawer-open { transform: translateX(0); }
+
+  /* toolbar — first row scrolls, second row hidden */
+  #toolbar { overflow: visible; }
+  .tb-row {
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 5px 8px;
+  }
+  .tb-row::-webkit-scrollbar { display: none; }
+  .tb-row2 { display: none; }
+  .pal { max-width: 100px; }
+
+  /* canvas area — leave room for bottom bar */
+  #canvas-area { padding: 12px 12px 68px; }
+
+  /* hide statusbar */
+  #statusbar { display: none; }
+
+  /* show mobile bottom bar */
+  #mobile-bar {
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 56px;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    z-index: 80;
+  }
+}
 </style>
 </head>
 <body>
 
 <div id="topbar">
-  <span class="brand">✦ MOSAIC</span>
-  <div class="vdiv"></div>
-  <input type="text" id="proj-name" placeholder="專案名稱" value="新專案">
-  <div class="vdiv"></div>
-  <span class="grid-lbl">W</span>
-  <input type="number" class="grid-inp" id="gw" min="2" max="32" value="7">
-  <span class="grid-lbl">H</span>
-  <input type="number" class="grid-inp" id="gh" min="2" max="32" value="7">
-  <button onclick="applyGrid()">套用</button>
-  <div class="vdiv"></div>
-  <button onclick="saveProj()">💾 存檔</button>
-  <button onclick="document.getElementById('fi').click()">📂 載入</button>
-  <input type="file" id="fi" accept=".json" style="display:none" onchange="loadProj(event)">
-  <div class="vdiv"></div>
-  <button onclick="exportPNG(false)">📤 匯出 PNG</button>
-  <button onclick="exportPNG(true)">📦 批次匯出</button>
-  <div class="spacer"></div>
-  <button onclick="showHelp()" title="使用說明" style="font-weight:700;font-size:13px">？</button>
+  <!-- 常駐列 -->
+  <div id="topbar-always">
+    <span class="brand">✦ MOSAIC</span>
+    <div class="spacer"></div>
+    <button onclick="showHelp()" title="使用說明" style="font-weight:700;font-size:13px">？</button>
+    <button id="topbar-toggle" onclick="toggleTopbar()" title="展開／收起系統列" style="font-size:15px;padding:4px 8px">⌄</button>
+  </div>
+  <!-- 可收起區 -->
+  <div id="topbar-extra">
+    <div class="vdiv"></div>
+    <input type="text" id="proj-name" placeholder="專案名稱" value="新專案">
+    <div class="vdiv"></div>
+    <div class="topbar-grid" style="display:flex;align-items:center;gap:6px">
+      <span class="grid-lbl">W</span>
+      <input type="number" class="grid-inp" id="gw" min="2" max="32" value="7">
+      <span class="grid-lbl">H</span>
+      <input type="number" class="grid-inp" id="gh" min="2" max="32" value="7">
+      <button onclick="applyGrid()">套用</button>
+    </div>
+    <div class="vdiv"></div>
+    <button onclick="saveProj()">💾 存檔</button>
+    <button onclick="document.getElementById('fi').click()">📂 載入</button>
+    <input type="file" id="fi" accept=".json" style="display:none" onchange="loadProj(event)">
+    <div class="vdiv"></div>
+    <button onclick="exportPNG(false)">📤 匯出 PNG</button>
+    <button onclick="exportPNG(true)">📦 批次匯出</button>
+  </div>
 </div>
 
 <div id="main">
@@ -440,28 +669,33 @@ code { background: var(--bg3); padding: 1px 5px; border-radius: 3px; font-size: 
     <div id="toolbar">
       <!-- 第一排：工具 -->
       <div class="tb-row">
-        <div class="tool-grp">
+        <!-- undo/redo 垂直堆疊 -->
+        <div class="tool-grp tool-col">
           <button class="icon-btn" id="btn-undo" onclick="undo()" title="上一步 (Ctrl+Z)" disabled>↩</button>
           <button class="icon-btn" id="btn-redo" onclick="redo()" title="下一步 (Ctrl+Y)" disabled>↪</button>
         </div>
-        <div class="vdiv"></div>
-        <div class="tool-grp">
+        <div class="vdiv vdiv-tall"></div>
+        <!-- 工具 2×2 格 -->
+        <div class="tool-grid2">
           <button class="icon-btn active" id="tb-paint" onclick="setTool('paint')" title="畫筆 (B)">✏️</button>
           <button class="icon-btn"        id="tb-erase" onclick="setTool('erase')" title="橡皮擦 (E)">⬜</button>
           <button class="icon-btn"        id="tb-fill"  onclick="setTool('fill')"  title="填充 (F)">🪣</button>
           <button class="icon-btn"        id="tb-pick"  onclick="setTool('pick')"  title="取色 (I)">🔍</button>
         </div>
-        <div class="vdiv"></div>
+        <div class="vdiv vdiv-tall"></div>
+        <!-- 色塊 + 調色盤 -->
         <div id="color-swatch" onclick="document.getElementById('color-input').click()" title="選色"></div>
         <input type="color" id="color-input" value="#7c6af7" oninput="setColor(this.value)">
         <div class="pal" id="pal"></div>
-        <div class="vdiv"></div>
-        <div class="tool-grp">
+        <div class="vdiv vdiv-tall"></div>
+        <!-- 鏡像 垂直堆疊 -->
+        <div class="tool-grp tool-col">
           <button class="icon-btn" id="mh" onclick="toggleMirror('h')" title="左右鏡像 (X)">↔️</button>
           <button class="icon-btn" id="mv" onclick="toggleMirror('v')" title="上下鏡像 (Y)">↕️</button>
         </div>
-        <div class="vdiv"></div>
-        <button onclick="clearLayer()" class="danger" title="清除目前圖層">🗑 清除圖層</button>
+        <div class="vdiv vdiv-tall"></div>
+        <!-- 清除：icon only -->
+        <button onclick="clearLayer()" class="icon-btn danger" title="清除圖層">🗑</button>
       </div>
       <!-- 第二排：底色 -->
       <div class="tb-row tb-row2">
@@ -508,6 +742,80 @@ code { background: var(--bg3); padding: 1px 5px; border-radius: 3px; font-size: 
       <button onclick="addLayer()" id="add-layer-btn">＋</button>
     </div>
     <div class="layer-list" id="layer-list"></div>
+  </div>
+</div>
+
+<!-- ── Drawer backdrop ── -->
+<div id="drawer-backdrop" onclick="closeDrawers()"></div>
+
+<!-- ── Mobile bottom bar ── -->
+<div id="mobile-bar">
+  <button class="mbar-btn" onclick="toggleDrawer('left')">
+    <span class="mbar-icon">🎨</span><span>圖案</span>
+  </button>
+  <button class="mbar-btn" id="mob-color-btn" onclick="document.getElementById('color-input').click()">
+    <div id="mob-color-pip"></div><span>顏色</span>
+  </button>
+  <button class="mbar-btn" onclick="showMobSettings()">
+    <span class="mbar-icon">⚙️</span><span>設定</span>
+  </button>
+  <button class="mbar-btn" onclick="toggleDrawer('right')">
+    <span class="mbar-icon">📚</span><span>圖層</span>
+  </button>
+</div>
+
+<!-- ── Mobile settings sheet ── -->
+<div id="mob-settings-overlay" onclick="if(event.target===this)hideMobSettings()">
+  <div id="mob-settings-sheet">
+    <div class="mob-sheet-handle"></div>
+    <div class="mob-sheet-header">
+      <span>⚙️ 設定</span>
+      <button onclick="hideMobSettings()" style="background:transparent;border:none;color:var(--text2);font-size:18px;cursor:pointer">✕</button>
+    </div>
+    <div class="mob-sheet-body">
+
+      <div>
+        <div class="mob-section">格子大小</div>
+        <div class="mob-row">
+          <span class="grid-lbl">W</span>
+          <input type="number" class="grid-inp" id="gw-mob" min="2" max="32" value="7">
+          <span class="grid-lbl">H</span>
+          <input type="number" class="grid-inp" id="gh-mob" min="2" max="32" value="7">
+          <button onclick="applyGridMob()">套用</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="mob-section">底色</div>
+        <div class="mob-row">
+          <button class="icon-btn" id="mob-theme-cream"  onclick="setTheme('cream')"  title="奶油黃"><span class="color-chip" style="background:#fef6e4;border-color:#ccc"></span></button>
+          <button class="icon-btn" id="mob-theme-white"  onclick="setTheme('white')"  title="白色"><span class="color-chip" style="background:#f0f0f5;border-color:#bbb"></span></button>
+          <button class="icon-btn" id="mob-theme-gray"   onclick="setTheme('gray')"   title="灰色"><span class="color-chip" style="background:#4a4a4a;border-color:#666"></span></button>
+          <button class="icon-btn" id="mob-theme-black"  onclick="setTheme('black')"  title="純黑"><span class="color-chip" style="background:#000000;border-color:#444"></span></button>
+          <button class="icon-btn" id="mob-theme-board"  onclick="setTheme('board')"  title="黑板綠"><span class="color-chip" style="background:#2a3d2a;border-color:#4a6a4a"></span></button>
+        </div>
+      </div>
+
+      <div>
+        <div class="mob-section">畫布底色</div>
+        <div class="mob-row">
+          <button class="icon-btn" id="mob-cvbg-lgray" onclick="setCanvasBg('#c8c8c8')" title="淺灰"><span class="color-chip" style="background:#c8c8c8;border-color:#999"></span></button>
+          <button class="icon-btn" id="mob-cvbg-white" onclick="setCanvasBg('#ffffff')" title="白色"><span class="color-chip" style="background:#ffffff;border-color:#aaa"></span></button>
+          <button class="icon-btn" id="mob-cvbg-black" onclick="setCanvasBg('#000000')" title="黑色"><span class="color-chip" style="background:#000000;border-color:#555"></span></button>
+          <button class="icon-btn" id="mob-cvbg-cream" onclick="setCanvasBg('#fef6e4')" title="奶油黃"><span class="color-chip" style="background:#fef6e4;border-color:#ccc"></span></button>
+        </div>
+      </div>
+
+      <div>
+        <div class="mob-section">匯出背景</div>
+        <div class="mob-row">
+          <button class="icon-btn" id="mob-bg-transparent" onclick="setBg('transparent')" title="透明" style="font-size:13px">□</button>
+          <button class="icon-btn" id="mob-bg-white" onclick="setBg('#ffffff')" title="白色"><span class="color-chip" style="background:#ffffff;border-color:#aaa"></span></button>
+          <button class="icon-btn" id="mob-bg-black" onclick="setBg('#000000')" title="黑色"><span class="color-chip" style="background:#000000;border-color:#555"></span></button>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
 
@@ -768,6 +1076,8 @@ function setColor(c) {
   S.color = c;
   document.getElementById('color-swatch').style.background = c;
   document.getElementById('color-input').value = c;
+  const pip = document.getElementById('mob-color-pip');
+  if (pip) pip.style.background = c;
   if (S.tool === 'pick') setTool('paint');
   S.recent = [c, ...S.recent.filter(x => x !== c)].slice(0, 8);
   renderPalette();
@@ -1090,9 +1400,10 @@ const CANVAS_BG_OPTIONS = [
 
 function setTheme(name) {
   document.documentElement.dataset.theme = name === 'dark' ? '' : name;
-  ['black','gray','cream','white','board'].forEach(t =>
-    document.getElementById(`theme-${t}`)?.classList.toggle('active', t === name)
-  );
+  ['black','gray','cream','white','board'].forEach(t => {
+    document.getElementById(`theme-${t}`)?.classList.toggle('active', t === name);
+    document.getElementById(`mob-theme-${t}`)?.classList.toggle('active', t === name);
+  });
 }
 
 function setCanvasBg(val) {
@@ -1244,9 +1555,91 @@ document.addEventListener('keydown', e => {
 // ══════════════════════════════════════════════
 // UTIL
 // ══════════════════════════════════════════════
+// ══════════════════════════════════════════════
+// TOUCH EVENTS
+// ══════════════════════════════════════════════
+function cellAtTouch(touch) {
+  const r = canvas.getBoundingClientRect();
+  const cs = getCellSize();
+  const x = Math.floor((touch.clientX - r.left) / cs);
+  const y = Math.floor((touch.clientY - r.top) / cs);
+  return inBounds(x, y) ? { x, y } : null;
+}
+
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  const c = cellAtTouch(e.touches[0]);
+  if (!c) return;
+  pushHistory();
+  S.drawing = true;
+  paint(c.x, c.y);
+  renderCanvas();
+}, { passive: false });
+
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (!S.drawing || S.tool === 'fill' || S.tool === 'pick') return;
+  const c = cellAtTouch(e.touches[0]);
+  if (!c) return;
+  paint(c.x, c.y);
+  renderCanvas();
+}, { passive: false });
+
+canvas.addEventListener('touchend', () => { S.drawing = false; });
+
+// ══════════════════════════════════════════════
+// MOBILE DRAWERS
+// ══════════════════════════════════════════════
+function toggleDrawer(side) {
+  const el = document.getElementById(side === 'left' ? 'left-panel' : 'right-panel');
+  const bd = document.getElementById('drawer-backdrop');
+  const isOpen = el.classList.contains('drawer-open');
+  closeDrawers();
+  if (!isOpen) { el.classList.add('drawer-open'); bd.classList.add('open'); }
+}
+function closeDrawers() {
+  document.getElementById('left-panel').classList.remove('drawer-open');
+  document.getElementById('right-panel').classList.remove('drawer-open');
+  document.getElementById('drawer-backdrop').classList.remove('open');
+}
+
+// ══════════════════════════════════════════════
+// MOBILE SETTINGS SHEET
+// ══════════════════════════════════════════════
+function showMobSettings() {
+  // sync grid values
+  document.getElementById('gw-mob').value = S.proj.gridW;
+  document.getElementById('gh-mob').value = S.proj.gridH;
+  document.getElementById('mob-settings-overlay').classList.add('open');
+}
+function hideMobSettings() {
+  document.getElementById('mob-settings-overlay').classList.remove('open');
+}
+function applyGridMob() {
+  document.getElementById('gw').value = document.getElementById('gw-mob').value;
+  document.getElementById('gh').value = document.getElementById('gh-mob').value;
+  hideMobSettings();
+  applyGrid();
+}
+
+// ══════════════════════════════════════════════
+// HELP MODAL
+// ══════════════════════════════════════════════
+// ══════════════════════════════════════════════
+// TOPBAR TOGGLE
+// ══════════════════════════════════════════════
+function toggleTopbar() {
+  const extra = document.getElementById('topbar-extra');
+  const btn   = document.getElementById('topbar-toggle');
+  const col   = extra.classList.toggle('collapsed');
+  btn.classList.toggle('collapsed', col);
+  btn.textContent = col ? '⌄' : '⌃';
+  setTimeout(renderCanvas, 250); // 重算畫布大小
+}
+
 function showHelp() { document.getElementById('help-overlay').classList.add('open'); }
 function hideHelp() { document.getElementById('help-overlay').classList.remove('open'); }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') hideHelp(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { hideHelp(); hideMobSettings(); } });
 
 function escH(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
 
@@ -1260,6 +1653,13 @@ renderPalette();
 setBg('#ffffff');
 setTheme('cream');
 setCanvasBg('#c8c8c8');
+// 手機預設收起 topbar
+if (window.innerWidth <= 768) {
+  document.getElementById('topbar-extra').classList.add('collapsed');
+  const btn = document.getElementById('topbar-toggle');
+  btn.classList.add('collapsed');
+  btn.textContent = '⌄';
+}
 </script>
 </body>
 </html>
