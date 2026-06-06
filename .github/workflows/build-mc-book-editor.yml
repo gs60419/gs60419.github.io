@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true   # 避免 Node.js 20 deprecation 警告
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build:
@@ -27,19 +27,16 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
 
-      # Gradle 9.5.1 是目前最新 stable（9.4 不存在）
-      - name: Set up Gradle
+      # setup-gradle 裝好指定版本並讓 `gradle` 指令可用
+      # 不另外跑 gradle wrapper，直接用 gradle 指令
+      - name: Set up Gradle 9.5.1
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '9.5.1'
 
-      - name: Generate Gradle Wrapper
-        working-directory: toybox/mc-book-editor/mod
-        run: gradle wrapper --gradle-version=9.5.1
-
       - name: Build mod
         working-directory: toybox/mc-book-editor/mod
-        run: ./gradlew build --no-daemon
+        run: gradle build --no-daemon
 
       - name: Read mod version
         id: ver
