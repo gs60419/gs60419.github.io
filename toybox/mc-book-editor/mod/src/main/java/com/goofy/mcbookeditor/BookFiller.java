@@ -166,7 +166,9 @@ public class BookFiller {
     }
 
     private static void sendChat(Minecraft client, String msg) {
-        // 26.1：displayClientMessage 移除，改由 ChatComponent.addMessage 顯示聊天訊息
-        client.gui.getChat().addMessage(Component.literal(msg));
+        // 26.1：displayClientMessage 移除；ChatComponent.addMessage 需要4個參數
+        // 改用 sendSystemMessage，LocalPlayer 會顯示在聊天欄
+        if (client.player != null)
+            client.player.sendSystemMessage(Component.literal(msg));
     }
 }

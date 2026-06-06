@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 
 // 26.1 Mojang 原名
 import net.minecraft.client.KeyMapping;                     // 原 KeyBinding
-import net.minecraft.resources.ResourceLocation;            // 用於 Category.register
+import net.minecraft.util.Identifier;                       // 26.1：ResourceLocation → Identifier（net.minecraft.util）
 import com.mojang.blaze3d.platform.InputConstants;          // 原 InputUtil
 import org.lwjgl.glfw.GLFW;
 
@@ -18,10 +18,10 @@ public class McBookEditorClient implements ClientModInitializer {
 
     public static KeyMapping FILL_BOOK_KEY;   // 原 KeyBinding → KeyMapping
 
-    // 26.1：Category 改為物件，不再是翻譯字串
+    // 26.1：Category 改為物件，不再是翻譯字串；ResourceLocation → Identifier
     private static final KeyMapping.Category CATEGORY =
         KeyMapping.Category.register(
-            ResourceLocation.fromNamespaceAndPath(McBookEditorMod.MOD_ID, "general")
+            Identifier.of(McBookEditorMod.MOD_ID, "general")
         );
 
     @Override
