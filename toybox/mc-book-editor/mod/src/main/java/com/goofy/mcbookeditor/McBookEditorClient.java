@@ -21,7 +21,7 @@ public class McBookEditorClient implements ClientModInitializer {
     // 26.1：Category 改為物件，不再是翻譯字串；ResourceLocation → Identifier
     private static final KeyMapping.Category CATEGORY =
         KeyMapping.Category.register(
-            Identifier.of(McBookEditorMod.MOD_ID, "general")
+            Identifier.fromNamespaceAndPath(McBookEditorMod.MOD_ID, "general")
         );
 
     @Override
