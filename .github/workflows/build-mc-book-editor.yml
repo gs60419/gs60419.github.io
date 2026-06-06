@@ -1,0 +1,91 @@
+name: Build MC Book Editor Mod
+
+on:
+  # 手動觸發（到 GitHub Actions 頁面按 Run workflow）
+  workflow_dispatch:
+  # 或 mod 原始碼有異動時自動觸發
+  push:
+    branches: [main]
+    paths:
+      - 'toybox/mc-book-editor/mod/**'
+
+permissions:
+  contents: write   # 需要寫入權限才能建立 Release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout ───────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. JDK 25（Minecraft 26.1 最低需求）────────────────────────────────
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+
+      # ── 3. Gradle 9.4（26.1 推薦版本）──────────────────────────────────────
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.4'
+
+      # ── 4. 產生 Gradle Wrapper（repo 裡不放 wrapper binary）───────────────
+      - name: Generate Gradle Wrapper
+        working-directory: toybox/mc-book-editor/mod
+        run: gradle wrapper --gradle-version=9.4
+
+      # ── 5. 編譯 mod ────────────────────────────────────────────────────────
+      - name: Build mod
+        working-directory: toybox/mc-book-editor/mod
+        run: ./gradlew build --no-daemon
+
+      # ── 6. 讀取版本號 ──────────────────────────────────────────────────────
+      - name: Read mod version
+        id: ver
+        working-directory: toybox/mc-book-editor/mod
+        run: |
+          VERSION=$(grep '^mod_version' gradle.properties | cut -d= -f2 | tr -d ' ')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=mc-book-editor-v$VERSION" >> $GITHUB_OUTPUT
+
+      # ── 7. 上傳編譯產物（可在 Actions 頁面下載，方便除錯）──────────────────
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mc-book-editor-mod-${{ steps.ver.outputs.version }}
+          path: toybox/mc-book-editor/mod/build/libs/*.jar
+
+      # ── 8. 建立 GitHub Release 並附上 jar ──────────────────────────────────
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          name: "MC Book Editor Mod v${{ steps.ver.outputs.version }}"
+          make_latest: true
+          body: |
+            ## 麥塊書本編輯器 Fabric Mod v${{ steps.ver.outputs.version }}
+
+            配合 [Goofy Toymaker 麥塊書本編輯器](https://gs60419.github.io/toybox/mc-book-editor/) 使用。
+
+            ### 需求
+            - Minecraft Java Edition **26.1**
+            - Fabric Loader ≥ 0.18.0
+            - Fabric API
+
+            ### 安裝方式
+            1. 下載下方的 `mc-book-editor-*.jar`
+            2. 放入 `.minecraft/mods/` 資料夾
+            3. 啟動遊戲
+
+            ### 使用方式
+            1. 到網頁編輯器寫好內容，匯出 `.mcbook`
+            2. 把 `.mcbook` 放進 `.minecraft/mcbooks/` 資料夾
+            3. 進遊戲、手持「書與筆」，按 **B** 鍵（可在「選項 → 控制」更改）
+            4. 書本內容自動填入 ✅
+          files: |
+            toybox/mc-book-editor/mod/build/libs/*.jar

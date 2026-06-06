@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "mcbookeditor",
+  "version": "${version}",
+
+  "name": "MC Book Editor",
+  "description": "配套 Goofy Toymaker 麥塊書本編輯器。手持書與筆，按快捷鍵（預設 B）即可將 .mcbook 檔案填入書本。",
+  "authors": [ "Goofy Toymaker" ],
+  "contact": {
+    "homepage": "https://gs60419.github.io"
+  },
+  "license": "MIT",
+
+  "environment": "client",
+
+  "entrypoints": {
+    "client": [
+      "com.goofy.mcbookeditor.McBookEditorClient"
+    ]
+  },
+
+  "mixins": [],
+
+  "depends": {
+    "fabricloader": ">=0.18.0",
+    "fabric-api":   "*",
+    "minecraft":    "26.1"
+  }
+}
