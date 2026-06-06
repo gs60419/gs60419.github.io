@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MC Texture Editor</title>
+  <link rel="stylesheet" href="src/style.css" />
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header id="header">
+    <div class="logo">⛏️ MC Texture Editor</div>
+    <div class="header-actions">
+      <button id="btn-open-folder" class="btn btn-primary">📁 開啟材質包資料夾</button>
+      <button id="btn-open-jar"    class="btn btn-primary" style="background:#4ecca3;color:#000">🧩 開啟 JAR（可寫回）</button>
+      <button id="btn-open-zip"    class="btn btn-secondary">🗜️ 開啟 .zip / .jar（唯讀）</button>
+      <button id="btn-batch" class="btn btn-secondary" disabled>⚙️ 批次處理</button>
+      <span id="pack-name" class="pack-name"></span>
+    </div>
+  </header>
+
+  <!-- ===== MAIN LAYOUT ===== -->
+  <div id="app">
+
+    <!-- LEFT: 素材瀏覽器 -->
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <span>素材瀏覽器</span>
+        <input id="search-box" type="text" placeholder="🔍 搜尋素材..." />
+      </div>
+      <div id="tree-container">
+        <div class="empty-hint">← 請先載入材質包</div>
+      </div>
+    </aside>
+
+    <!-- CENTER: 編輯器 (Phase 2) -->
+    <main id="editor-area">
+      <div id="editor-placeholder">
+        <div class="placeholder-icon">🎨</div>
+        <div class="placeholder-text">選擇素材後開始編輯</div>
+      </div>
+      <!-- Canvas editor will be injected here -->
+    </main>
+
+    <!-- RIGHT: 預覽 + 工具 (Phase 3+) -->
+    <aside id="panel-right">
+      <div class="panel-section">
+        <div class="panel-title">3D 預覽</div>
+        <div id="preview-3d">
+          <div class="empty-hint">尚未載入</div>
+        </div>
+      </div>
+      <div class="panel-section scroll-section">
+        <div class="panel-title">調色盤</div>
+        <div id="palette-area"></div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- ===== HIDDEN FILE INPUT (zip fallback) ===== -->
+  <input type="file" id="zip-input" accept=".zip,.jar" style="display:none" />
+
+  <!-- ===== HELP BUTTON ===== -->
+  <button id="btn-help" title="說明 / 快捷鍵">？</button>
+
+  <!-- ===== HELP MODAL ===== -->
+  <div id="help-modal-overlay" style="display:none">
+    <div id="help-modal">
+      <div id="help-modal-header">
+        <span>📖 MC Texture Editor 功能說明</span>
+        <button id="help-close">✕</button>
+      </div>
+      <div id="help-modal-tabs">
+        <button class="help-tab active" data-tab="start">🚀 快速開始</button>
+        <button class="help-tab" data-tab="tools">🖌️ 工具</button>
+        <button class="help-tab" data-tab="layers">📋 圖層</button>
+        <button class="help-tab" data-tab="palette">🎨 調色盤</button>
+        <button class="help-tab" data-tab="hotkeys">⌨️ 快捷鍵</button>
+        <button class="help-tab" data-tab="advanced">⚙️ 進階</button>
+      </div>
+      <div id="help-modal-body">
+
+        <!-- 快速開始 -->
+        <div class="help-page active" data-tab="start">
+          <h3>歡迎使用 MC Texture Editor！</h3>
+          <div class="help-section">
+            <h4>📁 載入材質包</h4>
+            <ul>
+              <li><strong>開啟材質包資料夾</strong> — 選取本機資料夾，所有圖片即時列出在左側樹狀結構，可直接存回原檔</li>
+              <li><strong>開啟 JAR（可寫回）</strong> — 選取 Mod 的 <code>.jar</code> 檔，編輯完可一鍵寫回 JAR，不需解壓縮</li>
+              <li><strong>開啟 .zip / .jar（唯讀）</strong> — 僅讀取，修改後需「另存新檔」</li>
+              <li>也可以直接把資料夾或 ZIP 拖曳到網頁上載入</li>
+            </ul>
+          </div>
+          <div class="help-section">
+            <h4>🖼️ 開始編輯</h4>
+            <ul>
+              <li>在左側素材樹點一下任一 PNG 即可開啟編輯器</li>
+              <li>可用 🔍 搜尋框過濾素材名稱</li>
+              <li>素材旁的小縮圖會自動懶加載</li>
+            </ul>
+          </div>
+          <div class="help-section">
+            <h4>💾 存檔</h4>
+            <ul>
+              <li><strong>存回原檔 / 寫回 JAR</strong> — 覆蓋原始檔案（底部浮動列）</li>
+              <li><strong>另存新檔</strong> — 另存為新 PNG 到任意位置</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 工具 -->
+        <div class="help-page" data-tab="tools">
+          <h3>🖌️ 繪圖工具一覽</h3>
+          <div class="help-tools-grid">
+            <div class="help-tool-card">
+              <span class="tool-icon">✏️</span>
+              <div><strong>筆刷 (B)</strong><br>基本像素繪圖。左鍵用前景色，右鍵用背景色。支援 1–4px 筆刷大小。</div>
+            </div>
+            <div class="help-tool-card">
+              <span class="tool-icon">🌈</span>
+              <div><strong>變化筆刷 (V)</strong><br>每筆從調色盤 5×5 漸層格隨機取色，畫出帶變化感的紋理。</div>
+            </div>
+            <div class="help-tool-card">
+              <span class="tool-icon">🔆</span>
+              <div><strong>提亮/調暗筆刷 (D)</strong><br>左鍵畫過 → 像素亮度 +10%，右鍵畫過 → 亮度 -10%。適合做光影。</div>
+            </div>
+            <div class="help-tool-card">
+              <span class="tool-icon">🫧</span>
+              <div><strong>混色筆刷 (G)</strong><br>把畫過的像素與目前<strong>背景色</strong>混合（30% 強度），做出漸融效果。</div>
+            </div>
+            <div class="help-tool-card">
+              <span class="tool-icon">⬜</span>
+              <div><strong>橡皮擦 (E)</strong><br>清除像素變成透明。支援多種筆刷大小。</div>
+            </div>
+            <div class="help-tool-card">
+              <span class="tool-icon">🪣</span>
+              <div><strong>填色桶 (F)</strong><br>填充連通區域。左鍵填前景色，右鍵填背景色。</div>
+            </div>
+            <div class="help-tool-card">
+              <span class="tool-icon">💉</span>
+              <div><strong>滴管 (I)</strong><br>點擊畫布上的顏色，自動設為前景色並同步更新調色盤色相環。</div>
+            </div>
+            <div class="help-tool-card">
+              <span class="tool-icon">⬚</span>
+              <div><strong>矩形選取 (R)</strong><br>拖曳框選區域，選好後可移動、剪下、複製、貼上、翻轉、旋轉。</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 圖層 -->
+        <div class="help-page" data-tab="layers">
+          <h3>📋 圖層系統</h3>
+          <div class="help-section">
+            <h4>基本操作</h4>
+            <ul>
+              <li><strong>＋ 新增圖層</strong> — 在最上方加入空白透明圖層</li>
+              <li><strong>－ 刪除圖層</strong> — 刪除目前選中的圖層（至少保留一層）</li>
+              <li><strong>⬇ 合併</strong> — 將目前圖層合併到下方圖層</li>
+              <li>點擊圖層名稱可切換作用圖層</li>
+              <li>每層都有獨立的<strong>顯示/隱藏</strong>（眼睛）與<strong>不透明度滑桿</strong></li>
+            </ul>
+          </div>
+          <div class="help-section">
+            <h4>📎 跨素材圖層（貼入其他素材的材質）</h4>
+            <ul>
+              <li>在左側素材樹的素材上按<strong>右鍵</strong> → 選「📎 複製材質為圖層」</li>
+              <li>底部浮動列的「📎 貼入圖層」按鈕會亮起（綠色呼吸燈）</li>
+              <li>切換到目標素材後，點「貼入圖層」即可把 A 素材的材質貼入 B 素材作為獨立圖層</li>
+              <li>貼入後可調整不透明度、合併或繼續在上面繪圖</li>
+            </ul>
+          </div>
+          <div class="help-section">
+            <h4>矩形選取工具的圖層操作</h4>
+            <ul>
+              <li>拖曳框選後，出現選取工具列：剪下 / 複製 / 貼上 / 刪除 / 水平翻轉 / 垂直翻轉 / 旋轉 90°</li>
+              <li>「剪下」或直接拖曳選區 → 內容變成<em>浮動層</em>，可自由移動位置</li>
+              <li>按「✓ 確認」或 Enter 把浮動層蓋回圖層</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 調色盤 -->
+        <div class="help-page" data-tab="palette">
+          <h3>🎨 調色盤</h3>
+          <div class="help-section">
+            <h4>色相環 + 飽和度/明度方塊</h4>
+            <ul>
+              <li>外圈圓環 — 拖曳選取<strong>色相</strong></li>
+              <li>內部方塊 — X 軸是飽和度，Y 軸是明度，拖曳精確取色</li>
+              <li>色相環下方顯示目前顏色的 Hex 色碼</li>
+            </ul>
+          </div>
+          <div class="help-section">
+            <h4>5×5 漸層格</h4>
+            <ul>
+              <li>中心格 = 目前選中的顏色（白框標記）</li>
+              <li>橫向 ±15° / ±30° 色相偏移</li>
+              <li>縱向 ±10% / ±20% 明度偏移</li>
+              <li>點擊任一格即可選色，搭配「變化筆刷」使用效果絕佳</li>
+            </ul>
+          </div>
+          <div class="help-section">
+            <h4>MC 官方配色集 & 最近使用</h4>
+            <ul>
+              <li>內建羊毛、混凝土、木材、石材、礦石、染料等 MC 標準色</li>
+              <li>最近使用的顏色自動儲存（localStorage 跨重開仍保留）</li>
+              <li>可加入自訂顏色（右鍵點色塊 → 移除）</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 快捷鍵 -->
+        <div class="help-page" data-tab="hotkeys">
+          <h3>⌨️ 快捷鍵一覽</h3>
+          <table class="help-table">
+            <thead><tr><th>按鍵</th><th>功能</th></tr></thead>
+            <tbody>
+              <tr><td><kbd>B</kbd></td><td>筆刷</td></tr>
+              <tr><td><kbd>V</kbd></td><td>變化筆刷</td></tr>
+              <tr><td><kbd>D</kbd></td><td>提亮/調暗筆刷</td></tr>
+              <tr><td><kbd>G</kbd></td><td>混色筆刷</td></tr>
+              <tr><td><kbd>E</kbd></td><td>橡皮擦</td></tr>
+              <tr><td><kbd>F</kbd></td><td>填色桶</td></tr>
+              <tr><td><kbd>I</kbd></td><td>滴管</td></tr>
+              <tr><td><kbd>R</kbd></td><td>矩形選取</td></tr>
+              <tr><td colspan="2" class="help-table-sep">撤銷 / 重做</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td><td>撤銷（最多 50 步）</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>重做</td></tr>
+              <tr><td colspan="2" class="help-table-sep">選取工具</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>X</kbd></td><td>剪下選區</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>C</kbd></td><td>複製選區</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>V</kbd></td><td>貼上</td></tr>
+              <tr><td><kbd>Delete</kbd></td><td>刪除選區</td></tr>
+              <tr><td><kbd>Enter</kbd></td><td>確認浮動層位置</td></tr>
+              <tr><td><kbd>Esc</kbd></td><td>取消選取</td></tr>
+              <tr><td colspan="2" class="help-table-sep">縮放 / 視圖</td></tr>
+              <tr><td>滾輪 ↑↓</td><td>放大 / 縮小畫布</td></tr>
+              <tr><td>右鍵拖曳（非選取工具）</td><td>筆刷工具的右鍵色繪圖</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 進階 -->
+        <div class="help-page" data-tab="advanced">
+          <h3>⚙️ 進階功能</h3>
+          <div class="help-section">
+            <h4>⤢ 調整畫布尺寸</h4>
+            <ul>
+              <li>工具列最右側的 <strong>⤢</strong> 按鈕開啟對話框</li>
+              <li><strong>快速倍增</strong>：×2 / ×3 / ×4 / ×8 一鍵填入尺寸</li>
+              <li><strong>像素倍增模式</strong>：整數倍放大時自動啟用，每個原始像素精確擴展成 N×N 格，不插值不糊化</li>
+              <li><strong>延伸</strong>：保留原有內容，多餘區域透明，可選 9 點錨點決定原內容位置</li>
+              <li><strong>縮放</strong>：拉伸畫面填滿新尺寸</li>
+              <li><strong>裁切</strong>：從錨點方向裁掉超出部分</li>
+            </ul>
+          </div>
+          <div class="help-section">
+            <h4>⚙️ 批次處理</h4>
+            <ul>
+              <li>載入材質包後點頂部「⚙️ 批次處理」按鈕</li>
+              <li><strong>色彩調整</strong>：對整包素材批次調整色相、飽和度、亮度、對比、透明度、灰階</li>
+              <li><strong>色彩替換</strong>：指定來源色與目標色，支援容差值（0 = 精確符合）</li>
+              <li><strong>重新命名</strong>：批次重命名規則</li>
+              <li><strong>匯出設定</strong>：縮放比例，打包成 ZIP 下載</li>
+            </ul>
+          </div>
+          <div class="help-section">
+            <h4>🧊 3D 預覽</h4>
+            <ul>
+              <li>右側面板即時顯示材質貼在方塊上的效果</li>
+              <li>拖曳旋轉視角、滾輪縮放</li>
+              <li>可切換方塊形狀：完整方塊 / 半磚 / 平面</li>
+              <li>自動旋轉切換 / 重置視角</li>
+            </ul>
+          </div>
+        </div>
+
+      </div><!-- end help-modal-body -->
+    </div><!-- end help-modal -->
+  </div><!-- end help-modal-overlay -->
+
+  <!-- ===== LIBS ===== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="src/tree.js"></script>
+  <script src="src/loader.js"></script>
+  <script src="src/editor.js"></script>
+  <script src="src/preview3d.js"></script>
+  <script src="src/palette.js"></script>
+  <script src="src/batch.js"></script>
+  <script src="src/main.js"></script>
+</body>
+</html>

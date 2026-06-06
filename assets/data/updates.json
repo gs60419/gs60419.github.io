@@ -1,5 +1,11 @@
 [
   {
+    "date": "2026.06.07",
+    "text": "Toybox 新增 MC Texture Editor：直接讀取 Minecraft 材質包資料夾或 Mod JAR，支援像素筆刷（含變化筆刷、提亮/調暗、混色）、多圖層、矩形選取、跨素材圖層複製、色相環調色盤、3D 方塊預覽、批次處理，編輯完可一鍵寫回 JAR。",
+    "href": "toybox/mc-texture-editor/index.html",
+    "label": "開始編輯材質"
+  },
+  {
     "date": "2026.06.06",
     "text": "Toybox 新增麥塊書本編輯器：在遊戲外用所見即所得介面寫 Minecraft 書本，支援粗體、斜體、底線、16 色、多頁管理、自動分頁匯入，匯出 .mcbook 搭配 Fabric Mod（Minecraft 26.1）一鍵填入書本。",
     "href": "toybox/mc-book-editor/index.html",
