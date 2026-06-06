@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 
 // 26.1 Mojang 原名
 import net.minecraft.client.KeyMapping;                     // 原 KeyBinding
-import net.minecraft.util.Identifier;                       // 26.1：ResourceLocation → Identifier（net.minecraft.util）
+import net.minecraft.resources.Identifier;                  // 26.1：ResourceLocation → Identifier（net.minecraft.resources）
 import com.mojang.blaze3d.platform.InputConstants;          // 原 InputUtil
 import org.lwjgl.glfw.GLFW;
 
