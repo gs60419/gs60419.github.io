@@ -112,7 +112,7 @@
 
       // 判斷是否可寫回
       const canWriteBack = node.handle || (node.zipPath && Loader.isJarMode());
-      const writeBackLabel = Loader.isJarMode() ? '💾 寫回 JAR' : '💾 存回原檔';
+      const writeBackLabel = Loader.isJarMode() ? _t('💾 寫回 JAR') : _t('💾 存回原檔');
 
       // 替換 editor-area 內容（無頂部欄，存檔按鈕浮動在左下角）
       // 偵測是否有跨素材傳輸緩衝
@@ -125,14 +125,14 @@
           <span class="iv-size">${w}×${h}</span>
           <button class="btn btn-small btn-secondary${hasTransfer ? ' highlight' : ''}" id="btn-paste-layer"
             ${hasTransfer ? '' : 'disabled'}
-            title="${hasTransfer ? '貼入：' + esc(window._layerTransfer.name) : '請先右鍵素材→複製材質為圖層'}">
-            📎 貼入圖層${hasTransfer ? '（' + esc(window._layerTransfer.name) + '）' : ''}
+            title="${hasTransfer ? _t('貼入：') + esc(window._layerTransfer.name) : _t('請先右鍵素材→複製材質為圖層')}">
+            ${_t('📎 貼入圖層')}${hasTransfer ? '（' + esc(window._layerTransfer.name) + '）' : ''}
           </button>
           <button class="btn btn-small btn-secondary" id="btn-save-back"
-            ${canWriteBack ? '' : 'disabled title="請使用「開啟 JAR（可寫回）」"'}>
+            ${canWriteBack ? '' : `disabled title="${_t('請使用「開啟 JAR（可寫回）」')}"`}>
             ${writeBackLabel}
           </button>
-          <button class="btn btn-small btn-primary" id="btn-save-as">📥 另存</button>
+          <button class="btn btn-small btn-primary" id="btn-save-as">${_t('📥 另存')}</button>
         </div>
       `;
 
@@ -158,10 +158,10 @@
           if (node.zipPath && Loader.isJarMode()) {
             // JAR 模式：更新 zip entry 並寫回 jar
             await Loader.saveBackJar(node.zipPath, blob);
-            showToast('已寫回 JAR ✓');
+            showToast(_t('已寫回 JAR ✓'));
           } else if (node.handle) {
             await Loader.saveBack(node, blob);
-            showToast('已存回原檔 ✓');
+            showToast(_t('已存回原檔 ✓'));
           } else {
             throw new Error('請使用「開啟 JAR（可寫回）」按鈕開啟檔案');
           }

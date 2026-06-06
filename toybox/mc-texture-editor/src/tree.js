@@ -140,8 +140,8 @@ var Tree = (() => {
     menu.id = 'tree-ctx-menu';
     menu.className = 'tree-ctx-menu';
     menu.innerHTML = `
-      <div class="ctx-item" id="ctx-copy-layer">📎 複製材質為圖層</div>
-      <div class="ctx-item" id="ctx-open-new">🗂 在編輯器開啟</div>
+      <div class="ctx-item" id="ctx-copy-layer">${_t('📎 複製材質為圖層')}</div>
+      <div class="ctx-item" id="ctx-open-new">${_t('🗂 在編輯器開啟')}</div>
     `;
     menu.style.left = e.clientX + 'px';
     menu.style.top  = e.clientY + 'px';
@@ -182,14 +182,16 @@ var Tree = (() => {
         c.width = img.naturalWidth; c.height = img.naturalHeight;
         c.getContext('2d').drawImage(img, 0, 0);
         window._layerTransfer = { name: node.name, canvas: c };
-        if (window.showToast) showToast('📎 已複製「' + node.name + '」，切換到目標素材後點「貼入圖層」');
+        if (window.showToast) showToast(GT_LANG==='en'
+          ? `📎 Copied "${node.name}" — switch to target asset and click "Paste as Layer"`
+          : `📎 已複製「${node.name}」，切換到目標素材後點「貼入圖層」`);
         // 更新浮動列按鈕狀態
         const btn = document.getElementById('btn-paste-layer');
         if (btn) { btn.disabled = false; btn.classList.add('highlight'); }
       };
       img.src = url;
     } catch(e) {
-      if (window.showToast) showToast('複製失敗：' + e.message);
+      if (window.showToast) showToast(_t('複製失敗：') + e.message);
     }
   }
 
@@ -198,7 +200,7 @@ var Tree = (() => {
     collectFiles(root, results);
     const matched = results.filter(n => n.name.toLowerCase().includes(query));
     if (matched.length === 0) {
-      container.innerHTML = '<div class="empty-hint">沒有符合的素材</div>';
+      container.innerHTML = `<div class="empty-hint">${_t('沒有符合的素材')}</div>`;
       return;
     }
     matched.forEach(node => {

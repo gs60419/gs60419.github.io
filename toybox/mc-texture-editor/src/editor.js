@@ -59,12 +59,12 @@ var Editor = (() => {
             <canvas id="display-canvas"></canvas>
           </div>
           <div id="layer-panel">
-            <div class="panel-title">圖層</div>
+            <div class="panel-title">${_t('圖層')}</div>
             <div id="layer-list"></div>
             <div style="display:flex;gap:4px;margin-top:6px">
               <button class="btn btn-small btn-secondary" id="btn-add-layer">＋</button>
               <button class="btn btn-small btn-secondary" id="btn-del-layer">－</button>
-              <button class="btn btn-small btn-secondary" id="btn-merge-down">⬇ 合併</button>
+              <button class="btn btn-small btn-secondary" id="btn-merge-down">${_t('⬇ 合併')}</button>
             </div>
           </div>
         </div>
@@ -72,7 +72,7 @@ var Editor = (() => {
           <span id="cursor-pos">—</span>
           <span id="sel-info"></span>
           <span style="flex:1"></span>
-          <span id="zoom-info">縮放: 100%</span>
+          <span id="zoom-info">${_t('縮放: ')}100%</span>
         </div>
       </div>
     `);
@@ -80,7 +80,7 @@ var Editor = (() => {
     displayCanvas = document.getElementById('display-canvas');
     dCtx = displayCanvas.getContext('2d');
     layers = [];
-    addLayer('背景');
+    addLayer(_t('背景'));
     activeLayer = 0;
     if (initialImage) layers[0].ctx.drawImage(initialImage, 0, 0);
 
@@ -99,14 +99,14 @@ var Editor = (() => {
 
   /* ===== 工具列 ===== */
   const TOOLS = [
-    { id:'brush',    icon:'✏️', label:'筆刷 (B)' },
-    { id:'varbrush', icon:'🌈', label:'變化筆刷 (V)' },
-    { id:'dodge',    icon:'🔆', label:'提亮筆刷 (D)  左鍵+10%  右鍵-10%' },
-    { id:'blend',    icon:'🫧', label:'混色筆刷 (G)  與背景色混合' },
-    { id:'eraser',   icon:'⬜', label:'橡皮擦 (E)' },
-    { id:'fill',     icon:'🪣', label:'填色桶 (F)' },
-    { id:'eyedrop',  icon:'💉', label:'滴管 (I)' },
-    { id:'rect',     icon:'⬚',  label:'矩形選取 (R)' },
+    { id:'brush',    icon:'✏️', label:_t('筆刷 (B)') },
+    { id:'varbrush', icon:'🌈', label:_t('變化筆刷 (V)') },
+    { id:'dodge',    icon:'🔆', label:_t('提亮筆刷 (D)  左鍵+10%  右鍵-10%') },
+    { id:'blend',    icon:'🫧', label:_t('混色筆刷 (G)  與背景色混合') },
+    { id:'eraser',   icon:'⬜', label:_t('橡皮擦 (E)') },
+    { id:'fill',     icon:'🪣', label:_t('填色桶 (F)') },
+    { id:'eyedrop',  icon:'💉', label:_t('滴管 (I)') },
+    { id:'rect',     icon:'⬚',  label:_t('矩形選取 (R)') },
   ];
 
   function buildToolbar() {
@@ -117,40 +117,40 @@ var Editor = (() => {
       </div>
       <div class="tb-sep"></div>
       <div class="tb-group">
-        <div class="color-swatch-wrap" title="前景色（左鍵）">
+        <div class="color-swatch-wrap" title="${_t('前景色（左鍵）')}">
           <div class="color-swatch fg" id="swatch-fg" style="background:${fgColor}"></div>
           <input type="color" id="picker-fg" value="${fgColor}" />
         </div>
-        <div class="color-swatch-wrap" title="背景色（右鍵）">
+        <div class="color-swatch-wrap" title="${_t('背景色（右鍵）')}">
           <div class="color-swatch bg" id="swatch-bg" style="background:${bgColor}"></div>
           <input type="color" id="picker-bg" value="${bgColor}" />
         </div>
-        <button class="tb-btn" id="btn-swap-color" title="交換顏色">⇄</button>
+        <button class="tb-btn" id="btn-swap-color" title="${_t('交換顏色')}">⇄</button>
       </div>
       <div class="tb-sep"></div>
       <div class="tb-group">
-        <label class="tb-label">筆刷</label>
+        <label class="tb-label">${_t('筆刷')}</label>
         <select id="brush-size">
           ${[1,2,3,4].map(n=>`<option value="${n}" ${n===brushSize?'selected':''}>${n}px</option>`).join('')}
         </select>
       </div>
       <div class="tb-sep"></div>
       <div class="tb-group">
-        <button class="tb-btn" id="btn-undo" title="復原 Ctrl+Z">↩</button>
-        <button class="tb-btn" id="btn-redo" title="重做 Ctrl+Y">↪</button>
+        <button class="tb-btn" id="btn-undo" title="${_t('復原 Ctrl+Z')}">↩</button>
+        <button class="tb-btn" id="btn-redo" title="${_t('重做 Ctrl+Y')}">↪</button>
       </div>
       <div class="tb-sep"></div>
       <div class="tb-group">
-        <button class="tb-btn" id="btn-zoom-in"  title="放大 滾輪↑">＋</button>
-        <button class="tb-btn" id="btn-zoom-out" title="縮小 滾輪↓">－</button>
-        <button class="tb-btn" id="btn-zoom-fit" title="適合視窗">⊡</button>
+        <button class="tb-btn" id="btn-zoom-in"  title="${_t('放大 滾輪↑')}">＋</button>
+        <button class="tb-btn" id="btn-zoom-out" title="${_t('縮小 滾輪↓')}">－</button>
+        <button class="tb-btn" id="btn-zoom-fit" title="${_t('適合視窗')}">⊡</button>
         <label class="tb-label tb-toggle">
-          <input type="checkbox" id="toggle-grid" ${showGrid?'checked':''} /> 格線
+          <input type="checkbox" id="toggle-grid" ${showGrid?'checked':''} /> ${_t('格線')}
         </label>
       </div>
       <div class="tb-sep"></div>
       <div class="tb-group">
-        <button class="tb-btn" id="btn-resize-canvas" title="調整畫布尺寸">⤢</button>
+        <button class="tb-btn" id="btn-resize-canvas" title="${_t('調整畫布尺寸')}">⤢</button>
       </div>
     `;
 
@@ -184,18 +184,18 @@ var Editor = (() => {
     if (!show) { tb.style.display = 'none'; return; }
     tb.style.display = 'flex';
     tb.innerHTML = `
-      <div class="sel-tb-label">選取：</div>
-      <button class="btn btn-small btn-secondary" id="sel-cut"   title="剪下 Ctrl+X">✂️ 剪下</button>
-      <button class="btn btn-small btn-secondary" id="sel-copy"  title="複製 Ctrl+C">📋 複製</button>
-      <button class="btn btn-small btn-secondary" id="sel-paste" title="貼上 Ctrl+V" ${clipboard?'':'disabled'}>📌 貼上</button>
-      <button class="btn btn-small btn-secondary" id="sel-del"   title="刪除 Delete">🗑 刪除</button>
+      <div class="sel-tb-label">${_t('選取：')}</div>
+      <button class="btn btn-small btn-secondary" id="sel-cut"   title="Cut Ctrl+X">${_t('✂️ 剪下')}</button>
+      <button class="btn btn-small btn-secondary" id="sel-copy"  title="Copy Ctrl+C">${_t('📋 複製')}</button>
+      <button class="btn btn-small btn-secondary" id="sel-paste" title="Paste Ctrl+V" ${clipboard?'':'disabled'}>${_t('📌 貼上')}</button>
+      <button class="btn btn-small btn-secondary" id="sel-del"   title="Delete">${_t('🗑 刪除')}</button>
       <div class="tb-sep"></div>
-      <button class="btn btn-small btn-secondary" id="sel-fliph" title="水平翻轉">↔ 水平</button>
-      <button class="btn btn-small btn-secondary" id="sel-flipv" title="垂直翻轉">↕ 垂直</button>
-      <button class="btn btn-small btn-secondary" id="sel-rot90" title="旋轉 90°">↻ 旋轉</button>
+      <button class="btn btn-small btn-secondary" id="sel-fliph">${_t('↔ 水平')}</button>
+      <button class="btn btn-small btn-secondary" id="sel-flipv">${_t('↕ 垂直')}</button>
+      <button class="btn btn-small btn-secondary" id="sel-rot90">${_t('↻ 旋轉')}</button>
       <div class="tb-sep"></div>
-      <button class="btn btn-small btn-secondary" id="sel-commit" title="確認貼上 Enter" ${selState==='floating'?'':'style="display:none"'}>✓ 確認</button>
-      <button class="btn btn-small btn-secondary" id="sel-desel" title="取消選取 Esc">✕ 取消</button>
+      <button class="btn btn-small btn-secondary" id="sel-commit" title="Enter" ${selState==='floating'?'':'style="display:none"'}>${_t('✓ 確認')}</button>
+      <button class="btn btn-small btn-secondary" id="sel-desel" title="Esc">${_t('✕ 取消')}</button>
     `;
     document.getElementById('sel-cut').onclick   = () => cutSel();
     document.getElementById('sel-copy').onclick  = () => copySel();
@@ -231,7 +231,7 @@ var Editor = (() => {
       el.querySelector('.layer-opacity').addEventListener('input', ev => { l.opacity = ev.target.value/100; render(); });
       list.appendChild(el);
     });
-    document.getElementById('btn-add-layer').onclick = () => { addLayer('圖層 '+(layers.length+1)); buildLayerPanel(); render(); };
+    document.getElementById('btn-add-layer').onclick = () => { addLayer(_t('圖層 ')+(layers.length+1)); buildLayerPanel(); render(); };
     document.getElementById('btn-del-layer').onclick = () => {
       if (layers.length<=1) return;
       saveUndo(); layers.splice(activeLayer,1);
@@ -262,7 +262,7 @@ var Editor = (() => {
     buildLayerPanel();
     render();
     onChangeCallbacks.forEach(cb => { try { cb(getFlatCanvas()); } catch(e){} });
-    if (window.showToast) showToast('✅ 已加入圖層「' + name + '」');
+    if (window.showToast) showToast(GT_LANG==='en' ? `✅ Layer "${name}" added` : `✅ 已加入圖層「${name}」`);
   }
 
   /* ===== 縮放 ===== */
@@ -273,7 +273,7 @@ var Editor = (() => {
     dCtx.imageSmoothingEnabled = false;
     render();
     const el = document.getElementById('zoom-info');
-    if (el) el.textContent = `縮放: ${zoom*100}%`;
+    if (el) el.textContent = `${_t('縮放: ')}${zoom*100}%`;
   }
 
   /* ===== 渲染 ===== */
@@ -776,16 +776,16 @@ var Editor = (() => {
     modal.className = 'simple-modal-overlay';
     modal.innerHTML = `
       <div class="simple-modal">
-        <div class="simple-modal-title">⤢ 調整畫布尺寸</div>
+        <div class="simple-modal-title">${_t('⤢ 調整畫布尺寸')}</div>
         <div class="simple-modal-body">
           <div class="modal-row">
-            <label>快速倍增</label>
+            <label>${_t('快速倍增')}</label>
             <div style="display:flex;gap:6px">
               ${[2,3,4,8].map(n=>`<button class="btn btn-small btn-secondary rs-mult-btn" data-n="${n}">×${n}</button>`).join('')}
             </div>
           </div>
-          <div class="modal-row"><label>寬度</label><input type="number" id="rs-w" value="${W}" min="1" max="2048" /><span>px</span></div>
-          <div class="modal-row"><label>高度</label><input type="number" id="rs-h" value="${H}" min="1" max="2048" /><span>px</span></div>
+          <div class="modal-row"><label>${_t('寬度')}</label><input type="number" id="rs-w" value="${W}" min="1" max="2048" /><span>px</span></div>
+          <div class="modal-row"><label>${_t('高度')}</label><input type="number" id="rs-h" value="${H}" min="1" max="2048" /><span>px</span></div>
           <div class="modal-row" id="rs-hint-row" style="display:none">
             <label></label>
             <span id="rs-hint" class="rs-hint-text"></span>
@@ -793,22 +793,22 @@ var Editor = (() => {
           <div class="modal-row">
             <label>模式</label>
             <select id="rs-mode">
-              <option value="pixel">🎮 像素倍增（整數倍放大，每格→N×N）</option>
-              <option value="extend">延伸（保留內容，多餘透明）</option>
-              <option value="scale">縮放（雙線性拉伸）</option>
-              <option value="crop">裁切（從錨點裁切）</option>
+              <option value="pixel">${_t('🎮 像素倍增（整數倍放大，每格→N×N）')}</option>
+              <option value="extend">${_t('延伸（保留內容，多餘透明）')}</option>
+              <option value="scale">${_t('縮放（雙線性拉伸）')}</option>
+              <option value="crop">${_t('裁切（從錨點裁切）')}</option>
             </select>
           </div>
           <div class="modal-row" id="rs-anchor-row">
-            <label>錨點</label>
+            <label>${_t('錨點')}</label>
             <div id="rs-anchor-grid" class="anchor-grid">
               ${['tl','tc','tr','ml','c','mr','bl','bc','br'].map(a=>`<button class="anchor-btn ${a==='c'?'active':''}" data-a="${a}"></button>`).join('')}
             </div>
           </div>
         </div>
         <div class="simple-modal-footer">
-          <button class="btn btn-secondary" id="rs-cancel">取消</button>
-          <button class="btn btn-primary"   id="rs-ok">✓ 套用</button>
+          <button class="btn btn-secondary" id="rs-cancel">${_t('取消')}</button>
+          <button class="btn btn-primary"   id="rs-ok">${_t('✓ 套用')}</button>
         </div>
       </div>
     `;
@@ -838,7 +838,7 @@ var Editor = (() => {
       if (nw > 0 && nh > 0 && nw % W === 0 && nh % H === 0 && nw/W === nh/H) {
         const n = nw / W;
         hintRow.style.display = '';
-        hint.textContent = `✅ 整數倍 ×${n}，可使用「像素倍增」模式`;
+        hint.textContent = `✅ ${_t('整數倍')} ×${n} ${_t('可使用「像素倍增」模式')}`;
         if (modeEl.value !== 'extend' && modeEl.value !== 'crop') modeEl.value = 'pixel';
       } else {
         hintRow.style.display = 'none';
@@ -896,7 +896,7 @@ var Editor = (() => {
     deselect(); buildLayerPanel();
     setZoom(calcDefaultZoom());
     render();
-    window.showToast && showToast(`畫布已調整為 ${nw}×${nh} ✓`);
+    window.showToast && showToast(`${_t('畫布已調整為')} ${nw}×${nh} ✓`);
   }
 
   /**

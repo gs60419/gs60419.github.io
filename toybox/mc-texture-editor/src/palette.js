@@ -78,7 +78,7 @@ var Palette = (() => {
           <canvas id="pal-sl"    width="70"  height="70"></canvas>
         </div>
         <div id="pal-right-tools">
-          <div id="pal-5x5-label" class="pal-section-title">漸層變化</div>
+          <div id="pal-5x5-label" class="pal-section-title">${_t('漸層變化') || '漸層變化'}</div>
           <div id="pal-5x5"></div>
           <div id="pal-cur-hex" class="pal-cur-hex">${currentHex}</div>
         </div>
@@ -87,11 +87,11 @@ var Palette = (() => {
       <!-- MC 色票 -->
       <div class="pal-tabs" id="pal-tabs"></div>
       <div class="pal-grid" id="pal-grid"></div>
-      <div class="pal-section-title">最近使用</div>
+      <div class="pal-section-title">${_t('最近使用') || '最近使用'}</div>
       <div class="pal-grid" id="pal-recent"></div>
       <div class="pal-section-title" style="display:flex;align-items:center;justify-content:space-between">
-        <span>自訂色</span>
-        <button class="btn btn-small btn-secondary" id="btn-add-custom">＋ 新增</button>
+        <span>${_t('自訂') || '自訂'}色</span>
+        <button class="btn btn-small btn-secondary" id="btn-add-custom">＋ ${_t('新增') || '新增'}</button>
       </div>
       <div class="pal-grid" id="pal-custom"></div>
     `;
@@ -105,7 +105,7 @@ var Palette = (() => {
     Object.keys(PRESETS).forEach(name => {
       const t = document.createElement('button');
       t.className = 'pal-tab' + (name === activePreset ? ' active' : '');
-      t.textContent = name;
+      t.textContent = _t(name) || name;
       t.addEventListener('click', () => { activePreset = name; render(); });
       tabs.appendChild(t);
     });

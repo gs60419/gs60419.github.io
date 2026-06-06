@@ -658,6 +658,15 @@ body.drag-over #app { outline: 3px dashed var(--accent2); outline-offset: -3px; 
   color: var(--text-dim);
 }
 
+/* ===== 語言切換 ===== */
+.lang-toggle {
+  font-size: 12px;
+  padding: 4px 10px;
+  opacity: 0.75;
+  text-decoration: none;
+}
+.lang-toggle:hover { opacity: 1; }
+
 /* ===== HELP BUTTON ===== */
 #btn-help {
   position: fixed;

@@ -17,6 +17,7 @@
       <button id="btn-open-zip"    class="btn btn-secondary">🗜️ 開啟 .zip / .jar（唯讀）</button>
       <button id="btn-batch" class="btn btn-secondary" disabled>⚙️ 批次處理</button>
       <span id="pack-name" class="pack-name"></span>
+      <a href="en/" class="btn btn-secondary lang-toggle" title="Switch to English">🌐 EN</a>
     </div>
   </header>
 
@@ -281,6 +282,10 @@
       </div><!-- end help-modal-body -->
     </div><!-- end help-modal -->
   </div><!-- end help-modal-overlay -->
+
+  <!-- ===== i18n (must be first) ===== -->
+  <script>window.GT_LANG = 'zh';</script>
+  <script src="src/i18n.js"></script>
 
   <!-- ===== LIBS ===== -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>

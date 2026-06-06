@@ -18,15 +18,15 @@ var Batch = (() => {
     _modal.innerHTML = `
       <div id="batch-dialog">
         <div id="batch-header">
-          <span>⚙️ 批次處理</span>
-          <button class="tb-btn" id="batch-close" title="關閉">✕</button>
+          <span>${_t('⚙️ 批次處理')}</span>
+          <button class="tb-btn" id="batch-close" title="${_t('關閉')}">✕</button>
         </div>
 
         <div id="batch-body">
           <!-- 左：素材清單 -->
           <div id="batch-filelist">
             <div class="batch-section-title">
-              素材清單
+              ${_t('素材清單')}
               <span id="batch-count" class="badge">${_files.length}</span>
             </div>
             <div id="batch-files-scroll">
@@ -40,9 +40,9 @@ var Batch = (() => {
               }
             </div>
             <div class="batch-file-actions">
-              <button class="btn btn-small btn-secondary" id="bf-all">全選</button>
-              <button class="btn btn-small btn-secondary" id="bf-none">取消</button>
-              <button class="btn btn-small btn-secondary" id="bf-invert">反選</button>
+              <button class="btn btn-small btn-secondary" id="bf-all">${_t('全選')}</button>
+              <button class="btn btn-small btn-secondary" id="bf-none">${_t('取消')}</button>
+              <button class="btn btn-small btn-secondary" id="bf-invert">${_t('反選')}</button>
             </div>
           </div>
 
@@ -51,19 +51,19 @@ var Batch = (() => {
 
             <!-- Tab 切換 -->
             <div class="batch-tabs">
-              <button class="batch-tab active" data-tab="adjust">色彩調整</button>
-              <button class="batch-tab" data-tab="replace">色彩替換</button>
-              <button class="batch-tab" data-tab="rename">重新命名</button>
-              <button class="batch-tab" data-tab="export">匯出設定</button>
+              <button class="batch-tab active" data-tab="adjust">${_t('色彩調整')}</button>
+              <button class="batch-tab" data-tab="replace">${_t('色彩替換')}</button>
+              <button class="batch-tab" data-tab="rename">${_t('重新命名')}</button>
+              <button class="batch-tab" data-tab="export">${_t('匯出設定')}</button>
             </div>
 
             <!-- 色彩調整 -->
             <div class="batch-panel active" id="tab-adjust">
-              ${slider('hue',        '色調偏移',   -180, 180, 0,   '°')}
-              ${slider('saturation', '飽和度',     -100, 100, 0,   '%')}
-              ${slider('brightness', '亮度',       -100, 100, 0,   '%')}
-              ${slider('contrast',   '對比度',     -100, 100, 0,   '%')}
-              ${slider('opacity',    '不透明度',     0,  100, 100, '%')}
+              ${slider('hue',        _t('色調偏移'),   -180, 180, 0,   '°')}
+              ${slider('saturation', _t('飽和度'),     -100, 100, 0,   '%')}
+              ${slider('brightness', _t('亮度'),       -100, 100, 0,   '%')}
+              ${slider('contrast',   _t('對比度'),     -100, 100, 0,   '%')}
+              ${slider('opacity',    _t('不透明度'),     0,  100, 100, '%')}
               <label class="batch-check-row">
                 <input type="checkbox" id="adj-grayscale" />
                 <span>轉為灰階</span>

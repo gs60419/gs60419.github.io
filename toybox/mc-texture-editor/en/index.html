@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MC Texture Editor</title>
+  <link rel="stylesheet" href="../src/style.css" />
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header id="header">
+    <div class="logo">⛏️ MC Texture Editor</div>
+    <div class="header-actions">
+      <button id="btn-open-folder" class="btn btn-primary">📁 Open Texture Pack Folder</button>
+      <button id="btn-open-jar"    class="btn btn-primary" style="background:#4ecca3;color:#000">🧩 Open JAR (Writable)</button>
+      <button id="btn-open-zip"    class="btn btn-secondary">🗜️ Open .zip / .jar (Read-only)</button>
+      <button id="btn-batch" class="btn btn-secondary" disabled>⚙️ Batch Process</button>
+      <span id="pack-name" class="pack-name"></span>
+      <a href="../" class="btn btn-secondary lang-toggle" title="切換中文">🌐 中文</a>
+    </div>
+  </header>
+
+  <!-- ===== MAIN LAYOUT ===== -->
+  <div id="app">
+
+    <!-- LEFT: Asset Browser -->
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <span>Assets</span>
+        <input id="search-box" type="text" placeholder="🔍 Search assets…" />
+      </div>
+      <div id="tree-container">
+        <div class="empty-hint">← Load a texture pack first</div>
+      </div>
+    </aside>
+
+    <!-- CENTER: Editor -->
+    <main id="editor-area">
+      <div id="editor-placeholder">
+        <div class="placeholder-icon">🎨</div>
+        <div class="placeholder-text">Select an asset to start editing</div>
+      </div>
+    </main>
+
+    <!-- RIGHT: Preview + Tools -->
+    <aside id="panel-right">
+      <div class="panel-section">
+        <div class="panel-title">3D Preview</div>
+        <div id="preview-3d">
+          <div class="empty-hint">Not loaded</div>
+        </div>
+      </div>
+      <div class="panel-section scroll-section">
+        <div class="panel-title">Palette</div>
+        <div id="palette-area"></div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- ===== HIDDEN FILE INPUT ===== -->
+  <input type="file" id="zip-input" accept=".zip,.jar" style="display:none" />
+
+  <!-- ===== HELP BUTTON ===== -->
+  <button id="btn-help" title="Help / Keyboard Shortcuts">？</button>
+
+  <!-- ===== HELP MODAL ===== -->
+  <div id="help-modal-overlay" style="display:none">
+    <div id="help-modal">
+      <div id="help-modal-header">
+        <span>📖 MC Texture Editor — Feature Guide</span>
+        <button id="help-close">✕</button>
+      </div>
+      <div id="help-modal-tabs">
+        <button class="help-tab active" data-tab="start">🚀 Quick Start</button>
+        <button class="help-tab" data-tab="tools">🖌️ Tools</button>
+        <button class="help-tab" data-tab="layers">📋 Layers</button>
+        <button class="help-tab" data-tab="palette">🎨 Palette</button>
+        <button class="help-tab" data-tab="hotkeys">⌨️ Hotkeys</button>
+        <button class="help-tab" data-tab="advanced">⚙️ Advanced</button>
+      </div>
+      <div id="help-modal-body">
+
+        <!-- Quick Start -->
+        <div class="help-page active" data-tab="start">
+          <h3>Welcome to MC Texture Editor!</h3>
+          <div class="help-section">
+            <h4>📁 Loading a Texture Pack</h4>
+            <ul>
+              <li><strong>Open Texture Pack Folder</strong> — Pick a local folder; all images appear in the left asset tree. Changes can be saved directly back to the files.</li>
+              <li><strong>Open JAR (Writable)</strong> — Pick a Mod <code>.jar</code> file. After editing you can write changes back to the JAR without unpacking it.</li>
+              <li><strong>Open .zip / .jar (Read-only)</strong> — Browse textures without write access; save via "Save As".</li>
+              <li>You can also drag &amp; drop a folder or ZIP anywhere on the page.</li>
+            </ul>
+          </div>
+          <div class="help-section">
+            <h4>🖼️ Start Editing</h4>
+            <ul>
+              <li>Click any PNG in the left asset tree to open it in the editor.</li>
+              <li>Use the 🔍 search box to filter assets by name.</li>
+              <li>Small thumbnails load lazily as you scroll.</li>
+            </ul>
+          </div>
+          <div class="help-section">
+            <h4>💾 Saving</h4>
+            <ul>
+              <li><strong>Save to file / Write to JAR</strong> — Overwrites the original (bottom floating bar).</li>
+              <li><strong>Save As</strong> — Save as a new PNG anywhere on your disk.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Tools -->
+        <div class="help-page" data-tab="tools">
+          <h3>🖌️ Drawing Tools</h3>
+          <div class="help-tools-grid">
+            <div class="help-tool-card">
+              <span class="tool-icon">✏️</span>
+              <div><strong>Brush (B)</strong><br>Basic pixel drawing. Left-click uses the foreground color, right-click uses the background color. Supports 1–4 px brush sizes.</div>
+            </div>
+            <div class="help-tool-card">
+              <span class="tool-icon">🌈</span>
+              <div><strong>Variation Brush (V)</strong><br>Each pixel picks a random color from the 5×5 gradient grid — great for natural-looking pixel textures.</div>
+            </div>
+            <div class="help-tool-card">
+              <span class="tool-icon">🔆</span>
+              <div><strong>Dodge/Burn (D)</strong><br>Left-click brightens pixels by 10%; right-click darkens by 10%. Paint highlights and shadows directly.</div>
+            </div>
+            <div class="help-tool-card">
+              <span class="tool-icon">🫧</span>
+              <div><strong>Blend Brush (G)</strong><br>Blends each painted pixel 30% toward the current <strong>background color</strong> for a soft-mixing effect.</div>
+            </div>
+            <div class="help-tool-card">
+              <span class="tool-icon">⬜</span>
+              <div><strong>Eraser (E)</strong><br>Clears pixels to transparent. Supports all brush sizes.</div>
+            </div>
+            <div class="help-tool-card">
+              <span class="tool-icon">🪣</span>
+              <div><strong>Paint Bucket (F)</strong><br>Flood-fills a connected region. Left-click = foreground, right-click = background.</div>
+            </div>
+            <div class="help-tool-card">
+              <span class="tool-icon">💉</span>
+              <div><strong>Eyedropper (I)</strong><br>Click any pixel to set it as the foreground color. The color wheel updates instantly.</div>
+            </div>
+            <div class="help-tool-card">
+              <span class="tool-icon">⬚</span>
+              <div><strong>Rect Select (R)</strong><br>Drag to select a rectangle. Then cut, copy, paste, flip, or rotate the selection.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Layers -->
+        <div class="help-page" data-tab="layers">
+          <h3>📋 Layer System</h3>
+          <div class="help-section">
+            <h4>Basic Operations</h4>
+            <ul>
+              <li><strong>＋ Add Layer</strong> — Inserts a new transparent layer on top.</li>
+              <li><strong>－ Delete Layer</strong> — Removes the active layer (minimum one layer required).</li>
+              <li><strong>⬇ Merge Down</strong> — Flattens the active layer onto the one below it.</li>
+              <li>Click a layer name to make it active.</li>
+              <li>Each layer has an independent <strong>visibility toggle</strong> and <strong>opacity slider</strong>.</li>
+            </ul>
+          </div>
+          <div class="help-section">
+            <h4>📎 Cross-Asset Layers (copy a texture from another asset)</h4>
+            <ul>
+              <li><strong>Right-click</strong> any asset in the left tree → <strong>"Copy as Layer"</strong>.</li>
+              <li>The <strong>"📎 Paste as Layer"</strong> button in the bottom bar glows green.</li>
+              <li>Open your target asset, then click "Paste as Layer" to add the copied texture as a new independent layer.</li>
+              <li>Adjust opacity, merge, or paint on top of it freely.</li>
+            </ul>
+          </div>
+          <div class="help-section">
+            <h4>Rect Select — Floating Layer</h4>
+            <ul>
+              <li>After selecting, a contextual toolbar appears: Cut / Copy / Paste / Delete / H-Flip / V-Flip / Rotate 90°.</li>
+              <li>Cutting or dragging the selection lifts it into a <em>floating layer</em> — move it freely.</li>
+              <li>Press <strong>✓ Confirm</strong> or <strong>Enter</strong> to stamp it back down.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Palette -->
+        <div class="help-page" data-tab="palette">
+          <h3>🎨 Color Palette</h3>
+          <div class="help-section">
+            <h4>Hue Wheel + Saturation/Lightness Square</h4>
+            <ul>
+              <li>Outer ring — drag to pick the <strong>hue</strong>.</li>
+              <li>Inner square — X = saturation, Y = lightness; drag for precise color picking.</li>
+              <li>The hex code below the wheel shows the current color.</li>
+            </ul>
+          </div>
+          <div class="help-section">
+            <h4>5×5 Gradient Grid</h4>
+            <ul>
+              <li>Center cell = current color (white border).</li>
+              <li>Horizontal: hue ±15° / ±30°.</li>
+              <li>Vertical: lightness ±10% / ±20%.</li>
+              <li>Click any cell to select it; works great with the Variation Brush.</li>
+            </ul>
+          </div>
+          <div class="help-section">
+            <h4>MC Official Colors &amp; Recent</h4>
+            <ul>
+              <li>Built-in swatches for Wool, Concrete, Wood, Stone, Ores, and Dye colors.</li>
+              <li>Recently used colors are auto-saved in localStorage across sessions.</li>
+              <li>Add custom colors; right-click a swatch to remove it.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Hotkeys -->
+        <div class="help-page" data-tab="hotkeys">
+          <h3>⌨️ Keyboard Shortcuts</h3>
+          <table class="help-table">
+            <thead><tr><th>Key</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td><kbd>B</kbd></td><td>Brush</td></tr>
+              <tr><td><kbd>V</kbd></td><td>Variation Brush</td></tr>
+              <tr><td><kbd>D</kbd></td><td>Dodge / Burn</td></tr>
+              <tr><td><kbd>G</kbd></td><td>Blend Brush</td></tr>
+              <tr><td><kbd>E</kbd></td><td>Eraser</td></tr>
+              <tr><td><kbd>F</kbd></td><td>Paint Bucket</td></tr>
+              <tr><td><kbd>I</kbd></td><td>Eyedropper</td></tr>
+              <tr><td><kbd>R</kbd></td><td>Rect Select</td></tr>
+              <tr><td colspan="2" class="help-table-sep">Undo / Redo</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td><td>Undo (up to 50 steps)</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>Redo</td></tr>
+              <tr><td colspan="2" class="help-table-sep">Selection</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>X</kbd></td><td>Cut selection</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>C</kbd></td><td>Copy selection</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>V</kbd></td><td>Paste</td></tr>
+              <tr><td><kbd>Delete</kbd></td><td>Delete selection</td></tr>
+              <tr><td><kbd>Enter</kbd></td><td>Confirm floating layer</td></tr>
+              <tr><td><kbd>Esc</kbd></td><td>Deselect</td></tr>
+              <tr><td colspan="2" class="help-table-sep">View</td></tr>
+              <tr><td>Scroll ↑↓</td><td>Zoom in / out</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Advanced -->
+        <div class="help-page" data-tab="advanced">
+          <h3>⚙️ Advanced Features</h3>
+          <div class="help-section">
+            <h4>⤢ Resize Canvas</h4>
+            <ul>
+              <li>Click the <strong>⤢</strong> button at the far right of the toolbar.</li>
+              <li><strong>Quick Scale</strong>: ×2 / ×3 / ×4 / ×8 buttons auto-fill the new dimensions.</li>
+              <li><strong>Pixel Perfect mode</strong>: automatically enabled for integer multiples — each original pixel expands to an exact N×N block with zero interpolation.</li>
+              <li><strong>Extend</strong>: keeps original content; extra area is transparent; choose anchor from a 9-point grid.</li>
+              <li><strong>Scale</strong>: stretches the image to fill the new size.</li>
+              <li><strong>Crop</strong>: trims the canvas from the selected anchor direction.</li>
+            </ul>
+          </div>
+          <div class="help-section">
+            <h4>⚙️ Batch Process</h4>
+            <ul>
+              <li>Load a texture pack, then click <strong>"⚙️ Batch Process"</strong> in the top bar.</li>
+              <li><strong>Color Adjust</strong>: batch-adjust hue, saturation, brightness, contrast, opacity, and grayscale across the entire pack.</li>
+              <li><strong>Color Replace</strong>: replace a source color with a target color, with a tolerance slider.</li>
+              <li><strong>Rename</strong>: batch rename with prefix, suffix, find &amp; replace, and auto-numbering.</li>
+              <li><strong>Export</strong>: set scale and format, then download as a ZIP.</li>
+            </ul>
+          </div>
+          <div class="help-section">
+            <h4>🧊 3D Preview</h4>
+            <ul>
+              <li>The right panel shows your texture on a block in real time.</li>
+              <li>Drag to rotate, scroll to zoom.</li>
+              <li>Switch shape: Full Cube / Slab / Flat Plane.</li>
+              <li>Toggle auto-rotate or reset the camera.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div><!-- end help-modal-body -->
+    </div><!-- end help-modal -->
+  </div><!-- end help-modal-overlay -->
+
+  <!-- ===== i18n (must be first) ===== -->
+  <script>window.GT_LANG = 'en';</script>
+  <script src="../src/i18n.js"></script>
+
+  <!-- ===== LIBS ===== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="../src/tree.js"></script>
+  <script src="../src/loader.js"></script>
+  <script src="../src/editor.js"></script>
+  <script src="../src/preview3d.js"></script>
+  <script src="../src/palette.js"></script>
+  <script src="../src/batch.js"></script>
+  <script src="../src/main.js"></script>
+</body>
+</html>

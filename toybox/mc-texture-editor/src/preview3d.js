@@ -156,14 +156,14 @@ var Preview3D = (() => {
     const ui = document.createElement('div');
     ui.id = 'preview-ui';
     ui.innerHTML = `
-      <button class="tb-btn ${modelType==='cube'?'active':''}"  data-model="cube"  title="方塊">🧱</button>
-      <button class="tb-btn ${modelType==='slab'?'active':''}"  data-model="slab"  title="半磚">▬</button>
-      <button class="tb-btn ${modelType==='flat'?'active':''}"  data-model="flat"  title="平面">▭</button>
+      <button class="tb-btn ${modelType==='cube'?'active':''}"  data-model="cube"  title="${_t('方塊')}">🧱</button>
+      <button class="tb-btn ${modelType==='slab'?'active':''}"  data-model="slab"  title="${_t('半磚')}">▬</button>
+      <button class="tb-btn ${modelType==='flat'?'active':''}"  data-model="flat"  title="${_t('平面')}">▭</button>
       <div style="flex:1"></div>
-      <button class="tb-btn" id="btn-auto-rot" title="${autoRotate?'停止旋轉':'自動旋轉'}">
+      <button class="tb-btn" id="btn-auto-rot" title="${_t('自動旋轉')}">
         ${autoRotate ? '⏸' : '▶'}
       </button>
-      <button class="tb-btn" id="btn-reset-cam" title="重置視角">⊙</button>
+      <button class="tb-btn" id="btn-reset-cam" title="${_t('重置視角')}">⊙</button>
     `;
     container.appendChild(ui);
 
