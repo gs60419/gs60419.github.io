@@ -43,8 +43,11 @@
     /* ===== editor.js — 圖層面板 ===== */
     '圖層':     'Layers',
     '背景':     'Background',
-    '⬇ 合併':  '⬇ Merge Down',
-    '圖層 ':    'Layer ',
+    '⬇ 合併':     '⬇ Merge Down',
+    '圖層 ':       'Layer ',
+    '新增空白圖層': 'Add blank layer',
+    '刪除圖層':     'Delete layer',
+    '匯入圖片為圖層': 'Import image as layer',
 
     /* ===== editor.js — 選取工具列 ===== */
     '選取：':   'Selection:',

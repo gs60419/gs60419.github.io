@@ -62,10 +62,12 @@ var Editor = (() => {
             <div class="panel-title">${_t('圖層')}</div>
             <div id="layer-list"></div>
             <div style="display:flex;gap:4px;margin-top:6px">
-              <button class="btn btn-small btn-secondary" id="btn-add-layer">＋</button>
-              <button class="btn btn-small btn-secondary" id="btn-del-layer">－</button>
+              <button class="btn btn-small btn-secondary" id="btn-add-layer" title="${_t('新增空白圖層')}">＋</button>
+              <button class="btn btn-small btn-secondary" id="btn-del-layer" title="${_t('刪除圖層')}">－</button>
+              <button class="btn btn-small btn-secondary" id="btn-import-layer" title="${_t('匯入圖片為圖層')}">📂</button>
               <button class="btn btn-small btn-secondary" id="btn-merge-down">${_t('⬇ 合併')}</button>
             </div>
+            <input type="file" id="import-layer-input" accept="image/*" style="display:none" />
           </div>
         </div>
         <div id="editor-statusbar">
@@ -232,6 +234,22 @@ var Editor = (() => {
       list.appendChild(el);
     });
     document.getElementById('btn-add-layer').onclick = () => { addLayer(_t('圖層 ')+(layers.length+1)); buildLayerPanel(); render(); };
+    document.getElementById('btn-import-layer').onclick = () => document.getElementById('import-layer-input').click();
+    document.getElementById('import-layer-input').onchange = e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        const name = file.name.replace(/\.[^.]+$/, '');
+        addLayerFromCanvas(name, img);
+        buildLayerPanel();
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); if (window.showToast) showToast('❌ ' + (GT_LANG==='en' ? 'Failed to load image' : '圖片載入失敗')); };
+      img.src = url;
+      e.target.value = ''; // 允許重複選同一檔案
+    };
     document.getElementById('btn-del-layer').onclick = () => {
       if (layers.length<=1) return;
       saveUndo(); layers.splice(activeLayer,1);
