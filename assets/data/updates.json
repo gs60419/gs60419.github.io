@@ -1,5 +1,11 @@
 [
   {
+    "date": "2026.06.06",
+    "text": "Toybox 新增麥塊書本編輯器：在遊戲外用所見即所得介面寫 Minecraft 書本，支援粗體、斜體、底線、16 色、多頁管理、自動分頁匯入，匯出 .mcbook 搭配 Fabric Mod（Minecraft 26.1）一鍵填入書本。",
+    "href": "toybox/mc-book-editor/index.html",
+    "label": "開始寫書"
+  },
+  {
     "date": "2026.06.04",
     "text": "Toybox 新增馬賽克紋案產生器：格子畫布、多圖層、左右／上下鏡像對稱、圖案群組，可存檔載入與匯出 PNG。",
     "href": "toybox/mosaic-maker/index.html",

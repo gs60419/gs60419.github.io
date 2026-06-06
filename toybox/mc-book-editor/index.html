@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>麥塊書本編輯器 · Goofy Toymaker</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #141820;
+      --surface:   #1c2330;
+      --surface2:  #242e3e;
+      --border:    #2e3a4e;
+      --accent:    #4caf6e;
+      --accent-d:  #3a9458;
+      --text:      #e8eaf0;
+      --text-dim:  #7a8a9a;
+      --red:       #e05555;
+      --gold:      #e0a030;
+
+      --book-bg:   #f5edcf;
+      --book-line: #d8cfaa;
+      --book-text: #1a1000;
+      --book-dim:  #8b7355;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans TC', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ═══════════════════ TOPBAR ═══════════════════ */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      height: 52px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      flex-shrink: 0;
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+    .topbar-brand .icon {
+      font-size: 1.2rem;
+    }
+    .topbar-brand .divider { color: var(--border); margin: 0 2px; }
+    .topbar-brand .sub { color: var(--accent); font-weight: 600; }
+    .topbar-nav { display: flex; gap: 16px; }
+    .topbar-nav a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.82rem;
+      transition: color 0.15s;
+    }
+    .topbar-nav a:hover { color: var(--text); }
+
+    /* ═══════════════════ MAIN LAYOUT ═══════════════════ */
+    .tool-main {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* ═══════════════════ BOOK PANEL (left) ═══════════════════ */
+    #book-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 32px;
+      gap: 14px;
+      overflow-y: auto;
+      background: var(--bg);
+    }
+
+    /* Page navigation bar */
+    .page-nav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .page-nav .pg-info {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      min-width: 80px;
+      text-align: center;
+    }
+    .pg-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 5px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      transition: background 0.15s;
+    }
+    .pg-btn:hover:not(:disabled) { background: var(--surface2); }
+    .pg-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    /* Book visual wrapper */
+    .book-wrapper {
+      width: 100%;
+      max-width: 320px;
+      position: relative;
+    }
+
+    /* Spine */
+    .book-spine {
+      position: absolute;
+      left: -10px;
+      top: 4px;
+      bottom: 4px;
+      width: 14px;
+      background: linear-gradient(to right, #3d1f00, #7a4820, #5a3010);
+      border-radius: 3px 0 0 3px;
+      box-shadow: -2px 0 6px rgba(0,0,0,0.5);
+    }
+
+    /* Cover (leather) */
+    .book-cover {
+      background: linear-gradient(160deg, #7a4820 0%, #5a3010 40%, #7a4820 100%);
+      border-radius: 3px 10px 10px 3px;
+      padding: 8px;
+      box-shadow:
+        4px 4px 16px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    /* Inner paper page */
+    .book-page-inner {
+      background: var(--book-bg);
+      border-radius: 2px 6px 6px 2px;
+      padding: 20px 16px 16px;
+      min-height: 320px;
+      position: relative;
+      overflow: hidden;
+      /* Lined paper */
+      background-image:
+        repeating-linear-gradient(
+          transparent 0px,
+          transparent 23px,
+          var(--book-line) 23px,
+          var(--book-line) 24px
+        );
+      background-position: 0 28px;
+    }
+
+    /* The editable area */
+    #page-editor {
+      width: 100%;
+      min-height: 300px;
+      max-height: 336px; /* 14 lines × 24px */
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 13.5px;
+      line-height: 24px;
+      color: var(--book-text);
+      outline: none;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      white-space: pre-wrap;
+      overflow: hidden;
+      position: relative;
+      caret-color: #5a3010;
+    }
+
+    /* Placeholder */
+    #page-editor:empty::before,
+    #page-editor[data-ph]::before {
+      content: attr(placeholder);
+      color: var(--book-dim);
+      pointer-events: none;
+      font-style: italic;
+    }
+
+    /* Stats bar */
+    .stats-bar {
+      display: flex;
+      gap: 20px;
+      font-size: 0.75rem;
+    }
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--text-dim);
+    }
+    .stat-val { font-weight: 700; color: var(--text); }
+    .stat-val.warn { color: var(--gold); }
+    .stat-val.over { color: var(--red); }
+
+    /* ═══════════════════ CONTROL PANEL (right) ═══════════════════ */
+    #ctrl-panel {
+      width: 240px;
+      min-width: 200px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      overflow-y: auto;
+    }
+
+    .ctrl-section {
+      padding: 14px 14px 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .ctrl-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+    }
+
+    /* Format toolbar */
+    .fmt-row {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .fmt-btn {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.12s;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .fmt-btn:hover { background: var(--surface2); }
+    .fmt-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .fmt-btn[data-cmd="bold"] { font-style: normal; font-weight: 900; }
+    .fmt-btn[data-cmd="italic"] { font-style: italic; }
+    .fmt-btn[data-cmd="underline"] { text-decoration: underline; }
+    .fmt-btn[data-cmd="strikeThrough"] { text-decoration: line-through; }
+
+    /* Color palette */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 4px;
+    }
+    .c-swatch {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 4px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.1s, border-color 0.15s;
+      position: relative;
+    }
+    .c-swatch:hover { transform: scale(1.15); z-index: 1; }
+    .c-swatch.active { border-color: #fff; }
+
+    .color-reset-btn {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.12s;
+      align-self: flex-start;
+    }
+    .color-reset-btn:hover { color: var(--text); border-color: #4a5a6a; }
+
+    /* Page list */
+    .pg-list {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      max-height: 140px;
+      overflow-y: auto;
+    }
+    .pg-item {
+      display: flex;
+      align-items: center;
+      padding: 6px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      background: var(--bg);
+      border: 1px solid transparent;
+      transition: all 0.12s;
+      color: var(--text-dim);
+    }
+    .pg-item:hover { border-color: var(--border); color: var(--text); }
+    .pg-item.active { border-color: var(--accent); color: var(--text); background: rgba(76,175,110,0.08); }
+    .pg-item-num { font-weight: 700; min-width: 16px; }
+    .pg-item-preview {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-left: 6px;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+    .pg-del {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-size: 0.7rem;
+      opacity: 0;
+      transition: opacity 0.12s, color 0.12s;
+      margin-left: 4px;
+    }
+    .pg-item:hover .pg-del { opacity: 1; }
+    .pg-del:hover { color: var(--red); }
+
+    /* Buttons */
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 7px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: all 0.15s;
+      text-align: center;
+    }
+    .btn-ghost {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 100%;
+    }
+    .btn-ghost:hover { background: var(--surface2); }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      width: 100%;
+    }
+    .btn-primary:hover { background: var(--accent-d); }
+    .btn-danger {
+      background: transparent;
+      border: 1px solid var(--red);
+      color: var(--red);
+      width: 100%;
+    }
+    .btn-danger:hover { background: rgba(224,85,85,0.1); }
+
+    /* Export section */
+    .export-note {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      line-height: 1.55;
+    }
+    .export-note b { color: var(--text); }
+
+    .field-label {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+    .text-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .text-input:focus { border-color: var(--accent); }
+    .text-input::placeholder { color: var(--text-dim); }
+
+    /* ═══════════════════ RESPONSIVE ═══════════════════ */
+    @media (max-width: 680px) {
+      .tool-main { flex-direction: column; }
+
+      #book-panel { padding: 16px 10px 20px; }
+      .book-wrapper { max-width: 100%; }
+
+      #ctrl-panel {
+        width: 100%;
+        min-width: 0;
+        border-left: none;
+        border-top: 1px solid var(--border);
+        flex-direction: row;
+        flex-wrap: wrap;
+        overflow: visible;
+      }
+      .ctrl-section {
+        flex: 1;
+        min-width: 160px;
+        border-bottom: none;
+        border-right: 1px solid var(--border);
+      }
+      .ctrl-section:last-child { border-right: none; }
+      .pg-list { max-height: 100px; }
+    }
+
+    /* ═══════════════════ TOAST ═══════════════════ */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      z-index: 999;
+      transition: transform 0.25s ease;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- ── Topbar ── -->
+<header class="topbar">
+  <a class="topbar-brand" href="../../index.html">
+    <span class="icon">📖</span>
+    <span>Goofy Toymaker</span>
+    <span class="divider">/</span>
+    <span class="sub">麥塊書本編輯器</span>
+  </a>
+  <nav class="topbar-nav">
+    <a href="../index.html">← Toybox</a>
+    <a href="../../index.html">首頁</a>
+  </nav>
+</header>
+
+<main class="tool-main">
+
+  <!-- ────────── Left: Book Preview ────────── -->
+  <div id="book-panel">
+
+    <!-- Page navigation -->
+    <div class="page-nav">
+      <button class="pg-btn" id="btn-prev" onclick="changePage(-1)">← 上一頁</button>
+      <span class="pg-info" id="pg-indicator">第 1 / 1 頁</span>
+      <button class="pg-btn" id="btn-next" onclick="changePage(1)">下一頁 →</button>
+    </div>
+
+    <!-- Book visual -->
+    <div class="book-wrapper">
+      <div class="book-spine"></div>
+      <div class="book-cover">
+        <div class="book-page-inner">
+          <div
+            id="page-editor"
+            contenteditable="true"
+            spellcheck="false"
+            placeholder="開始在這裡寫書…"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat">
+        行數 <span class="stat-val" id="s-lines">0</span><span style="color:var(--text-dim)">/14</span>
+      </div>
+      <div class="stat">
+        字元 <span class="stat-val" id="s-chars">0</span><span style="color:var(--text-dim)">/1023</span>
+      </div>
+      <div class="stat">
+        頁面 <span class="stat-val" id="s-pages">1</span><span style="color:var(--text-dim)">/100</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ────────── Right: Controls ────────── -->
+  <div id="ctrl-panel">
+
+    <!-- Format -->
+    <div class="ctrl-section">
+      <div class="ctrl-title">格式</div>
+      <div class="fmt-row">
+        <button class="fmt-btn" id="fmt-bold"          data-cmd="bold"          title="粗體 Ctrl+B">B</button>
+        <button class="fmt-btn" id="fmt-italic"        data-cmd="italic"        title="斜體 Ctrl+I">I</button>
+        <button class="fmt-btn" id="fmt-underline"     data-cmd="underline"     title="底線 Ctrl+U">U</button>
+        <button class="fmt-btn" id="fmt-strikeThrough" data-cmd="strikeThrough" title="刪除線">S</button>
+        <button class="fmt-btn" title="清除格式" onclick="clearFmt()" style="font-size:0.65rem;color:var(--text-dim)">✕格式</button>
+      </div>
+    </div>
+
+    <!-- Color -->
+    <div class="ctrl-section">
+      <div class="ctrl-title">顏色（16色）</div>
+      <div class="color-grid" id="color-grid"></div>
+      <button class="color-reset-btn" onclick="resetColor()">重置顏色</button>
+    </div>
+
+    <!-- Pages -->
+    <div class="ctrl-section">
+      <div class="ctrl-title">頁面管理</div>
+      <div class="pg-list" id="pg-list"></div>
+      <button class="btn btn-ghost" onclick="addPage()" style="margin-top:2px">＋ 新增頁面</button>
+    </div>
+
+    <!-- Auto Split Import -->
+    <div class="ctrl-section">
+      <div class="ctrl-title">自動分頁匯入</div>
+      <div class="export-note">貼入一大段文字，系統依照麥塊書本限制（每行 114px、每頁 14 行）自動切頁。</div>
+      <textarea
+        id="import-textarea"
+        placeholder="在這裡貼上或輸入文字…&#10;&#10;空白行會被保留為換行。"
+        style="
+          width:100%; height:110px; resize:vertical;
+          background:var(--bg); border:1px solid var(--border);
+          color:var(--text); padding:8px 10px; border-radius:6px;
+          font-size:0.82rem; line-height:1.5; outline:none;
+          font-family:inherit;
+        "
+      ></textarea>
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.75rem;color:var(--text-dim)">
+        <label style="display:flex;align-items:center;gap:5px;cursor:pointer">
+          <input type="checkbox" id="opt-double-newline" checked style="accent-color:var(--accent)">
+          雙換行 = 新頁面
+        </label>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-primary" style="flex:1" onclick="importAndSplit()">✂ 自動分頁</button>
+        <button class="btn btn-ghost"   style="flex:1" onclick="importAndAppend()">+ 附加到末頁</button>
+      </div>
+    </div>
+
+    <!-- Export -->
+    <div class="ctrl-section">
+      <div class="ctrl-title">匯出</div>
+      <div class="export-note">
+        下載 <b>.mcbook</b> 檔案，搭配配套 Fabric Mod，進遊戲後手持書與筆按 <b>Alt+V</b> 即可填入。
+      </div>
+      <div>
+        <div class="field-label">書名</div>
+        <input class="text-input" id="inp-title" type="text" placeholder="我的書" maxlength="32">
+      </div>
+      <div>
+        <div class="field-label">作者名</div>
+        <input class="text-input" id="inp-author" type="text" placeholder="Player" maxlength="16">
+      </div>
+      <button class="btn btn-primary" onclick="exportBook()">⬇ 下載 .mcbook</button>
+    </div>
+
+  </div>
+</main>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+/* ══════════════════════════════════════════
+   Minecraft 預設字體像素寬度表
+   每個字元的寬度（不含字元間 1px 間距）
+   未收錄的字元（CJK等）預設 6px
+══════════════════════════════════════════ */
+const MC_CHAR_W = {
+  ' ':4,'!':2,'"':5,'#':6,'$':6,'%':6,'&':6,"'":3,'(':5,')':5,
+  '*':5,'+':6,',':2,'-':6,'.':2,'/':6,'0':6,'1':6,'2':6,'3':6,
+  '4':6,'5':6,'6':6,'7':6,'8':6,'9':6,':':2,';':2,'<':5,'=':6,
+  '>':5,'?':6,'@':7,'A':6,'B':6,'C':6,'D':6,'E':6,'F':6,'G':6,
+  'H':6,'I':4,'J':6,'K':6,'L':6,'M':6,'N':6,'O':6,'P':6,'Q':7,
+  'R':6,'S':6,'T':6,'U':6,'V':6,'W':6,'X':6,'Y':6,'Z':6,'[':4,
+  '\\':6,']':4,'^':6,'_':6,'`':3,'a':6,'b':6,'c':6,'d':6,'e':6,
+  'f':5,'g':6,'h':6,'i':2,'j':6,'k':5,'l':3,'m':6,'n':6,'o':6,
+  'p':6,'q':6,'r':6,'s':6,'t':6,'u':6,'v':6,'w':6,'x':6,'y':6,
+  'z':6,'{':4,'|':2,'}':4,'~':7
+};
+
+const MC_MAX_LINE_PX = 114;
+const MC_MAX_LINES   = 14;
+const MC_MAX_PAGES   = 100;
+
+/** 取得單一字元的 MC 像素寬度（含右側 1px 間距） */
+function mcCharWidth(ch) {
+  return (MC_CHAR_W[ch] ?? 6) + 1;
+}
+
+/** 計算字串的 MC 像素總寬（最後一字不計 1px 間距） */
+function mcTextWidth(str) {
+  if (!str) return 0;
+  let w = 0;
+  for (const ch of str) w += mcCharWidth(ch);
+  return w - 1; // 最後一個字元不加間距
+}
+
+/* ══════════════════════════════════════════
+   自動分頁核心演算法
+══════════════════════════════════════════ */
+
+/**
+ * 把純文字依照 Minecraft 書本限制切成多頁。
+ * @param {string} rawText        - 使用者輸入的原始文字
+ * @param {boolean} doubleNewPage - true 時雙換行視為分頁符
+ * @returns {string[]}            - 每一頁的純文字（\n 分隔各行）
+ */
+function splitIntoPages(rawText, doubleNewPage) {
+  const resultPages = [];
+  let pageLines = [];   // 目前頁的行陣列
+
+  const flushPage = () => {
+    if (pageLines.length > 0 || resultPages.length > 0) {
+      resultPages.push(pageLines.join('\n'));
+      pageLines = [];
+    }
+  };
+
+  const pushLine = (line) => {
+    pageLines.push(line);
+    if (pageLines.length >= MC_MAX_LINES) flushPage();
+  };
+
+  // 把輸入文字切成「段落」（以 \n 分隔）
+  const rawLines = rawText.split('\n');
+
+  let i = 0;
+  while (i < rawLines.length) {
+    const rawLine = rawLines[i];
+
+    // 雙換行（空白行）判斷
+    if (rawLine.trim() === '') {
+      if (doubleNewPage) {
+        // 空白行 = 強制分頁
+        flushPage();
+        i++;
+        // 跳過連續空白行
+        while (i < rawLines.length && rawLines[i].trim() === '') i++;
+        continue;
+      } else {
+        // 空白行 = 保留空行
+        pushLine('');
+        i++;
+        continue;
+      }
+    }
+
+    // 對這一段落做字元寬度換行
+    const wrappedLines = wrapLine(rawLine);
+    for (const wl of wrappedLines) pushLine(wl);
+    i++;
+  }
+
+  // 剩餘內容
+  if (pageLines.length > 0) flushPage();
+  // 確保至少有一頁
+  if (resultPages.length === 0) resultPages.push('');
+
+  return resultPages.slice(0, MC_MAX_PAGES);
+}
+
+/**
+ * 把一行文字依照 MC 像素寬度做自動換行，回傳行陣列。
+ * 邏輯：先嘗試以空白為界 word-wrap；若單一「詞」超寬則強制字元切割。
+ */
+function wrapLine(text) {
+  const lines = [];
+  let cur = '';
+  let curW = 0;
+
+  // tokenize：空白分隔（英文詞）或逐字（中文等無空白語言）
+  const tokens = tokenizeForWrap(text);
+
+  for (const tok of tokens) {
+    if (tok === ' ') {
+      // 空白：嘗試加入
+      const sw = mcCharWidth(' ');
+      if (curW + sw <= MC_MAX_LINE_PX) {
+        cur += ' ';
+        curW += sw;
+      }
+      // 超寬就丟掉行尾空白，等下個詞決定
+      continue;
+    }
+
+    const tokW = mcTextWidth(tok) + 1; // +1 because mcTextWidth subtracts last gap
+    const gap  = cur ? 0 : 0;         // 已在 token 前的空白處理過了
+
+    if (curW + tokW - 1 > MC_MAX_LINE_PX && cur) {
+      // 這個詞放不下 → 先存目前行
+      lines.push(cur.trimEnd());
+      cur  = '';
+      curW = 0;
+    }
+
+    // 詞本身就超過一行寬 → 強制字元切割
+    if (tokW - 1 > MC_MAX_LINE_PX) {
+      for (const ch of tok) {
+        const cw = mcCharWidth(ch);
+        if (curW + cw > MC_MAX_LINE_PX && cur) {
+          lines.push(cur);
+          cur  = '';
+          curW = 0;
+        }
+        cur  += ch;
+        curW += cw;
+      }
+    } else {
+      cur  += tok;
+      curW += tokW;
+    }
+  }
+
+  if (cur) lines.push(cur.trimEnd());
+  if (lines.length === 0) lines.push('');
+  return lines;
+}
+
+/** 把字串切成「詞 / 空白 / CJK單字」的 token 陣列 */
+function tokenizeForWrap(text) {
+  const tokens = [];
+  let word = '';
+  for (const ch of text) {
+    if (ch === ' ') {
+      if (word) { tokens.push(word); word = ''; }
+      tokens.push(' ');
+    } else if (isCJK(ch)) {
+      if (word) { tokens.push(word); word = ''; }
+      tokens.push(ch);   // CJK 每字獨立 token
+    } else {
+      word += ch;
+    }
+  }
+  if (word) tokens.push(word);
+  return tokens;
+}
+
+function isCJK(ch) {
+  const cp = ch.codePointAt(0);
+  return (cp >= 0x4E00 && cp <= 0x9FFF)  // CJK Unified
+      || (cp >= 0x3400 && cp <= 0x4DBF)  // CJK Extension A
+      || (cp >= 0xF900 && cp <= 0xFAFF)  // CJK Compatibility
+      || (cp >= 0x3000 && cp <= 0x303F)  // CJK Symbols
+      || (cp >= 0xFF00 && cp <= 0xFFEF); // Halfwidth/Fullwidth
+}
+
+/* ══════════════════════════════════════════
+   匯入動作
+══════════════════════════════════════════ */
+function importAndSplit() {
+  const raw = document.getElementById('import-textarea').value;
+  if (!raw.trim()) { showToast('請先輸入文字'); return; }
+
+  const doubleNewPage = document.getElementById('opt-double-newline').checked;
+  const newPages = splitIntoPages(raw, doubleNewPage);
+
+  // 取代所有現有頁面
+  pages = newPages;
+  curPage = 0;
+  editor.innerHTML = pages[0] || '';
+  renderPgList();
+  updatePgNav();
+  updateStats();
+  showToast(`✂ 已自動切成 ${newPages.length} 頁`);
+}
+
+function importAndAppend() {
+  const raw = document.getElementById('import-textarea').value;
+  if (!raw.trim()) { showToast('請先輸入文字'); return; }
+
+  const doubleNewPage = document.getElementById('opt-double-newline').checked;
+  saveCurPage();
+  const newPages = splitIntoPages(raw, doubleNewPage);
+
+  // 附加到現有頁面後面
+  const before = pages.length;
+  pages.push(...newPages);
+  if (pages.length > MC_MAX_PAGES) pages = pages.slice(0, MC_MAX_PAGES);
+
+  curPage = before; // 跳到第一個新頁面
+  editor.innerHTML = pages[curPage] || '';
+  renderPgList();
+  updatePgNav();
+  updateStats();
+  showToast(`+ 已附加 ${newPages.length} 頁（共 ${pages.length} 頁）`);
+}
+
+/* ══════════════════════════════════════════
+   Minecraft 16色定義
+══════════════════════════════════════════ */
+const MC_COLORS = [
+  { id: 'black',        hex: '#000000' },
+  { id: 'dark_blue',    hex: '#0000AA' },
+  { id: 'dark_green',   hex: '#00AA00' },
+  { id: 'dark_aqua',    hex: '#00AAAA' },
+  { id: 'dark_red',     hex: '#AA0000' },
+  { id: 'dark_purple',  hex: '#AA00AA' },
+  { id: 'gold',         hex: '#FFAA00' },
+  { id: 'gray',         hex: '#AAAAAA' },
+  { id: 'dark_gray',    hex: '#555555' },
+  { id: 'blue',         hex: '#5555FF' },
+  { id: 'green',        hex: '#55FF55' },
+  { id: 'aqua',         hex: '#55FFFF' },
+  { id: 'red',          hex: '#FF5555' },
+  { id: 'light_purple', hex: '#FF55FF' },
+  { id: 'yellow',       hex: '#FFFF55' },
+  { id: 'white',        hex: '#FFFFFF' },
+];
+
+/* ══════════════════════════════════════════
+   State
+══════════════════════════════════════════ */
+let pages = [''];       // HTML strings, one per page
+let curPage = 0;
+let activeColorId = null;
+
+const editor   = document.getElementById('page-editor');
+const pgList   = document.getElementById('pg-list');
+const pgInd    = document.getElementById('pg-indicator');
+const sLines   = document.getElementById('s-lines');
+const sChars   = document.getElementById('s-chars');
+const sPages   = document.getElementById('s-pages');
+
+/* ══════════════════════════════════════════
+   Init
+══════════════════════════════════════════ */
+function init() {
+  buildColorGrid();
+  renderPgList();
+  updatePgNav();
+  updateStats();
+
+  editor.addEventListener('input', () => { updateStats(); syncFmtBtns(); });
+  editor.addEventListener('keyup', syncFmtBtns);
+  editor.addEventListener('mouseup', syncFmtBtns);
+  editor.addEventListener('paste', onPaste);
+  editor.addEventListener('keydown', onKeydown);
+
+  // Format buttons
+  document.querySelectorAll('.fmt-btn[data-cmd]').forEach(btn => {
+    btn.addEventListener('mousedown', e => {
+      e.preventDefault(); // keep selection
+      document.execCommand(btn.dataset.cmd);
+      syncFmtBtns();
+      updateStats();
+    });
+  });
+}
+
+/* ══════════════════════════════════════════
+   Color palette
+══════════════════════════════════════════ */
+function buildColorGrid() {
+  const grid = document.getElementById('color-grid');
+  MC_COLORS.forEach(c => {
+    const sw = document.createElement('div');
+    sw.className = 'c-swatch';
+    sw.style.background = c.hex;
+    sw.title = c.id;
+    sw.dataset.id = c.id;
+    if (c.id === 'white') sw.style.outline = '1px solid #555';
+    sw.addEventListener('mousedown', e => {
+      e.preventDefault();
+      applyColor(c);
+    });
+    grid.appendChild(sw);
+  });
+}
+
+function applyColor(c) {
+  activeColorId = c.id;
+  editor.focus();
+  document.execCommand('foreColor', false, c.hex);
+  document.querySelectorAll('.c-swatch').forEach(sw => {
+    sw.classList.toggle('active', sw.dataset.id === c.id);
+  });
+}
+
+function resetColor() {
+  activeColorId = null;
+  document.querySelectorAll('.c-swatch').forEach(sw => sw.classList.remove('active'));
+  editor.focus();
+  document.execCommand('foreColor', false, '#1a1000');
+}
+
+/* ══════════════════════════════════════════
+   Format buttons state sync
+══════════════════════════════════════════ */
+function syncFmtBtns() {
+  ['bold', 'italic', 'underline', 'strikeThrough'].forEach(cmd => {
+    const btn = document.getElementById(`fmt-${cmd}`);
+    if (btn) btn.classList.toggle('active', document.queryCommandState(cmd));
+  });
+}
+
+function clearFmt() {
+  editor.focus();
+  document.execCommand('removeFormat');
+  resetColor();
+  syncFmtBtns();
+}
+
+/* ══════════════════════════════════════════
+   Keyboard shortcuts
+══════════════════════════════════════════ */
+function onKeydown(e) {
+  // Ctrl+Enter → add page
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    addPage();
+    return;
+  }
+  // Block input when at 14 lines (allow backspace/delete/arrows)
+  const allowed = ['Backspace','Delete','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'];
+  if (!allowed.includes(e.key) && !e.ctrlKey && !e.metaKey) {
+    if (getLineCount() >= 14 && e.key !== 'Enter') {
+      // allow only if cursor is not at the very end OR it's a navigation key
+      // We'll soft-warn instead of hard-block for better UX
+    }
+  }
+  syncFmtBtns();
+}
+
+/* ══════════════════════════════════════════
+   Paste: strip HTML, keep plain text
+══════════════════════════════════════════ */
+function onPaste(e) {
+  e.preventDefault();
+  const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+  if (!text) return;
+  document.execCommand('insertText', false, text);
+}
+
+/* ══════════════════════════════════════════
+   Stats
+══════════════════════════════════════════ */
+function getLineCount() {
+  const text = editor.innerText || '';
+  if (!text.trim()) return 0;
+  const lineH = 24;
+  return Math.max(1, Math.round(editor.scrollHeight / lineH));
+}
+
+function updateStats() {
+  const text = editor.innerText || '';
+  const chars = text.replace(/\n$/, '').length;
+  const lines = getLineCount();
+
+  sLines.textContent = lines;
+  sLines.className = 'stat-val' + (lines > 14 ? ' over' : lines >= 12 ? ' warn' : '');
+
+  sChars.textContent = chars;
+  sChars.className = 'stat-val' + (chars > 1023 ? ' over' : chars >= 900 ? ' warn' : '');
+
+  sPages.textContent = pages.length;
+}
+
+/* ══════════════════════════════════════════
+   Page management
+══════════════════════════════════════════ */
+function saveCurPage() {
+  pages[curPage] = editor.innerHTML;
+}
+
+function loadPage(idx) {
+  saveCurPage();
+  curPage = idx;
+  editor.innerHTML = pages[curPage] || '';
+  renderPgList();
+  updatePgNav();
+  updateStats();
+  // Focus and move cursor to end
+  editor.focus();
+  const range = document.createRange();
+  range.selectNodeContents(editor);
+  range.collapse(false);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+
+function changePage(delta) {
+  const next = curPage + delta;
+  if (next < 0 || next >= pages.length) return;
+  loadPage(next);
+}
+
+function addPage() {
+  if (pages.length >= 100) { showToast('已達最大頁數 (100頁)'); return; }
+  saveCurPage();
+  pages.push('');
+  loadPage(pages.length - 1);
+  showToast(`已新增第 ${pages.length} 頁`);
+}
+
+function deletePage(idx, e) {
+  e.stopPropagation();
+  if (pages.length === 1) { showToast('至少要保留一頁'); return; }
+  pages.splice(idx, 1);
+  const newIdx = Math.min(curPage, pages.length - 1);
+  curPage = newIdx;
+  editor.innerHTML = pages[curPage] || '';
+  renderPgList();
+  updatePgNav();
+  updateStats();
+  showToast('已刪除頁面');
+}
+
+function renderPgList() {
+  pgList.innerHTML = '';
+  pages.forEach((html, i) => {
+    const item = document.createElement('div');
+    item.className = 'pg-item' + (i === curPage ? ' active' : '');
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+    const preview = (temp.innerText || '').trim().slice(0, 18) || '（空白頁）';
+
+    item.innerHTML = `
+      <span class="pg-item-num">${i + 1}</span>
+      <span class="pg-item-preview">${preview}</span>
+      ${pages.length > 1 ? `<button class="pg-del" title="刪除">✕</button>` : ''}
+    `;
+    item.addEventListener('click', () => loadPage(i));
+    if (pages.length > 1) {
+      item.querySelector('.pg-del').addEventListener('click', e => deletePage(i, e));
+    }
+    pgList.appendChild(item);
+  });
+}
+
+function updatePgNav() {
+  pgInd.textContent = `第 ${curPage + 1} / ${pages.length} 頁`;
+  document.getElementById('btn-prev').disabled = curPage === 0;
+  document.getElementById('btn-next').disabled = curPage === pages.length - 1;
+}
+
+/* ══════════════════════════════════════════
+   DOM → Minecraft JSON text components
+══════════════════════════════════════════ */
+function hexToColorId(cssColor) {
+  if (!cssColor) return null;
+  let hex = cssColor.trim().toUpperCase();
+  // Handle rgb() format
+  const rgb = hex.match(/^RGB\((\d+),\s*(\d+),\s*(\d+)\)$/i);
+  if (rgb) {
+    hex = '#' + [rgb[1], rgb[2], rgb[3]]
+      .map(n => parseInt(n).toString(16).padStart(2, '0'))
+      .join('').toUpperCase();
+  }
+  if (!hex.startsWith('#')) return null;
+  const match = MC_COLORS.find(c => c.hex.toUpperCase() === hex);
+  return match ? match.id : null;
+}
+
+function domToComponents(node, inherited = {}) {
+  const parts = [];
+
+  for (const child of node.childNodes) {
+
+    if (child.nodeType === Node.TEXT_NODE) {
+      if (child.textContent) {
+        const comp = { text: child.textContent };
+        if (inherited.bold)          comp.bold = true;
+        if (inherited.italic)        comp.italic = true;
+        if (inherited.underlined)    comp.underlined = true;
+        if (inherited.strikethrough) comp.strikethrough = true;
+        if (inherited.color)         comp.color = inherited.color;
+        parts.push(comp);
+      }
+      continue;
+    }
+
+    if (child.nodeName === 'BR') {
+      parts.push({ text: '\n' });
+      continue;
+    }
+
+    if (child.nodeType === Node.ELEMENT_NODE) {
+      const fmt = { ...inherited };
+      const tag = child.nodeName;
+      const st  = child.style;
+
+      if (tag === 'B' || tag === 'STRONG' || st.fontWeight === 'bold' || st.fontWeight === '700')
+        fmt.bold = true;
+      if (tag === 'I' || tag === 'EM' || st.fontStyle === 'italic')
+        fmt.italic = true;
+      if (tag === 'U' || (st.textDecoration && st.textDecoration.includes('underline')))
+        fmt.underlined = true;
+      if (tag === 'S' || tag === 'STRIKE' || (st.textDecoration && st.textDecoration.includes('line-through')))
+        fmt.strikethrough = true;
+      if (st.color) {
+        const cid = hexToColorId(st.color);
+        if (cid && cid !== 'black') fmt.color = cid;
+        else if (!cid) fmt.color = undefined;
+      }
+
+      parts.push(...domToComponents(child, fmt));
+    }
+  }
+
+  return parts;
+}
+
+function pageHtmlToComponents(html) {
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  const comps = domToComponents(div);
+  // Merge adjacent runs with identical formatting
+  return mergeComponents(comps);
+}
+
+function mergeComponents(comps) {
+  if (!comps.length) return [{ text: '' }];
+  const out = [];
+  for (const c of comps) {
+    if (!out.length) { out.push({ ...c }); continue; }
+    const last = out[out.length - 1];
+    const sameFormat =
+      last.bold          === c.bold &&
+      last.italic        === c.italic &&
+      last.underlined    === c.underlined &&
+      last.strikethrough === c.strikethrough &&
+      last.color         === c.color;
+    if (sameFormat) {
+      last.text += c.text;
+    } else {
+      out.push({ ...c });
+    }
+  }
+  return out;
+}
+
+/* ══════════════════════════════════════════
+   Export
+══════════════════════════════════════════ */
+function exportBook() {
+  saveCurPage();
+
+  const title  = document.getElementById('inp-title').value.trim()  || '我的書';
+  const author = document.getElementById('inp-author').value.trim() || 'Player';
+
+  const bookData = {
+    version: 1,
+    title,
+    author,
+    pages: pages.map(html => pageHtmlToComponents(html))
+  };
+
+  // Remove undefined/false properties from components
+  bookData.pages = bookData.pages.map(page =>
+    page.map(comp => {
+      const clean = { text: comp.text };
+      if (comp.bold)          clean.bold = true;
+      if (comp.italic)        clean.italic = true;
+      if (comp.underlined)    clean.underlined = true;
+      if (comp.strikethrough) clean.strikethrough = true;
+      if (comp.color)         clean.color = comp.color;
+      return clean;
+    })
+  );
+
+  const json = JSON.stringify(bookData, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = title.replace(/[^\w一-鿿\-]/g, '_') + '.mcbook';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  showToast(`已匯出《${title}》(${pages.length} 頁)`);
+}
+
+/* ══════════════════════════════════════════
+   Toast
+══════════════════════════════════════════ */
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* ══════════════════════════════════════════
+   Start
+══════════════════════════════════════════ */
+init();
+</script>
+
+</body>
+</html>
