@@ -103,7 +103,7 @@ public class BookFiller {
     private static void sendBookPacket(Minecraft client, InteractionHand hand, McBookData data) {
         // 主手 slot 0-8，副手 slot 40
         int slot = (hand == InteractionHand.MAIN_HAND)
-                ? client.player.getInventory().selected    // 26.1：selectedSlot → selected
+                ? client.player.getInventory().getSelectedSlot()  // 26.1：selected 改為 private，用 getter
                 : 40;
 
         List<String> pageJsonStrings = new ArrayList<>();
@@ -161,13 +161,12 @@ public class BookFiller {
     }
 
     private static void sendActionBar(Minecraft client, String msg) {
-        if (client.player != null)
-            client.player.displayClientMessage(Component.literal(msg), true);
-        // 26.1：sendMessage(Text, bool) → displayClientMessage(Component, bool)
+        // 26.1：displayClientMessage 移除，改由 Gui.setOverlayMessage 顯示 action bar
+        client.gui.setOverlayMessage(Component.literal(msg), false);
     }
 
     private static void sendChat(Minecraft client, String msg) {
-        if (client.player != null)
-            client.player.displayClientMessage(Component.literal(msg), false);
+        // 26.1：displayClientMessage 移除，改由 ChatComponent.addMessage 顯示聊天訊息
+        client.gui.getChat().addMessage(Component.literal(msg));
     }
 }

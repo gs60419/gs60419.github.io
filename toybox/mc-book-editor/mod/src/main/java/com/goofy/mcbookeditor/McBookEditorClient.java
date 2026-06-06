@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 
 // 26.1 Mojang 原名
 import net.minecraft.client.KeyMapping;                     // 原 KeyBinding
+import net.minecraft.resources.ResourceLocation;            // 用於 Category.register
 import com.mojang.blaze3d.platform.InputConstants;          // 原 InputUtil
 import org.lwjgl.glfw.GLFW;
 
@@ -16,6 +17,12 @@ import org.lwjgl.glfw.GLFW;
 public class McBookEditorClient implements ClientModInitializer {
 
     public static KeyMapping FILL_BOOK_KEY;   // 原 KeyBinding → KeyMapping
+
+    // 26.1：Category 改為物件，不再是翻譯字串
+    private static final KeyMapping.Category CATEGORY =
+        KeyMapping.Category.register(
+            ResourceLocation.fromNamespaceAndPath(McBookEditorMod.MOD_ID, "general")
+        );
 
     @Override
     public void onInitializeClient() {
@@ -25,7 +32,7 @@ public class McBookEditorClient implements ClientModInitializer {
             "key.mcbookeditor.fill",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_B,
-            "category.mcbookeditor"
+            CATEGORY
         ));
 
         // END_CLIENT_TICK 在 26.1 沒有被重新命名（只有 World/Level tick 改名）
